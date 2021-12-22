@@ -1,0 +1,51 @@
+plugins {
+    id 'com.android.application'
+}
+
+apply from: rootProject.file('../keystore/zettel-notes-signing.gradle')
+
+android {
+    compileSdk 30
+
+    signingConfigs {
+        config {
+            keyAlias PROP_KEY_ALIAS
+            storeFile rootProject.file('../keystore/zettel-notes.jks')
+            storePassword PROP_STORE_PASSWORD
+            keyPassword PROP_KEY_PASSWORD
+        }
+    }
+
+    defaultConfig {
+        applicationId "org.eu.thedoc.zettelnotes.buttons.dummy"
+        minSdk 21
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+        signingConfig signingConfigs.config
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            signingConfig signingConfigs.config
+        }
+        release {
+            //disable proguard for plugin system to work
+            minifyEnabled false
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.1'
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="prefs_enable"
+        android:title="Enabled" />
+    <EditTextPreference
+        android:defaultValue="[Location at $loctime$](http://maps.google.com/maps?q=$lat$,$long$)"
+        android:key="prefs_location_link_format"
+        android:summary="Supported variables: $loctime$ $lat$ $long$ $acc$ $alt$ $speed$"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Format Link" />
+
+</PreferenceScreen>
