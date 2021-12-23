@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -57,6 +58,7 @@ public class LocationActivity extends AppCompatActivity {
     boolean enabled = sharedPreferences.getBoolean("prefs_enable",true);
     if(!enabled) {
       setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Plugin disabled"));
+      showToast("Error: Plugin disabled");
       finish();
     }else {
       ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -71,6 +73,7 @@ public class LocationActivity extends AppCompatActivity {
         } else {
           // No location access granted.
           setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "No location access granted"));
+          showToast("Error: No location access granted");
           finish();
         }
       });
@@ -100,6 +103,7 @@ public class LocationActivity extends AppCompatActivity {
       } else {
         if(!isLocationEnabled()) {
           setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Location disabled"));
+          showToast("Error: Location disabled");
           finish();
         } else {
           mProgressBar.setVisibility(View.VISIBLE);
@@ -143,6 +147,10 @@ public class LocationActivity extends AppCompatActivity {
                            .replaceAll("\\$alt\\$", altitude)
                            .replaceAll("\\$speed\\$", speed);
     return userFormat;
+  }
+
+  private void showToast (String text) {
+    if (!text.isEmpty()) Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
   }
 
 

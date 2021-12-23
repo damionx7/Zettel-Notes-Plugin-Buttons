@@ -49,4 +49,5 @@ android {
 
 dependencies {
     implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.2'
+    implementation 'org.apache.commons:commons-text:1.9'
 }
