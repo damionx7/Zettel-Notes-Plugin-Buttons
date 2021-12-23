@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
 }
 
+def versionMajor = 5
 apply from: rootProject.file('../keystore/zettel-notes-signing.gradle')
 
 android {
@@ -20,8 +21,8 @@ android {
         applicationId "org.eu.thedoc.zettelnotes.buttons.textutils"
         minSdk 21
         targetSdk 30
-        versionCode 1
-        versionName "1.0"
+        versionCode versionMajor
+        versionName "${versionMajor}"
         signingConfig signingConfigs.config
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -47,5 +48,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.1'
+    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.2'
 }

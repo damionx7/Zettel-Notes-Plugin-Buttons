@@ -3,7 +3,7 @@ plugins {
 }
 apply from: rootProject.file('../keystore/zettel-notes-signing.gradle')
 
-def versionMajor = 4
+def versionMajor = 5
 
 android {
     compileSdk 30
@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.1'
+    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.2'
 
     implementation "androidx.preference:preference:1.1.1"
     implementation 'com.google.android.gms:play-services-location:19.0.0'

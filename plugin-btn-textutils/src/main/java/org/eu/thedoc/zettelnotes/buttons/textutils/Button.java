@@ -1,38 +1,47 @@
 package org.eu.thedoc.zettelnotes.buttons.textutils;
 
-import android.app.Dialog;
-import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import org.eu.thedoc.zettelnotes.interfaces.ButtonInterface;
 
 public class Button extends ButtonInterface {
 
+  public static final String INTENT_ACTION_TEXT_UTILS = "org.eu.thedoc.zettelnotes.intent.buttons.textutils";
+
+  private final ActivityResultListener mActivityResultListener = result -> {
+    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+      String txt = result.getData().getStringExtra(TextUtilsActivity.INTENT_EXTRA_REPLACE_TEXT);
+      Log.v("Ok", "Got text");
+      if (mCallback != null && txt != null && !txt.isEmpty()) {
+        mCallback.replaceTextSelected(txt);
+      }
+    } else {
+      if (result.getData() != null) {
+        String error = result.getData().getStringExtra(TextUtilsActivity.ERROR_STRING);
+        Log.e("Error: ", error);
+      }
+    }
+  };
+
   private final Listener mListener = new Listener() {
     @Override
     public void onClick () {
-      try {
-        if (mFragmentManager != null) {
-          FragmentTransaction ft = mFragmentManager.beginTransaction();
-          MyFragment fragment = new MyFragment();
-          fragment.bindCallback(mCallback);
-          fragment.show(ft, "");
-        }
-      } catch (Exception e) {
-        Log.e("TextUtilsButton", "Exception thrown in Fragment Transaction");
+      if (mCallback != null) {
+        mCallback.setActivityResultListener(mActivityResultListener);
+        mCallback.startActivityForResult(new Intent(INTENT_ACTION_TEXT_UTILS).putExtra(TextUtilsActivity.INTENT_EXTRA_TEXT_SELECTED, mCallback.getTextSelected()));
       }
     }
 
     @Override
     public boolean onLongClick () {
       return false;
+    }
+
+    @Override
+    public ActivityResultListener getActivityResultListener () {
+      return mActivityResultListener;
     }
   };
 
@@ -44,53 +53,6 @@ public class Button extends ButtonInterface {
   @Override
   public Listener getListener () {
     return mListener;
-  }
-
-  public static class MyFragment extends AppCompatDialogFragment {
-    private Callback mCallback;
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog (@Nullable Bundle savedInstanceState) {
-      AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-      String[] formatOptions = {"Remove newlines", "Split to newlines"};
-      builder.setItems(formatOptions, (dialog, which) -> {
-        if (mCallback != null) {
-          String txtSelected = mCallback.getTextSelected();
-          if (txtSelected.isEmpty()) {
-            showToast("Select some text");
-          } else {
-            switch (which) {
-              case 0:
-                mCallback.replaceTextSelected(removeNewLines(txtSelected));
-                showToast("Done");
-                break;
-              case 1:
-                mCallback.replaceTextSelected(addNewLines(txtSelected));
-                showToast("Done");
-                break;
-            }
-          }
-        }
-      });
-      return builder.create();
-    }
-
-    public void bindCallback (Callback callback) {
-      mCallback = callback;
-    }
-
-    private void showToast (String text) {
-      if (!text.isEmpty()) Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
-    }
-
-    private String removeNewLines (String selectedText){
-      return selectedText.replaceAll("\\n+", " ");
-    }
-
-    private String addNewLines (String selectedText){
-      return selectedText.replaceAll("\\s+", "\n");
-    }
   }
 
 }
