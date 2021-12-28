@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
 }
 
-def versionMajor = 5
+def versionMajor = 7
 apply from: rootProject.file('../keystore/zettel-notes-signing.gradle')
 
 android {
@@ -48,6 +48,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.2'
+    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.3'
     implementation 'org.apache.commons:commons-text:1.9'
 }
