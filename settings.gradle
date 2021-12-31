@@ -2,3 +2,4 @@ rootProject.name = "Zettel Notes Plugin Buttons"
 include ':plugin-btn-location'
 include ':plugin-btn-smile'
 include ':plugin-btn-textutils'
+include ':plugin-btn-speech2text'

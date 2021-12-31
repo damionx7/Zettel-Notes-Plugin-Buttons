@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/plugin-btn-location" />
             <option value="$PROJECT_DIR$/plugin-btn-smile" />
+            <option value="$PROJECT_DIR$/plugin-btn-speech2text" />
             <option value="$PROJECT_DIR$/plugin-btn-textutils" />
           </set>
         </option>
