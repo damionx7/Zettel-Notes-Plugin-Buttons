@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
 }
 
-def versionMajor = 7
+def versionMajor = 8
 apply from: rootProject.file('../keystore/zettel-notes-signing.gradle')
 
 android {
@@ -45,9 +45,18 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
     implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.3'
     implementation 'org.apache.commons:commons-text:1.9'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.0'
 }
