@@ -6,7 +6,7 @@
         android:key="prefs_enable"
         android:title="Enabled" />
     <EditTextPreference
-        android:defaultValue="[Location at $loctime$](http://maps.google.com/maps?q=$lat$,$long$)"
+        android:defaultValue="[Location at $loctime$](https://maps.google.com/maps?q=$lat$,$long$)"
         android:key="prefs_location_link_format"
         android:summary="Supported variables: $loctime$ $lat$ $long$ $acc$ $alt$ $speed$"
         android:selectAllOnFocus="true"

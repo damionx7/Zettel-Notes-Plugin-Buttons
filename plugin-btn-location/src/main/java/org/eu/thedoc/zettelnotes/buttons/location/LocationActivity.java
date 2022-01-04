@@ -34,7 +34,9 @@ public class LocationActivity extends AppCompatActivity {
 
   public static final String INTENT_EXTRA_LOCATION = "intent-extra-location";
   public static final String ERROR_STRING = "intent-error";
-  private static final String DEFAULT_LOC_STRING = "[Location at $loctime$](http://maps.google.com/maps?q=$lat$,$long$)";
+  private static final String DEFAULT_LOC_STRING = "[Location at $loctime$](https://maps.google.com/maps?q=$lat$,$long$)";
+  //private static final String DEFAULT_LOC_STRING = "![map](latlong:$lat$,$long$)";
+
   private ProgressBar mProgressBar;
 
   private String time2humanFromLastModified (Long time2convert) {
