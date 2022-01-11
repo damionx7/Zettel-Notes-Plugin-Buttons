@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
 }
 
-def versionMajor = 8
+def versionMajor = 9
 apply from: rootProject.file('../keystore/zettel-notes-signing.gradle')
 
 android {
