@@ -1,4 +1,4 @@
-rootProject.name = "Zettel Notes Plugin Buttons"
+rootProject.name = "Zettel Notes Plugins"
 include ':plugin-btn-location'
 include ':plugin-btn-smile'
 include ':plugin-btn-textutils'
