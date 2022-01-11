@@ -12,10 +12,15 @@ public class Button extends ButtonInterface {
 
   private final ActivityResultListener mActivityResultListener = result -> {
     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-      String txt = result.getData().getStringExtra(TextUtilsActivity.INTENT_EXTRA_REPLACE_TEXT);
+      String txtToReplace = result.getData().getStringExtra(TextUtilsActivity.INTENT_EXTRA_REPLACE_TEXT);
+      String txtToInsert = result.getData().getStringExtra(TextUtilsActivity.INTENT_EXTRA_INSERT_TEXT);
       Log.v("Ok", "Got text");
-      if (mCallback != null && txt != null && !txt.isEmpty()) {
-        mCallback.replaceTextSelected(txt);
+      if (mCallback != null) {
+        if (txtToReplace != null && !txtToReplace.isEmpty()) {
+          mCallback.replaceTextSelected(txtToReplace);
+        } else if (txtToInsert != null && !txtToInsert.isEmpty()) {
+          mCallback.insertText(txtToInsert);
+        }
       }
     } else {
       if (result.getData() != null) {
