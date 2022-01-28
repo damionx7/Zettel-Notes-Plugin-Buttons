@@ -8,6 +8,7 @@
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="/usr/lib/gradle/default" />
+        <option name="gradleJvm" value="Android Studio java home" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -15,6 +16,7 @@
             <option value="$PROJECT_DIR$/plugin-btn-smile" />
             <option value="$PROJECT_DIR$/plugin-btn-speech2text" />
             <option value="$PROJECT_DIR$/plugin-btn-textutils" />
+            <option value="$PROJECT_DIR$/plugin-btn-translate" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
