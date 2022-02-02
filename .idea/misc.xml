@@ -9,6 +9,9 @@
         <entry key="plugin-btn-speech2text/src/main/res/drawable/ic_launcher_background.xml" value="0.3572916666666667" />
         <entry key="plugin-btn-speech2text/src/main/res/drawable/ic_launcher_foreground.xml" value="0.3572916666666667" />
         <entry key="plugin-btn-speech2text/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3572916666666667" />
+        <entry key="plugin-btn-translate/src/main/res/drawable/ic_arrow_forward.xml" value="0.294" />
+        <entry key="plugin-btn-translate/src/main/res/drawable/ic_translate.xml" value="0.238" />
+        <entry key="plugin-btn-translate/src/main/res/layout/activity.xml" value="0.5" />
         <entry key="plugin-btn-translate/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
         <entry key="plugin-btn-translate/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
       </map>

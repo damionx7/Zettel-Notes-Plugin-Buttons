@@ -2,10 +2,10 @@ plugins {
     id 'com.android.application'
 }
 
-def versionMajor = 6
+def versionMajor = 7
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     signingConfigs {
         config {
@@ -49,9 +49,9 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.3'
+    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.4'
 
-    implementation "androidx.preference:preference:1.1.1"
-    implementation 'com.google.android.gms:play-services-location:19.0.0'
+    implementation "androidx.preference:preference:1.2.0"
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 }

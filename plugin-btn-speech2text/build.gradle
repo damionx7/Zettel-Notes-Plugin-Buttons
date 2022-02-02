@@ -2,10 +2,10 @@ plugins {
     id 'com.android.application'
 }
 
-def versionMajor = 6
+def versionMajor = 7
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     signingConfigs {
         config {
@@ -46,5 +46,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.3'
+    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.4'
 }

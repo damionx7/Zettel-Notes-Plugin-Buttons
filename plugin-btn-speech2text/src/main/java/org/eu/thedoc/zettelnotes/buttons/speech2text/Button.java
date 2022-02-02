@@ -43,10 +43,6 @@ public class Button extends ButtonInterface {
       return false;
     }
 
-    @Override
-    public ActivityResultListener getActivityResultListener () {
-      return null;
-    }
   };
 
   @Override
