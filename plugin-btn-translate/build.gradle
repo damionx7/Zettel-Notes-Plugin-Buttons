@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
 }
 
-def versionMajor = 1
+def versionMajor = 3
 
 android {
     compileSdk 31
@@ -50,6 +50,8 @@ android {
 
 dependencies {
     implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.4'
+
+    implementation "androidx.constraintlayout:constraintlayout:2.1.3"
 
     implementation 'com.google.mlkit:translate:17.0.0'
     implementation 'com.google.mlkit:language-id:17.0.3'

@@ -25,10 +25,25 @@
             android:noHistory="true"
             android:launchMode="singleTask"
             android:exported="true"
-            android:theme="@style/AppThemeTransparent">
+            android:theme="@style/Theme.ZettelNotes">
             <intent-filter>
                 <action android:name="org.eu.thedoc.zettelnotes.intent.buttons.translate" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ProcessTextActivity"
+            android:launchMode="singleTop"
+            android:noHistory="true"
+            android:exported="true"
+            android:label="Translate"
+            android:excludeFromRecents="true"
+            android:theme="@style/AppThemeTransparent">
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
 

@@ -4,12 +4,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,16 +43,33 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
   public static final String PREFS_LAST_SELECTED_CODE = "prefs-last-selected-code";
   public static final String PREFS = "_settings";
 
-  private ProgressBar mProgressBar;
+  private static final String IDENTIFY_LANGUAGE_ERROR = "Can't Identify Language. Try selecting larger text for translation";
+
   private Translator mTranslator;
+  private SharedPreferences mPrefs;
+
+  private ProgressBar mProgressBar;
+  private EditText etTranslate, etTranslation;
+  private Spinner sSource, sTarget;
+  private Button mButtonSubmit, mButtonTranslate;
+
+  private String sourceLanguageCode, targetLanguageCode;
 
   @Override
   protected void onCreate (@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity);
+    mPrefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+
     mProgressBar = findViewById(R.id.progressBar);
     mProgressBar.setIndeterminate(true);
-    SharedPreferences sharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
+
+    etTranslate = findViewById(R.id.etTranslate);
+    etTranslation = findViewById(R.id.etTranslation);
+    sSource = findViewById(R.id.sSource);
+    sTarget = findViewById(R.id.sTarget);
+    mButtonSubmit = findViewById(R.id.btnSubmit);
+    mButtonTranslate = findViewById(R.id.btnTranslate);
 
     String txtSelected = getIntent().getStringExtra(INTENT_EXTRA_TEXT_SELECTED);
     if (txtSelected == null || txtSelected.isEmpty()) {
@@ -56,51 +77,84 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
       setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Select some text"));
       finish();
     } else {
-      mProgressBar.setVisibility(View.VISIBLE);
+      etTranslate.setText(txtSelected);
 
       //get supported language codes
-      final HashMap<String, String> languageCodes = populateLanguageCodes();
-      //show as sorted list
-      List<String> supportedLanguages = new ArrayList<>(languageCodes.keySet());
-      Collections.sort(supportedLanguages, String.CASE_INSENSITIVE_ORDER);
-      AlertDialog.Builder builder = new AlertDialog.Builder(this);
-      builder.setItems(supportedLanguages.toArray(new String[0]), (dialogInterface, which) -> {
-        //get language from hashMap
-        String language = supportedLanguages.get(which);
-        String code = languageCodes.get(language);
-        showToast("Translating to " + language + ":" + code);
+      final HashMap<String, String> languageHashMap = populateLanguageCodes(false);
+      final HashMap<String, String> codeFirstHashMap = populateLanguageCodes(true);
 
-        //save to prefs
-        sharedPreferences.getString(PREFS_LAST_SELECTED, language);
-        sharedPreferences.getString(PREFS_LAST_SELECTED_CODE, code);
-        //translate
-        LanguageIdentifier identifier = LanguageIdentification.getClient();
-        identifier.identifyLanguage(txtSelected).addOnSuccessListener(languageCode -> {
-          if (languageCode.equals("und")) onFailure(new Exception("Can't identify language"));
-          else {
-            String sourceLang = TranslateLanguage.fromLanguageTag(languageCode);
-            if (sourceLang != null) {
-              TranslatorOptions options = new TranslatorOptions.Builder().setSourceLanguage(sourceLang).setTargetLanguage(code).build();
-              mTranslator = Translation.getClient(options);
-              getLifecycle().addObserver(mTranslator);
-              mTranslator.downloadModelIfNeeded().addOnSuccessListener(unused -> mTranslator.translate(txtSelected).addOnSuccessListener(s -> {
-                setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, s));
-                finish();
-              }).addOnFailureListener(this)).addOnFailureListener(this);
-            } else onFailure(new Exception("Can't identify language"));
-          }
-        }).addOnFailureListener(this);
+      //show as sorted list
+      List<String> supportedLanguages = new ArrayList<>(languageHashMap.keySet());
+      Collections.sort(supportedLanguages, String.CASE_INSENSITIVE_ORDER);
+
+      ArrayAdapter<String> sourceAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, supportedLanguages);
+      sSource.setAdapter(sourceAdapter);
+      sSource.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected (AdapterView<?> adapterView, View view, int position, long l) {
+          String language = supportedLanguages.get(position);
+          sourceLanguageCode = languageHashMap.get(language);
+        }
+
+        @Override
+        public void onNothingSelected (AdapterView<?> adapterView) {
+          //
+        }
       });
-      builder.setOnCancelListener(dialog -> finish());
-      builder.show();
+      ArrayAdapter<String> targetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, supportedLanguages);
+      sTarget.setAdapter(targetAdapter);
+      sTarget.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected (AdapterView<?> adapterView, View view, int position, long l) {
+          String language = supportedLanguages.get(position);
+          targetLanguageCode = languageHashMap.get(language);
+
+          putString(PREFS_LAST_SELECTED, language);
+          putString(PREFS_LAST_SELECTED_CODE, targetLanguageCode);
+        }
+
+        @Override
+        public void onNothingSelected (AdapterView<?> adapterView) {
+          //
+        }
+      });
+
+      mButtonTranslate.setOnClickListener(view -> translate());
+      mButtonSubmit.setOnClickListener(view -> {
+        String translation = etTranslation.getText().toString();
+        setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, translation));
+        finish();
+      });
+
+      //identify language and set source language code on start
+      LanguageIdentifier identifier = LanguageIdentification.getClient();
+      identifier.identifyLanguage(txtSelected).addOnSuccessListener(languageCode -> {
+        if (languageCode.equals("und")) {
+          //set fallback language as english
+          languageCode = "en";
+          onFailure(new Exception(IDENTIFY_LANGUAGE_ERROR));
+        }
+        sourceLanguageCode = TranslateLanguage.fromLanguageTag(languageCode);
+        String sourceLanguage = codeFirstHashMap.get(sourceLanguageCode);
+        int index = supportedLanguages.indexOf(sourceLanguage);
+        sSource.setSelection(index);
+
+        //default language
+        String lastLanguage = mPrefs.getString(PREFS_LAST_SELECTED, "SPANISH");
+        String lastLanguageCode = mPrefs.getString(PREFS_LAST_SELECTED_CODE, TranslateLanguage.SPANISH);
+
+        sTarget.setSelection(supportedLanguages.indexOf(lastLanguage));
+        targetLanguageCode = TranslateLanguage.fromLanguageTag(lastLanguageCode);
+
+        mButtonTranslate.callOnClick();
+      }).addOnFailureListener(this);
     }
   }
 
   @Override
   public void onFailure (@NonNull Exception e) {
+    mProgressBar.setVisibility(View.GONE);
     showToast(e.toString());
-    setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, e.toString()));
-    finish();
   }
 
   @Override
@@ -110,7 +164,23 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
     if (mTranslator != null) mTranslator.close();
   }
 
-  private HashMap<String, String> populateLanguageCodes () {
+  private void translate () {
+    mProgressBar.setVisibility(View.VISIBLE);
+
+    String txtToTranslate = etTranslate.getText().toString();
+    if (sourceLanguageCode != null && targetLanguageCode != null) {
+      TranslatorOptions options = new TranslatorOptions.Builder().setSourceLanguage(sourceLanguageCode).setTargetLanguage(targetLanguageCode).build();
+      mTranslator = Translation.getClient(options);
+      getLifecycle().addObserver(mTranslator);
+      mTranslator.downloadModelIfNeeded().addOnSuccessListener(unused -> mTranslator.translate(txtToTranslate).addOnSuccessListener(s -> {
+        etTranslation.setText(s);
+        mProgressBar.setVisibility(View.GONE);
+      }).addOnFailureListener(this)).addOnFailureListener(this);
+    } else onFailure(new Exception(IDENTIFY_LANGUAGE_ERROR));
+  }
+
+  //HashMap<Language, Code>
+  private HashMap<String, String> populateLanguageCodes (boolean codeFirst) {
     HashMap<String, String> hashMap = new HashMap<>();
     Field[] fields = TranslateLanguage.class.getFields();
     for (Field f : fields) {
@@ -120,7 +190,8 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
           try {
             String fieldName = f.getName();
             String fieldValue = (String) f.get(null);
-            hashMap.put(fieldName, fieldValue);
+            if (codeFirst) hashMap.put(fieldValue, fieldName);
+            else hashMap.put(fieldName, fieldValue);
           } catch (IllegalAccessException e) {
             onFailure(e);
           }
@@ -132,6 +203,13 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
 
   private void showToast (String text) {
     if (!text.isEmpty()) Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+  }
+
+
+  public void putString (String key, String value) {
+    SharedPreferences.Editor editor = mPrefs.edit();
+    editor.putString(key, value);
+    editor.apply();
   }
 
 }
