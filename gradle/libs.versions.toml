@@ -1,0 +1,19 @@
+[versions]
+#base api version
+api = '1.0.6'
+
+[libraries]
+api = { module = "com.github.damionx7:Zettel-Notes-Plugin-Api", version.ref = "api" }
+apache-commons = { module = "org.apache.commons:commons-text", version = "1.10.0" }
+constraintx = { module = "androidx.constraintlayout:constraintlayout", version = "2.1.4" }
+desugar = { module = "com.android.tools:desugar_jdk_libs", version = "2.0.0" }
+preferencex = { module = "androidx.preference:preference", version = "1.2.0" }
+mlkit-translate = { module = "com.google.mlkit:translate", version = "17.0.1" }
+mlkit-language-id = { module = "com.google.mlkit:language-id", version = "17.0.4" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-engine", version = "5.9.2" }
+junit-vintge = { module = "org.junit.vintage:junit-vintage-engine", version = "5.9.2" }
+gms-location = { module = "com.google.android.gms:play-services-location", version = "21.0.1" }
+
+[bundles]
+mlkit = ["mlkit-translate", "mlkit-language-id"]
+junit = ["junit-jupiter", "junit-vintge"]

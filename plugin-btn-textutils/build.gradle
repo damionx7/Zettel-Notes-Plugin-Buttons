@@ -1,61 +1,14 @@
-plugins {
-    id 'com.android.application'
-}
-
-def versionMajor = 10
+def versionMajor = 11
 
 android {
-    compileSdk 31
-
-    signingConfigs {
-        config {
-            keyAlias PROP_KEY_ALIAS
-            storeFile rootProject.file('../keystore/zettel-notes.jks')
-            storePassword PROP_STORE_PASSWORD
-            keyPassword PROP_KEY_PASSWORD
-        }
-    }
-
     defaultConfig {
         applicationId "org.eu.thedoc.zettelnotes.buttons.textutils"
-        minSdk 21
-        targetSdk 30
         versionCode versionMajor
         versionName "${versionMajor}"
-        signingConfig signingConfigs.config
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        debug {
-            debuggable true
-            minifyEnabled false
-            signingConfig signingConfigs.config
-        }
-        release {
-            //disable proguard for plugin system to work
-            minifyEnabled false
-            debuggable false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    testOptions {
-        unitTests.all {
-            useJUnitPlatform()
-        }
     }
 }
 
 dependencies {
-    implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.4'
-    implementation 'org.apache.commons:commons-text:1.9'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.0'
+    implementation libs.apache.commons
+    implementation libs.bundles.junit
 }
