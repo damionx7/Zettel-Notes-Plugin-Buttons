@@ -25,6 +25,8 @@ subprojects {
     apply plugin: 'com.android.application'
     dependencies {
         implementation libs.api
+        coreLibraryDesugaring libs.desugar
+        testImplementation libs.bundles.junit
     }
     repositories {
         google()

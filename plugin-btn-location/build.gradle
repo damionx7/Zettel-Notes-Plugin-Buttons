@@ -15,5 +15,4 @@ android {
 dependencies {
     implementation libs.preferencex
     implementation libs.gms.location
-    coreLibraryDesugaring libs.desugar
 }

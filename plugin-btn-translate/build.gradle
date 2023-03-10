@@ -15,5 +15,4 @@ android {
 dependencies {
     implementation libs.constraintx
     implementation libs.bundles.mlkit
-    coreLibraryDesugaring libs.desugar
 }
