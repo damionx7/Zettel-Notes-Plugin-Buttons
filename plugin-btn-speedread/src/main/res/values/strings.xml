@@ -1,0 +1,4 @@
+<resources>
+    <string name = "app_name">ZN Plugin Speed Reader</string>
+    <string name = "intent_share_text">Speed Read!</string>
+</resources>

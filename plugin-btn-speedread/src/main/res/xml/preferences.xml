@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android = "http://schemas.android.com/apk/res/android"
+   xmlns:app = "http://schemas.android.com/apk/res-auto">
+
+    <SeekBarPreference
+       android:defaultValue = "1000"
+       android:key = "prefs_rate"
+       app:min = "100"
+       android:max = "2000"
+       android:title = "Rate"
+       app:showSeekBarValue = "true"
+       app:seekBarIncrement = "100"/>
+
+</PreferenceScreen>

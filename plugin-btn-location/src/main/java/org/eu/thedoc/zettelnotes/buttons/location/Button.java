@@ -41,8 +41,6 @@ public class Button extends ButtonInterface {
 
   };
 
-  public Button () {}
-
   @Override
   public String getName () {
     return "Location";
