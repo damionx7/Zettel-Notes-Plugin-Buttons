@@ -6,10 +6,6 @@ android {
         versionCode versionMajor
         versionName "${versionMajor}"
     }
-
-    compileOptions {
-        coreLibraryDesugaringEnabled true
-    }
 }
 
 dependencies {
