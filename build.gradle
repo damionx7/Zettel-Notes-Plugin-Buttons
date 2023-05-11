@@ -1,3 +1,7 @@
+plugins {
+    id 'com.android.application' version '8.0.1' apply false
+}
+
 Properties properties = new Properties()
 properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
@@ -10,16 +14,6 @@ project.ext {
     keystore = rootProject.file(properties.getProperty("keystore"))
 }
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.0'
-    }
-}
-
 //shared config for modules
 subprojects {
     apply plugin: 'com.android.application'
@@ -28,11 +22,7 @@ subprojects {
         coreLibraryDesugaring libs.desugar
         testImplementation libs.bundles.junit
     }
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-    }
+
     android {
         compileSdk project.targetSdk
 
@@ -68,8 +58,8 @@ subprojects {
             }
         }
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_11
-            targetCompatibility JavaVersion.VERSION_11
+            sourceCompatibility JavaVersion.VERSION_17
+            targetCompatibility JavaVersion.VERSION_17
 
             coreLibraryDesugaringEnabled true
         }

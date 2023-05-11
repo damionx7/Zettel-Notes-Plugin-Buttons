@@ -6,4 +6,5 @@ android {
         versionCode versionMajor
         versionName "${versionMajor}"
     }
+    namespace 'org.eu.thedoc.zettelnotes.buttons.speech2text'
 }

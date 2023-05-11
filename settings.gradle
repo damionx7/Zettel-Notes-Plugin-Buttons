@@ -1,3 +1,21 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url "https://repo.eclipse.org/content/repositories/paho-releases/" }
+        maven { url "https://jitpack.io" }
+    }
+}
+
 rootProject.name = "Zettel Notes Plugins"
 include ':plugin-btn-location'
 include ':plugin-btn-smile'
