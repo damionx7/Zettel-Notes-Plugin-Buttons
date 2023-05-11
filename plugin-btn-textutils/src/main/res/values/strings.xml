@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ZN Plugin TextUtils</string>
+    <string name="intent_share_text">Text Utils!</string>
 </resources>

@@ -1,4 +1,4 @@
-def versionMajor = 11
+def versionMajor = 12
 
 android {
     defaultConfig {
