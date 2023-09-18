@@ -1,0 +1,7 @@
+packageName = "org.eu.thedoc.zettelnotes.buttons.chat"
+versionMajor = 1
+
+dependencies {
+    implementation libs.chat.gpt.api
+    implementation libs.ok.http
+}

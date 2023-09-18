@@ -1,13 +1,5 @@
-def versionMajor = 4
-
-android {
-    defaultConfig {
-        applicationId "org.eu.thedoc.zettelnotes.buttons.translate"
-        versionCode versionMajor
-        versionName "${versionMajor}"
-    }
-    namespace 'org.eu.thedoc.zettelnotes.buttons.translate'
-}
+versionMajor = 4
+packageName = "org.eu.thedoc.zettelnotes.buttons.translate"
 
 dependencies {
     implementation libs.constraintx

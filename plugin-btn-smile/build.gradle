@@ -1,10 +1,2 @@
-def versionMajor = 9
-
-android {
-    defaultConfig {
-        applicationId "org.eu.thedoc.zettelnotes.buttons.dummy"
-        versionCode versionMajor
-        versionName "${versionMajor}"
-    }
-    namespace 'org.eu.thedoc.zettelnotes.buttons.dummy'
-}
+versionMajor = 9
+packageName = "org.eu.thedoc.zettelnotes.buttons.dummy"

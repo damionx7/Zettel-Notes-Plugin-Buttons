@@ -1,13 +1,5 @@
-def versionMajor = 12
-
-android {
-    defaultConfig {
-        applicationId "org.eu.thedoc.zettelnotes.buttons.textutils"
-        versionCode versionMajor
-        versionName "${versionMajor}"
-    }
-    namespace 'org.eu.thedoc.zettelnotes.buttons.textutils'
-}
+versionMajor = 12
+packageName = "org.eu.thedoc.zettelnotes.buttons.textutils"
 
 dependencies {
     implementation libs.apache.commons

@@ -1,13 +1,5 @@
-def versionMajor = 8
-
-android {
-    defaultConfig {
-        applicationId "org.eu.thedoc.zettelnotes.buttons.location"
-        versionCode versionMajor
-        versionName "${versionMajor}"
-    }
-    namespace 'org.eu.thedoc.zettelnotes.buttons.location'
-}
+versionMajor = 8
+packageName = "org.eu.thedoc.zettelnotes.buttons.location"
 
 dependencies {
     implementation libs.preferencex

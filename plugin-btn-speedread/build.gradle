@@ -1,14 +1,5 @@
-def versionMajor = 1
-
-android {
-    namespace "org.eu.thedoc.zettelnotes.buttons.speedread"
-
-    defaultConfig {
-        applicationId "org.eu.thedoc.zettelnotes.buttons.speedread"
-        versionCode versionMajor
-        versionName "${versionMajor}"
-    }
-}
+versionMajor = 1
+packageName = "org.eu.thedoc.zettelnotes.buttons.speedread"
 
 dependencies {
     implementation libs.constraintx

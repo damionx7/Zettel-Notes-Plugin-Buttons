@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   android:orientation="vertical"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent">
+
+    <ListView
+       android:id="@+id/list_view"
+       android:layout_weight="1"
+       android:layout_width="match_parent"
+       android:transcriptMode="alwaysScroll"
+       android:stackFromBottom="true"
+       android:layout_height="0dp"
+       android:layout_margin="8dp" />
+
+    <View
+       android:background="@android:color/black"
+       android:layout_margin="4dp"
+       android:layout_width="match_parent"
+       android:layout_height="0.5dp" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_gravity="bottom"
+       android:layout_margin="8dp"
+       android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatEditText
+           android:id="@+id/edit_text"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:imeOptions="normal"
+           android:layout_margin="4dp"
+           android:inputType="textMultiLine|textCapSentences"
+           android:hint="Message"
+           android:maxLines="5" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+           android:id="@+id/send_button"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:layout_margin="4dp"
+           android:background="?attr/selectableItemBackground"
+           app:srcCompat="@drawable/ic_send" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</LinearLayout>

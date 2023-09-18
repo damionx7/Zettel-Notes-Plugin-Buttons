@@ -1,10 +1,2 @@
-def versionMajor = 8
-
-android {
-    defaultConfig {
-        applicationId "org.eu.thedoc.zettelnotes.buttons.speech2text"
-        versionCode versionMajor
-        versionName "${versionMajor}"
-    }
-    namespace 'org.eu.thedoc.zettelnotes.buttons.speech2text'
-}
+versionMajor = 8
+packageName = "org.eu.thedoc.zettelnotes.buttons.speech2text"
