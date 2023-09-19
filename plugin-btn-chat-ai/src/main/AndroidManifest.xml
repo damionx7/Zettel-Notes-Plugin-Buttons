@@ -28,6 +28,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+           android:name=".SettingsActivity"
+           android:parentActivityName=".ChatActivity"
+           android:exported="false" />
     </application>
 
 </manifest>

@@ -4,4 +4,7 @@ versionMajor = 1
 dependencies {
     implementation libs.chat.gpt.api
     implementation libs.ok.http
+    implementation libs.cardviewx
+    implementation libs.constraintx
+    implementation libs.preferencex
 }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ZN AI Chat Plugin</string>
+    <string name="prefs_system_prompt_key" translatable="false">prefs_system_prompt_key</string>
+    <string name="prefs_register_key" translatable="false">prefs_register_key</string>
+    <string name="prefs_api_key" translatable="false">prefs_api_key</string>
+    <string name="prefs_gpt_4_model_key" translatable="false">prefs_gpt_4_model_key</string>
 </resources>

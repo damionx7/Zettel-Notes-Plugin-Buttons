@@ -35,8 +35,9 @@ public class Button
     public void onClick() {
       if (mCallback != null) {
         mCallback.setActivityResultListener(mActivityResultListener);
-        mCallback.startActivityForResult(
-            new Intent(INTENT_ACTION).putExtra(ChatActivity.INTENT_EXTRA_TEXT_SELECTED, mCallback.getTextSelected()));
+        mCallback.startActivityForResult(new Intent(INTENT_ACTION)
+            .putExtra(ChatActivity.INTENT_EXTRA_TEXT_SELECTED, mCallback.getTextSelected())
+            .putExtra(ChatActivity.INTENT_EXTRA_BUTTON_MODE, true));
       }
     }
 

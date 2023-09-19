@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+       android:defaultValue=""
+       android:key="@string/prefs_api_key"
+       android:summary="Enter your Open AI Api key"
+       android:selectAllOnFocus="true"
+       android:singleLine="false"
+       android:title="API Key" />
+
+    <EditTextPreference
+       android:defaultValue="You a helpful writer"
+       android:key="@string/prefs_system_prompt_key"
+       android:summary="Use this to prescribe the style and steer the behavior of AI"
+       android:selectAllOnFocus="true"
+       android:title="System Prompt" />
+
+    <SwitchPreference
+       android:dependency="@string/prefs_api_key"
+       android:defaultValue="false"
+       android:title="Chat GPT Model"
+       android:summaryOff="gpt-3.5-turbo"
+       android:summaryOn="gpt-4"
+       android:key="@string/prefs_gpt_4_model_key" />
+
+    <PreferenceCategory
+       android:title="Misc"
+       android:enabled="true">
+
+        <Preference
+           android:title="Generate API Key"
+           android:key="@string/prefs_register_key"
+           android:summary="Open registration page for Open AI Api Key" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
