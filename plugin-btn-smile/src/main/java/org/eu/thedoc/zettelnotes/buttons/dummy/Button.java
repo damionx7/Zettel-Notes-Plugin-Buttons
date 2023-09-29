@@ -13,7 +13,7 @@ public class Button extends ButtonInterface {
     @Override
     public boolean onLongClick () {
       if (mCallback != null) {
-        String selectedText = mCallback.getTextSelected();
+        String selectedText = mCallback.getTextSelected(false);
         if (!selectedText.isEmpty()) {
           mCallback.replaceTextSelected("\uD83D\uDE04");
           return true;

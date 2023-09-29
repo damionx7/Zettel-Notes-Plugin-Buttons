@@ -2,7 +2,6 @@ package org.eu.thedoc.zettelnotes.buttons.chat;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -16,7 +15,7 @@ public class MessageViewHolder
 
   protected final Context mContext;
   private final CardView mCardView;
-  private final TextView mChatView;
+  private final CustomTextView mChatView;
   private final Listener mListener;
   private ChatMessage mChatMessage;
 
@@ -26,6 +25,7 @@ public class MessageViewHolder
     mContext = itemView.getContext();
     mCardView = itemView.findViewById(R.id.card_view);
     mChatView = itemView.findViewById(R.id.tv_chat);
+    mChatView.setListener(this);
     mListener = listener;
   }
 

@@ -1,8 +1,6 @@
 package org.eu.thedoc.zettelnotes.buttons.speedread;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import org.eu.thedoc.zettelnotes.interfaces.ButtonInterface;
 
 public class Button extends ButtonInterface {
@@ -13,7 +11,8 @@ public class Button extends ButtonInterface {
     @Override
     public void onClick () {
       if (mCallback != null) {
-        mCallback.startActivityForResult(new Intent(INTENT_ACTION).putExtra(SpeedReadActivity.INTENT_EXTRA, mCallback.getTextSelected()));
+        mCallback.startActivityForResult(
+            new Intent(INTENT_ACTION).putExtra(SpeedReadActivity.INTENT_EXTRA, mCallback.getTextSelected(true)));
       }
     }
 

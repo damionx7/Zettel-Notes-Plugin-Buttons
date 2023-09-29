@@ -36,7 +36,7 @@ public class Button
       if (mCallback != null) {
         mCallback.setActivityResultListener(mActivityResultListener);
         mCallback.startActivityForResult(
-            new Intent(INTENT_ACTION_TEXT_UTILS).putExtra(TextUtilsActivity.INTENT_EXTRA_TEXT_SELECTED, mCallback.getTextSelected()));
+            new Intent(INTENT_ACTION_TEXT_UTILS).putExtra(TextUtilsActivity.INTENT_EXTRA_TEXT_SELECTED, mCallback.getTextSelected(false)));
       }
     }
 

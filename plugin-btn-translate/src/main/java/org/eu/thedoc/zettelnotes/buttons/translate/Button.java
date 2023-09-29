@@ -3,7 +3,6 @@ package org.eu.thedoc.zettelnotes.buttons.translate;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
-
 import org.eu.thedoc.zettelnotes.interfaces.ButtonInterface;
 
 public class Button extends ButtonInterface {
@@ -36,7 +35,8 @@ public class Button extends ButtonInterface {
       Log.v("Button", "onClick");
       if (mCallback != null) {
         mCallback.setActivityResultListener(mActivityResultListener);
-        mCallback.startActivityForResult(new Intent(INTENT_ACTION_TRANSLATE).putExtra(TranslateActivity.INTENT_EXTRA_TEXT_SELECTED, mCallback.getTextSelected()));
+        mCallback.startActivityForResult(
+            new Intent(INTENT_ACTION_TRANSLATE).putExtra(TranslateActivity.INTENT_EXTRA_TEXT_SELECTED, mCallback.getTextSelected(true)));
       }
     }
 

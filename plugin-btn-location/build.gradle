@@ -1,4 +1,4 @@
-versionMajor = 8
+versionMajor = 9
 packageName = "org.eu.thedoc.zettelnotes.buttons.location"
 
 dependencies {

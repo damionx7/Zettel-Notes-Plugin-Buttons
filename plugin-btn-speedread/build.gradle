@@ -1,4 +1,4 @@
-versionMajor = 1
+versionMajor = 2
 packageName = "org.eu.thedoc.zettelnotes.buttons.speedread"
 
 dependencies {
