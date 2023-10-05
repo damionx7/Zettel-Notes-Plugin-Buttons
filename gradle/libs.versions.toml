@@ -1,6 +1,6 @@
 [versions]
 #base api version
-api = '1.0.9'
+api = '1.0.10'
 
 [libraries]
 api = { module = "com.github.damionx7:Zettel-Notes-Plugin-Api", version.ref = "api" }

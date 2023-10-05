@@ -11,7 +11,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven { url "https://repo.eclipse.org/content/repositories/paho-releases/" }
         maven { url "https://jitpack.io" }
     }
 }
@@ -24,3 +23,4 @@ include ':plugin-btn-speech2text'
 include ':plugin-btn-translate'
 include ':plugin-btn-speedread'
 include ':plugin-btn-chat-ai'
+include ':plugin-alarm'
