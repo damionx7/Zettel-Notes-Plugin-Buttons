@@ -2,8 +2,6 @@ package org.eu.thedoc.zettelnotes.buttons.textutils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class TextUtilsActivityTest {

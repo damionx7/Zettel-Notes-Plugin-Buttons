@@ -1,2 +1,24 @@
 versionMajor = 1
 packageName = "org.eu.thedoc.zettelnotes.plugins.alarm"
+
+apply plugin: 'kotlin-android'
+
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+}
+
+dependencies {
+    annotationProcessor libs.room.annotation.processor
+
+    implementation libs.constraintx
+    implementation libs.paging
+    implementation libs.recyclerview
+    implementation libs.bundles.room
+    implementation libs.gson
+}
