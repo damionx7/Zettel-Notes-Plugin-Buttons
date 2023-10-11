@@ -1,4 +1,4 @@
-versionMajor = 6
+versionMajor = 7
 packageName = "org.eu.thedoc.zettelnotes.buttons.translate"
 
 dependencies {

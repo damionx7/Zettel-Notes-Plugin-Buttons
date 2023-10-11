@@ -61,6 +61,8 @@ subprojects {
             signingConfig signingConfigs.config
             vectorDrawables.useSupportLibrary = true
             testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+            buildConfigField("String", "OPENAI_API_KEY", "${properties.getProperty("openai-api-key")}")
         }
 
         buildTypes {

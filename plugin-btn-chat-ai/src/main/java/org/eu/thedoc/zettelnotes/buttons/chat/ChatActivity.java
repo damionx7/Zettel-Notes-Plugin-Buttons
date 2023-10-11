@@ -102,7 +102,7 @@ public class ChatActivity
     client.writeTimeout(30, TimeUnit.SECONDS);
     client.connectTimeout(30, TimeUnit.SECONDS);
     if (apiKey.isEmpty()) {
-      apiKey = "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";
+      apiKey = BuildConfig.OPENAI_API_KEY;
       showToast("Using demo api key. This can stop working anytime. Please set your Open AI Api key in settings.");
       Log.w("ChatActivity", "Using demo api key");
     }

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationCompat.Action;
 import com.google.gson.Gson;
 import org.eu.thedoc.zettelnotes.broadcasts.AbstractPluginReceiver;
 import org.eu.thedoc.zettelnotes.plugins.alarm.BuildConfig;
@@ -58,19 +57,19 @@ public class AlarmReceiver
       notification.setContentIntent(pendingViewerIntent);
 
       //show tick task notification button
-      String replacement = null;
-      if (model.getText().startsWith("- [ ]")) {
-        replacement = "- [x]";
-      } else if (model.getText().startsWith("- [x]")) {
-        replacement = "- [ ]";
-      }
-      if (replacement != null) {
-        intentBuilder.setActionOpenAndReplace(replacement + model.getText().substring(5));
-        Intent tickTask = intentBuilder.build();
-        PendingIntent tickPendingIntent = PendingIntent.getActivity(context, model.getId(), tickTask,
-            PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        notification.addAction(new Action(R.drawable.ic_notification_check, "Toggle CheckBox", tickPendingIntent));
-      }
+      //String replacement = null;
+      //if (model.getText().startsWith("- [ ]")) {
+      //  replacement = "- [x]";
+      //} else if (model.getText().startsWith("- [x]")) {
+      //  replacement = "- [ ]";
+      //}
+      //if (replacement != null) {
+      //  intentBuilder.setActionOpenAndReplace(replacement + model.getText().substring(5));
+      //  Intent tickTask = intentBuilder.build();
+      //  PendingIntent tickPendingIntent = PendingIntent.getActivity(context, model.getId(), tickTask,
+      //      PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+      //  notification.addAction(new Action(R.drawable.ic_notification_check, "Toggle CheckBox", tickPendingIntent));
+      //}
 
       mNotificationHelper.showNotification(getNotificationChannelID(), getNotificationChannelName(), model.getId(), notification.build());
 
