@@ -17,8 +17,9 @@ dependencies {
     annotationProcessor libs.room.annotation.processor
 
     implementation libs.constraintx
-    implementation libs.paging
+    implementation libs.cardviewx
+    implementation libs.gson
     implementation libs.recyclerview
     implementation libs.bundles.room
-    implementation libs.gson
+    implementation libs.paging
 }

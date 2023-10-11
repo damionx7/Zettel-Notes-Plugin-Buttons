@@ -21,16 +21,17 @@ public interface AlarmModelDao {
   @Delete
   int delete(AlarmModel model);
 
-  @Query("DELETE FROM alarmmodel WHERE category = :category AND file = :file")
-  int delete(String category, String file);
+  @Query("DELETE FROM alarmmodel WHERE category = :category AND fileUri = :fileUri")
+  int delete(String category, String fileUri);
 
   @Delete
   int deleteAllModels(List<AlarmModel> models);
 
-  @Query("SELECT * from alarmmodel WHERE category = :category AND file = :file ORDER BY id LIMIT 1")
-  AlarmModel getByName(String category, String file);
+  @Transaction
+  @Query("SELECT * FROM alarmmodel ORDER BY calendar DESC")
+  PagingSource<Integer, AlarmModel> getAllViaPaging();
 
   @Transaction
-  @Query("SELECT * FROM alarmmodel ORDER BY id")
-  PagingSource<Integer, AlarmModel> getAllViaPaging();
+  @Query("SELECT * FROM alarmmodel WHERE id IN (:indexes) AND calendar >= :after")
+  List<AlarmModel> getAll(List<Long> indexes, long after);
 }

@@ -4,7 +4,7 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 
-@Database(entities = {AlarmModel.class}, version = 1)
+@Database(entities = {AlarmModel.class}, version = 4)
 public abstract class AppDatabase
     extends RoomDatabase {
 

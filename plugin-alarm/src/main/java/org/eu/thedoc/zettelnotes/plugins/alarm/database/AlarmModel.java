@@ -4,24 +4,43 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Objects;
 
+@TypeConverters(TypeConverter.class)
 @Entity(indices = {@Index(value = {"id"}, unique = true)})
 public class AlarmModel {
 
   @PrimaryKey(autoGenerate = true)
   private int id;
   private String text;
-  @TypeConverters(DateConverter.class)
   private Calendar calendar;
   private String recurrence;
   private String category;
-  private String file;
+  private String fileTitle;
+  private String fileUri;
+  private int[] indexes;
+
+  public String getFileTitle() {
+    return fileTitle;
+  }
+
+  public void setFileTitle(String fileTitle) {
+    this.fileTitle = fileTitle;
+  }
+
+  public String getFileUri() {
+    return fileUri;
+  }
+
+  public void setFileUri(String fileUri) {
+    this.fileUri = fileUri;
+  }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, text, calendar, category, file, recurrence);
+    return Objects.hash(id, text, calendar, category, fileTitle, fileUri, recurrence, indexes);
   }
 
   @Override
@@ -33,8 +52,9 @@ public class AlarmModel {
       return false;
     }
     AlarmModel that = (AlarmModel) o;
-    return id == that.id && Objects.equals(text, that.text) && Objects.equals(calendar, that.calendar) && Objects.equals(category,
-        that.category) && Objects.equals(file, that.file) && Objects.equals(recurrence, that.recurrence);
+    return Objects.equals(text, that.text) && Objects.equals(calendar, that.calendar) && Objects.equals(category,
+        that.category) && Objects.equals(fileTitle, that.fileTitle) && Objects.equals(fileUri, that.fileUri) && Objects.equals(recurrence,
+        that.recurrence) && Arrays.equals(indexes, that.indexes);
   }
 
   public int getId() {
@@ -69,19 +89,19 @@ public class AlarmModel {
     this.category = category;
   }
 
-  public String getFile() {
-    return file;
-  }
-
-  public void setFile(String file) {
-    this.file = file;
-  }
-
   public String getRecurrence() {
     return recurrence;
   }
 
   public void setRecurrence(String recurrence) {
     this.recurrence = recurrence;
+  }
+
+  public int[] getIndexes() {
+    return indexes;
+  }
+
+  public void setIndexes(int[] indexes) {
+    this.indexes = indexes;
   }
 }

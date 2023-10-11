@@ -1,4 +1,4 @@
-package org.eu.thedoc.zettelnotes.plugins.alarm;
+package org.eu.thedoc.zettelnotes.plugins.alarm.screens;
 
 import android.app.Notification;
 import android.app.Service;
@@ -12,26 +12,32 @@ import androidx.core.content.ContextCompat;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.List;
+import org.eu.thedoc.zettelnotes.plugins.alarm.BuildConfig;
+import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
-import org.eu.thedoc.zettelnotes.plugins.alarm.database.AppDatabaseClient;
+import org.eu.thedoc.zettelnotes.plugins.alarm.database.DatabaseRepository;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.NotificationHelper;
 
 public class DatabaseService
     extends Service {
 
   public static final String ARGS_MODEL = "args-model";
+  public static final String ARGS_CATEGORY = "args-category";
+
   public static final String PACKAGE_NAME = BuildConfig.APPLICATION_ID;
-  private static final String QUERY_INTENT = "org.eu.thedoc.zettelnotes.intent.scan.broadcast";
+  private static final String QUERY_INTENT = "org.eu.thedoc.zettelnotes.broadcast.plugins.scan.alarm";
 
   private boolean isStarted = false;
-  private AppDatabaseClient mClient;
-  private NotificationUtils mNotificationUtils;
+
+  private NotificationHelper mNotificationHelper;
+  private DatabaseRepository mRepository;
 
   public static void stopService(Context context) {
     Intent intent = new Intent(context, DatabaseService.class);
     context.stopService(intent);
   }
 
-  public static void startService(Context context, List<AlarmModel> models) {
+  public static void startService(Context context, String category, String fileTitle, String fileUri, List<AlarmModel> models) {
     Intent intent = new Intent(QUERY_INTENT);
     intent.setComponent(new ComponentName(DatabaseService.PACKAGE_NAME, DatabaseService.class.getName()));
     intent.putExtra(ARGS_MODEL, new Gson().toJson(models));
@@ -42,21 +48,15 @@ public class DatabaseService
     ContextCompat.getMainExecutor(context).execute(() -> Toast.makeText(context, text, Toast.LENGTH_SHORT).show());
   }
 
-  private void addToDatabase(Context context, AlarmModel model) {
-    //delete previous alarms
-    mClient.getAppDatabase().mAlarmModelDao().delete(model.getCategory(), model.getFile());
-    //add new alarms
-    mClient.getAppDatabase().mAlarmModelDao().insert(model);
-  }
 
   @Override
   public void onCreate() {
     super.onCreate();
     Log.v("Alarm::DatabaseService", "onCreate");
 
-    mClient = AppDatabaseClient.getInstance(getApplicationContext());
-    mNotificationUtils = new NotificationUtils(getApplicationContext());
-    mNotificationUtils.createNotificationChannel(getNotificationChannelID(), getNotificationChannelName());
+    mNotificationHelper = new NotificationHelper(getApplicationContext());
+    mRepository = new DatabaseRepository(getApplicationContext());
+    mNotificationHelper.createNotificationChannel(getNotificationChannelID(), getNotificationChannelName());
   }
 
   @Override
@@ -83,7 +83,7 @@ public class DatabaseService
   }
 
   private void makeForeground() {
-    Notification notification = mNotificationUtils.buildNotification(getNotificationChannelID(), getNotificationTitle(), "", "",
+    Notification notification = mNotificationHelper.buildNotification(getNotificationChannelID(), getNotificationTitle(), "", "",
         getNotificationTitle(), getNotificationIcon(), true).build();
     startForeground(getNotificationID(), notification);
   }
@@ -97,19 +97,21 @@ public class DatabaseService
   }
 
   private String getNotificationTitle() {
-    return "Alarm!";
+    return "Adding alarms";
   }
 
   private String getNotificationChannelID() {
-    return "scan_plugin_alarm";
+    return "channel_scan";
   }
 
   private void processAction(Intent intent) {
     Log.v("Alarm::DatabaseService", "processAction");
     String json = intent.getStringExtra(ARGS_MODEL);
+
     if (json != null && !json.isEmpty()) {
       List<AlarmModel> models = new Gson().fromJson(json, new TypeToken<List<AlarmModel>>() {}.getType());
-
+      //add in repository
+      mRepository.addAll(models);
     }
   }
 

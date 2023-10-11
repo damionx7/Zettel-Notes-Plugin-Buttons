@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="org.eu.thedoc.zettelnotes.permission.broadcast" />
 
     <application
        android:allowBackup="true"
@@ -13,7 +15,7 @@
        android:theme="@style/Theme.ZettelNotes">
 
         <activity
-           android:name=".LauncherActivity"
+           android:name=".screens.MainActivity"
            android:theme="@style/Theme.ZettelNotes"
            android:exported="true">
             <intent-filter>
@@ -21,19 +23,26 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
+                <action android:name="org.eu.thedoc.zettelnotes.intent.buttons" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
 
-
         <service
-           android:name=".DatabaseService"
+           android:name=".screens.DatabaseService"
            android:exported="true">
             <intent-filter>
-                <action android:name="org.eu.thedoc.zettelnotes.intent.scan.broadcast" />
+                <action android:name="org.eu.thedoc.zettelnotes.broadcast.plugins.scan.alarm" />
             </intent-filter>
         </service>
+
+        <receiver
+           android:name=".screens.AlarmReceiver"
+           android:exported="false" />
 
     </application>
 

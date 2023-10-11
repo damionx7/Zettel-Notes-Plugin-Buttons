@@ -50,7 +50,7 @@ public class Button
 
   @Override
   public String getName() {
-    return "Chat GPT";
+    return "AI Chat";
   }
 
   @Override

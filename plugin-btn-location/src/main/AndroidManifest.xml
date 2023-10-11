@@ -11,16 +11,17 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true">
 
-        <activity android:name=".LauncherActivity"
-            android:theme="@style/Theme.ZettelNotes"
-            android:exported="true">
+        <activity
+           android:name=".MainActivity"
+           android:theme="@style/Theme.ZettelNotes"
+           android:exported="true">
             <intent-filter>
                 <action android:name="org.eu.thedoc.zettelnotes.intent.buttons" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
 

@@ -26,7 +26,7 @@ public class Button extends ButtonInterface {
 
   @Override
   public String getName () {
-    return "Smile!";
+    return "Donation";
   }
 
   @Override

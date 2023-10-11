@@ -1,5 +1,6 @@
-package org.eu.thedoc.zettelnotes.plugins.alarm;
+package org.eu.thedoc.zettelnotes.plugins.alarm.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,13 +10,15 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 
-public class NotificationUtils {
+@SuppressLint("MissingPermission")
+public class NotificationHelper {
 
   private final NotificationManagerCompat mNotificationManager;
   private final Context mContext;
 
-  public NotificationUtils(Context context) {
+  public NotificationHelper(Context context) {
     mNotificationManager = NotificationManagerCompat.from(context);
     mContext = context;
   }
@@ -48,6 +51,13 @@ public class NotificationUtils {
       NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
       channel.setDescription(channelName);
       mNotificationManager.createNotificationChannel(channel);
+    }
+  }
+
+  public void showNotification(String channelID, String channelName, int notificationID, Notification notification) {
+    createNotificationChannel(channelID, channelName);
+    if (mNotificationManager != null) {
+      mNotificationManager.notify(channelID, notificationID, notification);
     }
   }
 }

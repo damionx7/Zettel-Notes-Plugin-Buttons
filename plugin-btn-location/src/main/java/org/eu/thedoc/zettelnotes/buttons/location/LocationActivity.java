@@ -14,17 +14,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -56,8 +53,8 @@ public class LocationActivity extends AppCompatActivity {
     mProgressBar = findViewById(R.id.progressBar);
     mProgressBar.setIndeterminate(true);
 
-    SharedPreferences sharedPreferences = getSharedPreferences(LauncherActivity.PREFS, MODE_PRIVATE);
-    boolean enabled = sharedPreferences.getBoolean("prefs_enable",true);
+    SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.PREFS, MODE_PRIVATE);
+    boolean enabled = sharedPreferences.getBoolean("prefs_enable", true);
     if(!enabled) {
       setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Plugin disabled"));
       showToast("Error: Plugin disabled");
@@ -132,7 +129,7 @@ public class LocationActivity extends AppCompatActivity {
 
   private String computeLocationString (Location location) {
     if(location == null) return "";
-    SharedPreferences sharedPreferences = getSharedPreferences(LauncherActivity.PREFS, MODE_PRIVATE);
+    SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.PREFS, MODE_PRIVATE);
     String userFormat = sharedPreferences.getString("prefs_location_link_format", DEFAULT_LOC_STRING);
     if (userFormat.isEmpty()) userFormat = DEFAULT_LOC_STRING;
 

@@ -10,7 +10,8 @@ public class AppDatabaseClient {
   private final AppDatabase mAppDatabase;
 
   private AppDatabaseClient(Context context) {
-    mAppDatabase = Room.databaseBuilder(context, AppDatabase.class, DB_NAME).addMigrations(AppDatabase.MIGRATIONS).build();
+    mAppDatabase = Room.databaseBuilder(context, AppDatabase.class, DB_NAME).fallbackToDestructiveMigration().addMigrations(
+        AppDatabase.MIGRATIONS).build();
   }
 
   public static AppDatabaseClient getInstance(Context context) {

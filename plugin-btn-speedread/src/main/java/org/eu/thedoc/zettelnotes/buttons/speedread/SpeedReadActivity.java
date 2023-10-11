@@ -5,13 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.lifecycle.MutableLiveData;
 
 //https://github.com/syniuhin/Readily/blob/master/ui/src/main/java/com/infmme/readilyapp/ReaderFragment.java
 public class SpeedReadActivity extends AppCompatActivity {
@@ -31,7 +29,7 @@ public class SpeedReadActivity extends AppCompatActivity {
     AppCompatImageButton settingsButton = findViewById(R.id.button);
     settingsButton.setOnClickListener(v -> {
       Intent intent = new Intent();
-      intent.setClass(getApplicationContext(), LauncherActivity.class);
+      intent.setClass(getApplicationContext(), MainActivity.class);
       startActivity(intent);
     });
 
@@ -41,7 +39,7 @@ public class SpeedReadActivity extends AppCompatActivity {
   protected void onStart() {
     super.onStart();
 
-    SharedPreferences sharedPreferences = getSharedPreferences(LauncherActivity.PREFS, MODE_PRIVATE);
+    SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.PREFS, MODE_PRIVATE);
     int rate = sharedPreferences.getInt("prefs_rate", 1000);
     statusBarTextView.setText(String.format("%s ms", rate));
 
