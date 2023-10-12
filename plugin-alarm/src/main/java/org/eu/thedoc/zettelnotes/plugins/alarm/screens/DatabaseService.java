@@ -13,9 +13,9 @@ import org.eu.thedoc.zettelnotes.plugins.alarm.BuildConfig;
 import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.DatabaseRepository;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.Logger;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.NotificationHelper;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.RegexUtils;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
 
 public class DatabaseService
     extends Service {

@@ -1,7 +1,6 @@
 package org.eu.thedoc.zettelnotes.plugins.alarm.database;
 
 import android.content.Context;
-import android.util.Log;
 import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.paging.Pager;
@@ -18,7 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmUtils;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.Logger;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
 
 public class DatabaseRepository {
 
@@ -76,7 +75,7 @@ public class DatabaseRepository {
           mHashMap.remove(LOCK_KEY_DELETE);
         }
       } else {
-        Log.e("ALARM::Repository", "deleteAll already running");
+        Logger.err(getClass(), "deleteAll already running");
       }
     });
   }

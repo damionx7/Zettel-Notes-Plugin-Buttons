@@ -1,2 +1,6 @@
+plugins {
+    id 'com.android.application'
+}
+
 versionMajor = 12
 packageName = "org.eu.thedoc.zettelnotes.buttons.dummy"

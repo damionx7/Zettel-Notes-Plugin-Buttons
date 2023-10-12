@@ -15,6 +15,7 @@ import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.RecurrenceModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.AlarmReceiver;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.DatabaseService;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
 
 //https://github.com/orgzly/orgzly-android/blob/0783e64e122ec4a9595c98c99b975f3e7bbf2870/app/src/main/java/com/orgzly/android/reminders/RemindersScheduler.kt#L48
 //https://github.com/orgzly/orgzly-android/blob/20236b4626b1045c68d50d76d1b3bdfcbd90f618/app/src/main/java/com/orgzly/android/reminders/ReminderService.java

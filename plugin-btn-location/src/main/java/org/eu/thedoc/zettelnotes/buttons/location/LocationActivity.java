@@ -13,7 +13,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -25,9 +24,11 @@ import com.google.android.gms.location.LocationServices;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 //Dummy activity for intent filter
-public class LocationActivity extends AppCompatActivity {
+public class LocationActivity
+    extends AppCompatActivity {
 
   public static final String INTENT_EXTRA_LOCATION = "intent-extra-location";
   public static final String ERROR_STRING = "intent-error";
@@ -36,7 +37,7 @@ public class LocationActivity extends AppCompatActivity {
 
   private ProgressBar mProgressBar;
 
-  private String time2humanFromLastModified (Long time2convert) {
+  private String time2humanFromLastModified(Long time2convert) {
     try {
       String pattern = "dd MMM yyyy hh:mm:ss a";
       SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
@@ -47,7 +48,8 @@ public class LocationActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onCreate (@Nullable Bundle savedInstanceState) {
+  protected void onCreate(
+      @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_location);
     mProgressBar = findViewById(R.id.progressBar);
@@ -55,29 +57,31 @@ public class LocationActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.PREFS, MODE_PRIVATE);
     boolean enabled = sharedPreferences.getBoolean("prefs_enable", true);
-    if(!enabled) {
+    if (!enabled) {
       setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Plugin disabled"));
-      showToast("Error: Plugin disabled");
+      ToastsHelper.showToast(this, "Error: Plugin disabled");
       finish();
-    }else {
-      ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-        Boolean fineLocationGranted = result.getOrDefault(ACCESS_FINE_LOCATION, false);
-        Boolean coarseLocationGranted = result.getOrDefault(ACCESS_COARSE_LOCATION, false);
-        if (fineLocationGranted != null && fineLocationGranted) {
-          // Precise location access granted.
-          sendLastLocation();
-        } else if (coarseLocationGranted != null && coarseLocationGranted) {
-          // Only approximate location access granted.
-          sendLastLocation();
-        } else {
-          // No location access granted.
-          setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "No location access granted"));
-          showToast("Error: No location access granted");
-          finish();
-        }
-      });
-      if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-          ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+    } else {
+      ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
+          new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            Boolean fineLocationGranted = result.getOrDefault(ACCESS_FINE_LOCATION, false);
+            Boolean coarseLocationGranted = result.getOrDefault(ACCESS_COARSE_LOCATION, false);
+            if (fineLocationGranted != null && fineLocationGranted) {
+              // Precise location access granted.
+              sendLastLocation();
+            } else if (coarseLocationGranted != null && coarseLocationGranted) {
+              // Only approximate location access granted.
+              sendLastLocation();
+            } else {
+              // No location access granted.
+              setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "No location access granted"));
+              ToastsHelper.showToast(this, "Error: No location access granted");
+              finish();
+            }
+          });
+      if (ActivityCompat.checkSelfPermission(this,
+          ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+          ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
         sendLastLocation();
       } else {
         locationPermissionRequest.launch(new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION});
@@ -86,13 +90,15 @@ public class LocationActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onStop () {
+  protected void onStop() {
     super.onStop();
-    if(mProgressBar != null) mProgressBar.setVisibility(View.GONE);
+    if (mProgressBar != null) {
+      mProgressBar.setVisibility(View.GONE);
+    }
   }
 
   @SuppressLint("MissingPermission")
-  private void sendLastLocation () {
+  private void sendLastLocation() {
     FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
       // Got last known location. In some rare situations this can be null.
@@ -100,9 +106,9 @@ public class LocationActivity extends AppCompatActivity {
         setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_LOCATION, computeLocationString(location)));
         finish();
       } else {
-        if(!isLocationEnabled()) {
+        if (!isLocationEnabled()) {
           setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Location disabled"));
-          showToast("Error: Location disabled");
+          ToastsHelper.showToast(this, "Error: Location disabled");
           finish();
         } else {
           mProgressBar.setVisibility(View.VISIBLE);
@@ -118,20 +124,30 @@ public class LocationActivity extends AppCompatActivity {
     });
   }
 
-  private boolean isLocationEnabled () {
+  private boolean isLocationEnabled() {
     //exceptions will be thrown if provider is not permitted.
     var locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     boolean gps_enabled = false, network_enabled = false;
-    try{ gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);}catch(Exception ignored){}
-    try{ network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);}catch(Exception ignored){}
+    try {
+      gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    } catch (Exception ignored) {
+    }
+    try {
+      network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    } catch (Exception ignored) {
+    }
     return gps_enabled && network_enabled;
   }
 
-  private String computeLocationString (Location location) {
-    if(location == null) return "";
+  private String computeLocationString(Location location) {
+    if (location == null) {
+      return "";
+    }
     SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.PREFS, MODE_PRIVATE);
     String userFormat = sharedPreferences.getString("prefs_location_link_format", DEFAULT_LOC_STRING);
-    if (userFormat.isEmpty()) userFormat = DEFAULT_LOC_STRING;
+    if (userFormat.isEmpty()) {
+      userFormat = DEFAULT_LOC_STRING;
+    }
 
     String locTime = time2humanFromLastModified(location.getTime());
     String longitude = String.valueOf(location.getLongitude());
@@ -139,18 +155,14 @@ public class LocationActivity extends AppCompatActivity {
     String accuracy = String.valueOf(location.getAccuracy());
     String altitude = String.valueOf(location.getAltitude());
     String speed = String.valueOf(location.getSpeed());
-    userFormat = userFormat.replaceAll("\\$loctime\\$", locTime)
-                           .replaceAll("\\$long\\$", longitude)
-                           .replaceAll("\\$lat\\$", latitude)
-                           .replaceAll("\\$acc\\$", accuracy)
-                           .replaceAll("\\$alt\\$", altitude)
-                           .replaceAll("\\$speed\\$", speed);
+    userFormat = userFormat
+        .replaceAll("\\$loctime\\$", locTime)
+        .replaceAll("\\$long\\$", longitude)
+        .replaceAll("\\$lat\\$", latitude)
+        .replaceAll("\\$acc\\$", accuracy)
+        .replaceAll("\\$alt\\$", altitude)
+        .replaceAll("\\$speed\\$", speed);
     return userFormat;
   }
-
-  private void showToast (String text) {
-    if (!text.isEmpty()) Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-  }
-
 
 }

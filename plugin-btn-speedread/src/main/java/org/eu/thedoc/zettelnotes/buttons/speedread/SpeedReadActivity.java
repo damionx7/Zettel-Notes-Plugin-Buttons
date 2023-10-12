@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -57,13 +56,6 @@ public class SpeedReadActivity extends AppCompatActivity {
     super.onStop();
     //remove handler callbacks
     mHandler.removeMessages(0);
-  }
-
-  private void showToast(String text) {
-    if (text.isBlank()) {
-      return;
-    }
-    Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
   }
 
 }

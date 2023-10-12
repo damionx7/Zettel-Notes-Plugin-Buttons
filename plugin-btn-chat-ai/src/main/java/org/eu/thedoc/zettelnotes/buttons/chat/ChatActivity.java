@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import org.eu.thedoc.zettelnotes.buttons.chat.CustomTextView.Listener;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class ChatActivity
     extends AppCompatActivity
@@ -32,10 +32,8 @@ public class ChatActivity
   public static final String INTENT_EXTRA_TEXT_SELECTED = "intent-extra-text-selected";
   public static final String INTENT_EXTRA_REPLACE_TEXT = "intent-extra-text-replace";
   public static final String INTENT_EXTRA_INSERT_TEXT = "intent-extra-insert-text";
-
-  private OpenAI openai;
-
   private final List<ChatMessage> mChatMessages = new ArrayList<>();
+  private OpenAI openai;
   private MessageAdapter mMessageAdapter;
 
   private ImageButton sendButton;
@@ -103,7 +101,7 @@ public class ChatActivity
     client.connectTimeout(30, TimeUnit.SECONDS);
     if (apiKey.isEmpty()) {
       apiKey = BuildConfig.OPENAI_API_KEY;
-      showToast("Using demo api key. This can stop working anytime. Please set your Open AI Api key in settings.");
+      ToastsHelper.showToast(this, "Using demo api key. This can stop working anytime. Please set your Open AI Api key in settings.");
       Log.w("ChatActivity", "Using demo api key");
     }
 
@@ -148,7 +146,7 @@ public class ChatActivity
     openai.streamChatCompletionAsync(request, chatResponse -> {
       String response = chatResponse.get(0).getDelta();
       stringBuilder.append(response);
-      //Log.v("DELTA: ", response);
+      //Logger.verbose(getClass(), "DELTA " + response);
       runOnUiThread(() -> {
         mMessageAdapter.updateItem(pos, ChatMessage.toAssistantMessage(stringBuilder.toString()));
         if (chatResponse.get(0).getFinishReason() != null) {
@@ -159,7 +157,7 @@ public class ChatActivity
     }, openAIError -> {
       if (openAIError != null) {
         Log.e("ERROR", openAIError.toString());
-        showToast(openAIError.toString());
+        ToastsHelper.showToast(this, openAIError.toString());
       }
       sendButton.setEnabled(true);
     });
@@ -177,24 +175,16 @@ public class ChatActivity
     finish();
   }
 
-  private void showToast(String text) {
-    runOnUiThread(() -> {
-      if (!text.isEmpty()) {
-        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-      }
-    });
-  }
-
   @Override
   public void onMenuItemInsertClick(String text) {
-    showToast(text);
+    ToastsHelper.showToast(this, text);
     setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT, text));
     finish();
   }
 
   @Override
   public void onMenuItemReplaceClick(String text) {
-    showToast(text);
+    ToastsHelper.showToast(this, text);
     setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, text));
     finish();
   }

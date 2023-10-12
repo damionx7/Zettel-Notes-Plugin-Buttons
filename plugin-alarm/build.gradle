@@ -1,7 +1,10 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
 versionMajor = 2
 packageName = "org.eu.thedoc.zettelnotes.plugins.alarm"
-
-apply plugin: 'kotlin-android'
 
 android {
     defaultConfig {

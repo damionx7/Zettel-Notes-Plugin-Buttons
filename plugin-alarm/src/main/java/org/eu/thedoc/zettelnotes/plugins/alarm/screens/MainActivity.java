@@ -20,8 +20,8 @@ import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.DatabaseRepository;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.Adapter.Listener;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmUtils;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.Logger;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.ToastsHelper;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class MainActivity
     extends AppCompatActivity {

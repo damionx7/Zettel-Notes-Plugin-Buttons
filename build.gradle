@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application' version '8.0.2' apply false
+    id 'com.android.library' version '8.0.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
 }
 
@@ -16,79 +17,79 @@ project.ext {
 }
 
 //shared config for modules
-subprojects {
-    //default values for subprojects
+subprojects { subproject ->
+    //shared variables
     ext {
         packageName = ''
         versionMajor = 0
     }
-
-
     afterEvaluate {
-        android {
-            namespace "${project.packageName}"
-            defaultConfig {
-                applicationId "${project.packageName}"
-                versionCode project.versionMajor
-                versionName "${project.versionMajor}"
+        if (subproject.plugins.hasPlugin("com.android.application")) {
+            //default values for subprojects
+
+            subproject.android {
+                compileSdk project.targetSdk
+                namespace "${subproject.packageName}"
+
+                signingConfigs {
+                    config {
+                        keyAlias PROP_KEY_ALIAS
+                        storeFile project.keystore
+                        storePassword PROP_STORE_PASSWORD
+                        keyPassword PROP_STORE_PASSWORD
+                    }
+                }
+
+                defaultConfig {
+                    minSdk project.minSdk
+                    targetSdk project.targetSdk
+
+                    applicationId "${subproject.packageName}"
+                    versionCode subproject.versionMajor
+                    versionName "${subproject.versionMajor}"
+
+                    signingConfig signingConfigs.config
+
+                    vectorDrawables.useSupportLibrary = true
+                    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+                    buildConfigField("String", "OPENAI_API_KEY", "${properties.getProperty("openai-api-key")}")
+                }
+
+                buildTypes {
+                    debug {
+                        debuggable true
+                        minifyEnabled false
+                        signingConfig signingConfigs.config
+                    }
+                    release {
+                        signingConfig signingConfigs.config
+                        //disable proguard for plugin system to work
+                        minifyEnabled false
+                        debuggable false
+                        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    }
+                }
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+
+                    coreLibraryDesugaringEnabled true
+                }
+
+                testOptions {
+                    unitTests.all {
+                        useJUnitPlatform()
+                    }
+                }
             }
-        }
-    }
 
-    apply plugin: 'com.android.application'
+            subproject.dependencies {
+                implementation libs.api
+                implementation project(path: ':base')
 
-    dependencies {
-        implementation libs.api
-        coreLibraryDesugaring libs.desugar
-        testImplementation libs.bundles.junit
-    }
-
-    android {
-        compileSdk project.targetSdk
-
-        signingConfigs {
-            config {
-                keyAlias PROP_KEY_ALIAS
-                storeFile project.keystore
-                storePassword PROP_STORE_PASSWORD
-                keyPassword PROP_STORE_PASSWORD
-            }
-        }
-
-        defaultConfig {
-            minSdk project.minSdk
-            targetSdk project.targetSdk
-            signingConfig signingConfigs.config
-            vectorDrawables.useSupportLibrary = true
-            testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-            buildConfigField("String", "OPENAI_API_KEY", "${properties.getProperty("openai-api-key")}")
-        }
-
-        buildTypes {
-            debug {
-                debuggable true
-                minifyEnabled false
-                signingConfig signingConfigs.config
-            }
-            release {
-                signingConfig signingConfigs.config
-                //disable proguard for plugin system to work
-                minifyEnabled false
-                debuggable false
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            }
-        }
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_17
-            targetCompatibility JavaVersion.VERSION_17
-
-            coreLibraryDesugaringEnabled true
-        }
-
-        testOptions {
-            unitTests.all {
-                useJUnitPlatform()
+                coreLibraryDesugaring libs.desugar
+                testImplementation libs.bundles.junit
             }
         }
     }

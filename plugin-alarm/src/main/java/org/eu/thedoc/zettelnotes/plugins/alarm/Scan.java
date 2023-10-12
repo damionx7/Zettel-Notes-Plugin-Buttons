@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eu.thedoc.zettelnotes.interfaces.ScanInterface;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.DatabaseService;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.Logger;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.RegexUtils;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
 
 public class Scan
     extends ScanInterface {

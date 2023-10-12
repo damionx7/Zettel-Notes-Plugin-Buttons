@@ -9,16 +9,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
-public class ProcessTextActivity extends AppCompatActivity {
+public class ProcessTextActivity
+    extends AppCompatActivity {
 
   private static final String CONTENT_STRING = "args-content";
 
@@ -26,63 +26,72 @@ public class ProcessTextActivity extends AppCompatActivity {
 
   private ActivityResultLauncher<Intent> mIntentActivityResult;
 
-  public void copyToClipboard (Context context, String text) {
+  public void copyToClipboard(Context context, String text) {
     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
     if (clipboard != null) {
       ClipData clip = ClipData.newPlainText("text-clip", text);
       clipboard.setPrimaryClip(clip);
-      showToast("Copied translation to clipboard");
+      ToastsHelper.showToast(this, "Copied translation to clipboard");
     }
   }
 
   @RequiresApi(api = Build.VERSION_CODES.M)
   @Override
-  protected void onCreate (Bundle savedInstanceState) {
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mIntentActivityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
       if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
         String txtToReplace = result.getData().getStringExtra(TranslateActivity.INTENT_EXTRA_REPLACE_TEXT);
         String txtToInsert = result.getData().getStringExtra(TranslateActivity.INTENT_EXTRA_INSERT_TEXT);
-        Log.v("Ok", "Got text");
-        if(!txtToReplace.isEmpty()) copyToClipboard(getApplicationContext(), txtToReplace);
-        else if(!txtToInsert.isEmpty()) copyToClipboard(getApplicationContext(), txtToInsert);
+        Logger.verbose(getClass(), "Got text");
+        if (!txtToReplace.isEmpty()) {
+          copyToClipboard(getApplicationContext(), txtToReplace);
+        } else if (!txtToInsert.isEmpty()) {
+          copyToClipboard(getApplicationContext(), txtToInsert);
+        }
       } else {
         if (result.getData() != null) {
           String error = result.getData().getStringExtra(TranslateActivity.ERROR_STRING);
-          showToast("Error " + error);
+          ToastsHelper.showToast(this, "Error " + error);
         }
       }
       finish();
     });
-    if (savedInstanceState == null) processIntent();
+    if (savedInstanceState == null) {
+      processIntent();
+    }
   }
 
   @RequiresApi(api = Build.VERSION_CODES.M)
   @Override
-  protected void onNewIntent (Intent intent) {
+  protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     setIntent(intent);
     processIntent();
   }
 
   @Override
-  protected void onSaveInstanceState (@NonNull Bundle outState) {
+  protected void onSaveInstanceState(
+      @NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putString(CONTENT_STRING, text);
   }
 
   @Override
-  protected void onRestoreInstanceState (@NonNull Bundle savedInstanceState) {
+  protected void onRestoreInstanceState(
+      @NonNull Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
-    if (savedInstanceState.containsKey(CONTENT_STRING)) text = savedInstanceState.getString(CONTENT_STRING);
+    if (savedInstanceState.containsKey(CONTENT_STRING)) {
+      text = savedInstanceState.getString(CONTENT_STRING);
+    }
   }
 
   @RequiresApi(api = Build.VERSION_CODES.M)
-  private void processIntent () {
+  private void processIntent() {
     Intent intent = getIntent();
     if (intent == null) {
-      showToast("Intent null.");
-      Log.e("Process Text", "intent null. aborting...");
+      ToastsHelper.showToast(this, "Intent null.");
+      Logger.err(getClass(), "intent null. aborting...");
       finish();
       return;
     }
@@ -93,7 +102,4 @@ public class ProcessTextActivity extends AppCompatActivity {
     //finish();
   }
 
-  private void showToast (String text) {
-    if (!text.isEmpty()) Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-  }
 }

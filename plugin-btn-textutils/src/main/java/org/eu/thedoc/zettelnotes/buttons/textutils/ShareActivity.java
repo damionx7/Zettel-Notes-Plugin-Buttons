@@ -9,19 +9,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
-public class ShareActivity extends AppCompatActivity {
+public class ShareActivity
+    extends AppCompatActivity {
 
   @RequiresApi(api = VERSION_CODES.M)
   @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
+  protected void onCreate(
+      @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     String text = getIntent().getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString();
 
@@ -30,7 +32,7 @@ public class ShareActivity extends AppCompatActivity {
           if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
             String txtToReplace = result.getData().getStringExtra(TextUtilsActivity.INTENT_EXTRA_REPLACE_TEXT);
             String txtToInsert = result.getData().getStringExtra(TextUtilsActivity.INTENT_EXTRA_INSERT_TEXT);
-            Log.v("Ok", "Got text");
+            Logger.verbose(getClass(), "Got text");
 
             String textToCopy = "";
             if (txtToReplace != null && !txtToReplace.isEmpty()) {
@@ -44,12 +46,12 @@ public class ShareActivity extends AppCompatActivity {
               ClipData clip = ClipData.newPlainText("zn-text-utils", textToCopy);
               clipboard.setPrimaryClip(clip);
 
-              showToast("Copied to clipboard");
+              ToastsHelper.showToast(this, "Copied to clipboard");
             }
           } else {
             if (result.getData() != null) {
               String error = result.getData().getStringExtra(TextUtilsActivity.ERROR_STRING);
-              Log.e("Error: ", error);
+              Logger.err(getClass(), error);
             }
           }
           finish();
@@ -58,9 +60,4 @@ public class ShareActivity extends AppCompatActivity {
     activityResultLauncher.launch(new Intent(INTENT_ACTION_TEXT_UTILS).putExtra(TextUtilsActivity.INTENT_EXTRA_TEXT_SELECTED, text));
   }
 
-  private void showToast(String text) {
-    if (!text.isEmpty()) {
-      Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-    }
-  }
 }

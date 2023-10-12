@@ -2,7 +2,6 @@ package org.eu.thedoc.zettelnotes.buttons.textutils;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,8 +11,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import org.apache.commons.text.WordUtils;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
-public class TextUtilsActivity extends AppCompatActivity {
+public class TextUtilsActivity
+    extends AppCompatActivity {
 
   public static final String INTENT_EXTRA_TEXT_SELECTED = "intent-extra-text-selected";
   public static final String INTENT_EXTRA_REPLACE_TEXT = "intent-extra-text-replace";
@@ -78,7 +79,8 @@ public class TextUtilsActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
+  protected void onCreate(
+      @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     String[] formatOptions = {"Remove newlines", "Split to newlines", "Uppercase", "Lowercase", "Title Case", "Swap Case",
@@ -89,24 +91,17 @@ public class TextUtilsActivity extends AppCompatActivity {
 
       if (txtSelected == null || txtSelected.isEmpty()) {
         switch (which) {
-          case 8 -> setResult(RESULT_OK,
-              new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
-                  CalendarUtils.getMonthTable(Calendar.getInstance().get(Calendar.YEAR),
-                      Calendar.getInstance().get(Calendar.MONTH),
-                      false)));
-          case 9 -> setResult(RESULT_OK,
-              new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
-                  CalendarUtils.getMonthTable(Calendar.getInstance().get(Calendar.YEAR),
-                      Calendar.getInstance().get(Calendar.MONTH),
-                      true)));
-          case 10 -> setResult(RESULT_OK,
-              new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
-                  CalendarUtils.getYearTable(Calendar.getInstance().get(Calendar.YEAR), false)));
+          case 8 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
+              CalendarUtils.getMonthTable(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), false)));
+          case 9 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
+              CalendarUtils.getMonthTable(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), true)));
+          case 10 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
+              CalendarUtils.getYearTable(Calendar.getInstance().get(Calendar.YEAR), false)));
           case 11 -> setResult(RESULT_OK,
               new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT, CalendarUtils.getYearTable(Calendar.getInstance().get(Calendar.YEAR), true)));
           default -> {
             setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Select some text"));
-            showToast("Select some text");
+            ToastsHelper.showToast(this, "Select some text");
           }
         }
       } else {
@@ -133,12 +128,6 @@ public class TextUtilsActivity extends AppCompatActivity {
 
   private String addNewLines(String selectedText) {
     return selectedText.replaceAll("\\s+", "\n");
-  }
-
-  private void showToast(String text) {
-    if (!text.isEmpty()) {
-      Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-    }
   }
 
 }

@@ -1,3 +1,7 @@
+plugins {
+    id 'com.android.application'
+}
+
 packageName = "org.eu.thedoc.zettelnotes.buttons.chat"
 versionMajor = 3
 

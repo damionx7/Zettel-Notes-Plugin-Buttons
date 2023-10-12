@@ -1,6 +1,5 @@
 package org.eu.thedoc.zettelnotes.plugins.alarm.utils;
 
-import android.util.Log;
 import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.regex.Pattern;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.RecurrenceModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.RecurrenceModel.COOKIE;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
 
 public class RegexUtils {
 
@@ -56,10 +56,10 @@ public class RegexUtils {
       //calendar
       String calendar = matcher.group(1);
       try {
-        //Log.e("ALARM::regex::calendar", calendar);
+        //Logger.err("ALARM::regex::calendar", calendar);
         model.setCalendar(DateTimeUtils.getCalendar(calendar));
       } catch (Exception e) {
-        Log.e("ALARM::regex", e.toString());
+        Logger.err(e.getClass(), e.toString());
         continue;
       }
       //recurrence if set

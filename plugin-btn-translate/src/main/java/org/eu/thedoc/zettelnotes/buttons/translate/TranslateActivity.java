@@ -10,12 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.mlkit.nl.languageid.LanguageIdentification;
 import com.google.mlkit.nl.languageid.LanguageIdentifier;
@@ -23,15 +20,17 @@ import com.google.mlkit.nl.translate.TranslateLanguage;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
-public class TranslateActivity extends AppCompatActivity implements OnFailureListener {
+public class TranslateActivity
+    extends AppCompatActivity
+    implements OnFailureListener {
 
   public static final String INTENT_EXTRA_TEXT_SELECTED = "intent-extra-text-selected";
   public static final String INTENT_EXTRA_REPLACE_TEXT = "intent-extra-text-replace";
@@ -56,7 +55,8 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
   private String sourceLanguageCode, targetLanguageCode;
 
   @Override
-  protected void onCreate (@Nullable Bundle savedInstanceState) {
+  protected void onCreate(
+      @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity);
     mPrefs = getSharedPreferences(PREFS, MODE_PRIVATE);
@@ -73,7 +73,7 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
 
     String txtSelected = getIntent().getStringExtra(INTENT_EXTRA_TEXT_SELECTED);
     if (txtSelected == null || txtSelected.isEmpty()) {
-      showToast("Select some text");
+      ToastsHelper.showToast(this, "Select some text");
       setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Select some text"));
       finish();
     } else {
@@ -91,13 +91,13 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
       sSource.setAdapter(sourceAdapter);
       sSource.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         @Override
-        public void onItemSelected (AdapterView<?> adapterView, View view, int position, long l) {
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
           String language = supportedLanguages.get(position);
           sourceLanguageCode = languageHashMap.get(language);
         }
 
         @Override
-        public void onNothingSelected (AdapterView<?> adapterView) {
+        public void onNothingSelected(AdapterView<?> adapterView) {
           //
         }
       });
@@ -105,7 +105,7 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
       sTarget.setAdapter(targetAdapter);
       sTarget.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         @Override
-        public void onItemSelected (AdapterView<?> adapterView, View view, int position, long l) {
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
           String language = supportedLanguages.get(position);
           targetLanguageCode = languageHashMap.get(language);
 
@@ -114,7 +114,7 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
         }
 
         @Override
-        public void onNothingSelected (AdapterView<?> adapterView) {
+        public void onNothingSelected(AdapterView<?> adapterView) {
           //
         }
       });
@@ -152,35 +152,43 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
   }
 
   @Override
-  public void onFailure (@NonNull Exception e) {
+  public void onFailure(
+      @NonNull Exception e) {
     mProgressBar.setVisibility(View.GONE);
-    showToast(e.toString());
+    ToastsHelper.showToast(this, e.toString());
   }
 
   @Override
-  protected void onStop () {
+  protected void onStop() {
     super.onStop();
-    if (mProgressBar != null) mProgressBar.setVisibility(View.GONE);
-    if (mTranslator != null) mTranslator.close();
+    if (mProgressBar != null) {
+      mProgressBar.setVisibility(View.GONE);
+    }
+    if (mTranslator != null) {
+      mTranslator.close();
+    }
   }
 
-  private void translate () {
+  private void translate() {
     mProgressBar.setVisibility(View.VISIBLE);
 
     String txtToTranslate = etTranslate.getText().toString();
     if (sourceLanguageCode != null && targetLanguageCode != null) {
-      TranslatorOptions options = new TranslatorOptions.Builder().setSourceLanguage(sourceLanguageCode).setTargetLanguage(targetLanguageCode).build();
+      TranslatorOptions options = new TranslatorOptions.Builder().setSourceLanguage(sourceLanguageCode).setTargetLanguage(
+          targetLanguageCode).build();
       mTranslator = Translation.getClient(options);
       getLifecycle().addObserver(mTranslator);
       mTranslator.downloadModelIfNeeded().addOnSuccessListener(unused -> mTranslator.translate(txtToTranslate).addOnSuccessListener(s -> {
         etTranslation.setText(s);
         mProgressBar.setVisibility(View.GONE);
       }).addOnFailureListener(this)).addOnFailureListener(this);
-    } else onFailure(new Exception(IDENTIFY_LANGUAGE_ERROR));
+    } else {
+      onFailure(new Exception(IDENTIFY_LANGUAGE_ERROR));
+    }
   }
 
   //HashMap<Language, Code>
-  private HashMap<String, String> populateLanguageCodes (boolean codeFirst) {
+  private HashMap<String, String> populateLanguageCodes(boolean codeFirst) {
     HashMap<String, String> hashMap = new HashMap<>();
     Field[] fields = TranslateLanguage.class.getFields();
     for (Field f : fields) {
@@ -190,8 +198,11 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
           try {
             String fieldName = f.getName();
             String fieldValue = (String) f.get(null);
-            if (codeFirst) hashMap.put(fieldValue, fieldName);
-            else hashMap.put(fieldName, fieldValue);
+            if (codeFirst) {
+              hashMap.put(fieldValue, fieldName);
+            } else {
+              hashMap.put(fieldName, fieldValue);
+            }
           } catch (IllegalAccessException e) {
             onFailure(e);
           }
@@ -201,12 +212,7 @@ public class TranslateActivity extends AppCompatActivity implements OnFailureLis
     return hashMap;
   }
 
-  private void showToast (String text) {
-    if (!text.isEmpty()) Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-  }
-
-
-  public void putString (String key, String value) {
+  public void putString(String key, String value) {
     SharedPreferences.Editor editor = mPrefs.edit();
     editor.putString(key, value);
     editor.apply();

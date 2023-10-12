@@ -1,6 +1,5 @@
 package org.eu.thedoc.zettelnotes.plugins.alarm.screens;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -12,6 +11,7 @@ import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.Adapter.Listener;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.DateTimeUtils;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
 
 public class ViewHolder
     extends RecyclerView.ViewHolder {
@@ -52,7 +52,7 @@ public class ViewHolder
       try {
         mCalendarView.setText(DateTimeUtils.fromCalendar(model.getCalendar()));
       } catch (Exception e) {
-        Log.e("ALARM::ADAPTER", e.toString());
+        Logger.err(getClass(), e.toString());
       }
     }
   }
