@@ -6,26 +6,30 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.Toast;
 import androidx.core.content.ContextCompat;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import java.util.ArrayList;
 import java.util.List;
 import org.eu.thedoc.zettelnotes.plugins.alarm.BuildConfig;
 import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.DatabaseRepository;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.Logger;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.NotificationHelper;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.RegexUtils;
 
 public class DatabaseService
     extends Service {
 
-  public static final String ARGS_MODEL = "args-model";
+  public static final String ARGS_CONTENT = "args-content";
   public static final String ARGS_CATEGORY = "args-category";
+  public static final String ARGS_FILE_URI = "args-file-uri";
+  public static final String ARGS_FILE_URIS = "args-file-uris";
+  public static final String ARGS_TITLE = "args-title";
 
   public static final String PACKAGE_NAME = BuildConfig.APPLICATION_ID;
-  private static final String QUERY_INTENT = "org.eu.thedoc.zettelnotes.broadcast.plugins.scan.alarm";
+
+  private static final String QUERY_INTENT_SCAN = "org.eu.thedoc.zettelnotes.plugins.alarm.SCAN";
+  private static final String QUERY_INTENT_DELETE_URIS = "org.eu.thedoc.zettelnotes.plugins.scan.DELETE_URIS";
 
   private boolean isStarted = false;
 
@@ -37,22 +41,28 @@ public class DatabaseService
     context.stopService(intent);
   }
 
-  public static void startService(Context context, String category, String fileTitle, String fileUri, List<AlarmModel> models) {
-    Intent intent = new Intent(QUERY_INTENT);
+  public static void startService(Context context, String category, String fileTitle, String fileUri, String text) {
+    Intent intent = new Intent(QUERY_INTENT_SCAN);
     intent.setComponent(new ComponentName(DatabaseService.PACKAGE_NAME, DatabaseService.class.getName()));
-    intent.putExtra(ARGS_MODEL, new Gson().toJson(models));
+    intent.putExtra(ARGS_CONTENT, text);
+    intent.putExtra(ARGS_CATEGORY, category);
+    intent.putExtra(ARGS_FILE_URI, fileUri);
+    intent.putExtra(ARGS_TITLE, fileTitle);
     ContextCompat.startForegroundService(context, intent);
   }
 
-  private void showToast(Context context, String text) {
-    ContextCompat.getMainExecutor(context).execute(() -> Toast.makeText(context, text, Toast.LENGTH_SHORT).show());
+  public static void startService(Context context, String category, ArrayList<String> fileUris) {
+    Intent intent = new Intent(QUERY_INTENT_DELETE_URIS);
+    intent.setComponent(new ComponentName(DatabaseService.PACKAGE_NAME, DatabaseService.class.getName()));
+    intent.putExtra(ARGS_CATEGORY, category);
+    intent.putStringArrayListExtra(ARGS_FILE_URIS, fileUris);
+    ContextCompat.startForegroundService(context, intent);
   }
-
 
   @Override
   public void onCreate() {
     super.onCreate();
-    Log.v("Alarm::DatabaseService", "onCreate");
+    Logger.verbose(getClass(), "onCreate");
 
     mNotificationHelper = new NotificationHelper(getApplicationContext());
     mRepository = new DatabaseRepository(getApplicationContext());
@@ -61,7 +71,7 @@ public class DatabaseService
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.v("Alarm::DatabaseService", "onStartCommand");
+    Logger.verbose(getClass(), "onStartCommand");
 
     if (!isStarted) {
       makeForeground();
@@ -105,13 +115,34 @@ public class DatabaseService
   }
 
   private void processAction(Intent intent) {
-    Log.v("Alarm::DatabaseService", "processAction");
-    String json = intent.getStringExtra(ARGS_MODEL);
+    Logger.verbose(getClass(), "processAction");
+    String action = intent.getAction();
+    if (action == null) {
+      return;
+    }
 
-    if (json != null && !json.isEmpty()) {
-      List<AlarmModel> models = new Gson().fromJson(json, new TypeToken<List<AlarmModel>>() {}.getType());
-      //add in repository
-      mRepository.addAll(models);
+    if (action.equals(QUERY_INTENT_SCAN)) {
+      Logger.verbose(getClass(), QUERY_INTENT_SCAN);
+      String text = intent.getStringExtra(ARGS_CONTENT);
+      String category = intent.getStringExtra(ARGS_CATEGORY);
+      String fileUri = intent.getStringExtra(ARGS_FILE_URI);
+      String fileTitle = intent.getStringExtra(ARGS_TITLE);
+
+      if (text != null && !text.isEmpty()) {
+        List<AlarmModel> models = RegexUtils.parse(category, fileTitle, fileUri, text);
+        //add in repository
+        mRepository.addAll(category, fileUri, models);
+      }
+    } else if (action.equals(QUERY_INTENT_DELETE_URIS)) {
+      Logger.verbose(getClass(), QUERY_INTENT_DELETE_URIS);
+
+      String category = intent.getStringExtra(ARGS_CATEGORY);
+      ArrayList<String> uris = intent.getStringArrayListExtra(ARGS_FILE_URIS);
+
+      if (category != null && uris != null) {
+        Logger.verbose(getClass(), "uris " + uris.size());
+        mRepository.deleteAll(category, uris);
+      }
     }
   }
 

@@ -79,4 +79,9 @@ public class RegexUtils {
     }
     return list;
   }
+
+  public static boolean matches(String text) {
+    Matcher matcher = PATTERN.matcher(text);
+    return matcher.find();
+  }
 }

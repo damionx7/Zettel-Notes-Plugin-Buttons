@@ -5,7 +5,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
+import android.os.Build.VERSION_CODES;
+import androidx.annotation.RequiresApi;
 import com.google.gson.Gson;
 import java.util.Calendar;
 import java.util.List;
@@ -51,21 +52,38 @@ public class AlarmUtils {
 
   public void schedule(AlarmModel model, Calendar calendar) throws SecurityException {
     if (Calendar.getInstance(TimeZone.getDefault()).getTimeInMillis() > calendar.getTimeInMillis()) {
-      Log.w("ALARM:AlarmUtils",
+      Logger.warn(getClass(),
           String.format("Time in past %s > %s for %s. %s", Calendar.getInstance(TimeZone.getDefault()).getTimeInMillis(),
               calendar.getTimeInMillis(), model.getId(), model.getText()));
       return;
     }
-    Log.i("ALARM:AlarmUtils", String.format("schedule %s %s. %s", calendar.getTimeInMillis(), model.getId(), model.getText()));
+    Logger.verbose(getClass(), String.format("schedule %s %s. %s", calendar.getTimeInMillis(), model.getId(), model.getText()));
 
-    Intent intent = new Intent(mContext, AlarmReceiver.class);
-    intent.putExtra(DatabaseService.ARGS_MODEL, new Gson().toJson(model));
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, model.getId(), intent,
-        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    PendingIntent pendingIntent = getPendingIntent(model);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     } else {
       mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
+  }
+
+  private PendingIntent getPendingIntent(AlarmModel model) {
+    Intent intent = new Intent(mContext, AlarmReceiver.class);
+    intent.putExtra(DatabaseService.ARGS_CONTENT, new Gson().toJson(model));
+    return PendingIntent.getBroadcast(mContext, model.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+  }
+
+  @RequiresApi(api = VERSION_CODES.S)
+  public boolean canScheduleAlarms() {
+    return mAlarmManager.canScheduleExactAlarms();
+  }
+
+  public void unschedule(List<AlarmModel> alarmModels) {
+    for (AlarmModel model : alarmModels) {
+      Logger.verbose(getClass(), String.format("unSchedule id:%s text:%s", model.getId(), model.getText()));
+      PendingIntent pendingIntent = getPendingIntent(model);
+      mAlarmManager.cancel(pendingIntent);
+    }
+
   }
 }

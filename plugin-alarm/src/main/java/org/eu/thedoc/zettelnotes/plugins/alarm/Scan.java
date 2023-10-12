@@ -1,11 +1,11 @@
 package org.eu.thedoc.zettelnotes.plugins.alarm;
 
 import android.content.Context;
-import android.util.Log;
+import java.util.ArrayList;
 import java.util.List;
 import org.eu.thedoc.zettelnotes.interfaces.ScanInterface;
-import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.DatabaseService;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.Logger;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.RegexUtils;
 
 public class Scan
@@ -21,14 +21,21 @@ public class Scan
     return new Listener() {
       @Override
       public boolean onScanText(Context context, String category, String fileUri, String fileTitle, String text) {
-        Log.v(getName(), "onScanText " + fileUri);
-        List<AlarmModel> models = RegexUtils.parse(category, fileTitle, fileUri, text);
+        Logger.verbose(getClass(), "onScanText " + fileUri);
         //send broadcast only if alarms found
-        if (models.size() > 0) {
-          DatabaseService.startService(context, category, fileTitle, fileUri, models);
+        if (RegexUtils.matches(text)) {
+          DatabaseService.startService(context, category, fileTitle, fileUri, text);
           return true;
         }
         return false;
+      }
+
+      @Override
+      public void onDeleteUris(Context context, String category, List<String> fileUris) {
+        Logger.verbose(getClass(), "onDeleteUris");
+        if (fileUris.size() > 0) {
+          DatabaseService.startService(context, category, new ArrayList<>(fileUris));
+        }
       }
 
       @Override

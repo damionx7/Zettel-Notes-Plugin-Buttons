@@ -36,7 +36,7 @@ public class AlarmReceiver
     mNotificationHelper = new NotificationHelper(context);
     mAlarmUtils = new AlarmUtils(context);
 
-    String json = intent.getStringExtra(DatabaseService.ARGS_MODEL);
+    String json = intent.getStringExtra(DatabaseService.ARGS_CONTENT);
     if (json != null && !json.isEmpty()) {
       //show notification
       AlarmModel model = new Gson().fromJson(json, AlarmModel.class);

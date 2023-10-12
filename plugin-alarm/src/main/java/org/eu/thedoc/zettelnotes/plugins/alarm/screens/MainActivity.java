@@ -1,10 +1,12 @@
 package org.eu.thedoc.zettelnotes.plugins.alarm.screens;
 
 import android.Manifest.permission;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -17,6 +19,9 @@ import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.DatabaseRepository;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.Adapter.Listener;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmUtils;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.Logger;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.ToastsHelper;
 
 public class MainActivity
     extends AppCompatActivity {
@@ -26,12 +31,14 @@ public class MainActivity
   private static final int REQ_CODE_PERMISSION_ZETTEL_BROADCAST_PERMISSION = 3;
 
   private DatabaseRepository mRepository;
+  private AlarmUtils mAlarmUtils;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     mRepository = new DatabaseRepository(this);
+    mAlarmUtils = new AlarmUtils(this);
 
     setTitle("Alarms");
 
@@ -57,7 +64,7 @@ public class MainActivity
     LinearLayoutManager manager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
     recyclerView.setLayoutManager(manager);
     mRepository.getLiveData().observe(this, data -> adapter.submitData(getLifecycle(), data));
-    //check for required android permisisons
+    //check for required android permissions
     checkPermissions();
   }
 
@@ -66,6 +73,9 @@ public class MainActivity
       @NonNull String[] permissions,
       @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if (permissions.length == 0) {
+      return;
+    }
     String permission = permissions[0];
     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
       //permission granted
@@ -79,16 +89,26 @@ public class MainActivity
   }
 
   private void checkPermissions() {
-    if (permissionNotGranted("org.eu.thedoc.zettelnotes.permission.broadcast")) {
-      requestPermission("org.eu.thedoc.zettelnotes.permission.broadcast", REQ_CODE_PERMISSION_ZETTEL_BROADCAST_PERMISSION);
+    Logger.verbose(getClass(), "checkPermissions");
+
+    if (BuildConfig.DEBUG) {
+      if (permissionNotGranted("org.eu.thedoc.zettelnotes.debug.permission.broadcast")) {
+        requestPermission("org.eu.thedoc.zettelnotes.debug.permission.broadcast", REQ_CODE_PERMISSION_ZETTEL_BROADCAST_PERMISSION);
+      }
+    } else {
+      if (permissionNotGranted("org.eu.thedoc.zettelnotes.permission.broadcast")) {
+        requestPermission("org.eu.thedoc.zettelnotes.permission.broadcast", REQ_CODE_PERMISSION_ZETTEL_BROADCAST_PERMISSION);
+      }
     }
 
     if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU && permissionNotGranted(permission.POST_NOTIFICATIONS)) {
       requestPermission(permission.POST_NOTIFICATIONS, REQ_CODE_PERMISSION_POST_NOTIFICATION);
     }
 
-    if (VERSION.SDK_INT >= VERSION_CODES.S && permissionNotGranted(permission.SCHEDULE_EXACT_ALARM)) {
-      requestPermission(permission.SCHEDULE_EXACT_ALARM, REQ_CODE_PERMISSION_SCHEDULE_EXACT_ALARM);
+    if (VERSION.SDK_INT >= VERSION_CODES.S && !mAlarmUtils.canScheduleAlarms()) {
+      Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+      startActivity(intent);
+      ToastsHelper.showToast(this, "Allow alarms permission for notification to be on exact time.");
     }
   }
 

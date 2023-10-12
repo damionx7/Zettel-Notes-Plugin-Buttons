@@ -16,22 +16,31 @@ public interface AlarmModelDao {
   long insert(AlarmModel model);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  List<Long> insertAll(List<AlarmModel> models);
+  List<Long> insert(List<AlarmModel> models);
 
   @Delete
   int delete(AlarmModel model);
 
-  @Query("DELETE FROM alarmmodel WHERE category = :category AND fileUri = :fileUri")
-  int delete(String category, String fileUri);
-
   @Delete
-  int deleteAllModels(List<AlarmModel> models);
+  void delete(List<AlarmModel> models);
+
+  @Query("DELETE FROM alarmmodel WHERE category = :category AND fileUri = :fileUri")
+  void delete(String category, String fileUri);
+
+  @Query("DELETE FROM alarmmodel WHERE category = :category AND fileUri IN (:uris)")
+  void delete(String category, List<String> uris);
 
   @Transaction
   @Query("SELECT * FROM alarmmodel ORDER BY calendar DESC")
-  PagingSource<Integer, AlarmModel> getAllViaPaging();
+  PagingSource<Integer, AlarmModel> get();
 
   @Transaction
   @Query("SELECT * FROM alarmmodel WHERE id IN (:indexes) AND calendar >= :after")
-  List<AlarmModel> getAll(List<Long> indexes, long after);
+  List<AlarmModel> get(List<Long> indexes, long after);
+
+  @Query("SELECT * FROM alarmmodel WHERE category = :category AND fileUri = :uri")
+  List<AlarmModel> get(String category, String uri);
+
+  @Query("SELECT * FROM alarmmodel WHERE category = :category AND fileUri IN (:uris)")
+  List<AlarmModel> get(String category, List<String> uris);
 }
