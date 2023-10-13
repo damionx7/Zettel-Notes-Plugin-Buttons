@@ -36,7 +36,7 @@ public class AlarmHelper {
   }
 
   public void scheduleRecurrence(AlarmModel alarmModel) {
-    RecurrenceModel recurrenceModel = RegexHelper.parse(alarmModel);
+    RecurrenceModel recurrenceModel = RegexHelper.getInstance().parse(alarmModel);
     if (recurrenceModel == null) {
       return;
     }

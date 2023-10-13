@@ -23,11 +23,16 @@ public class Scan
       public boolean onScanText(Context context, String category, String fileUri, String fileTitle, String text) {
         Log.v(getClass().getName(), "onScanText " + fileUri);
         //send broadcast only if alarms found
-        if (RegexHelper.matches(text)) {
+        if (RegexHelper.getInstance().matches(text)) {
           DatabaseService.startService(context, category, fileTitle, fileUri, text);
           return true;
         }
         return false;
+      }
+
+      @Override
+      public String onProcessText(Context context, String text) {
+        return null;
       }
 
       @Override
@@ -36,11 +41,6 @@ public class Scan
         if (fileUris.size() > 0) {
           DatabaseService.startService(context, category, new ArrayList<>(fileUris));
         }
-      }
-
-      @Override
-      public String onProcessText(Context context, String text) {
-        return null;
       }
     };
   }

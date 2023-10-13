@@ -12,8 +12,24 @@ import org.eu.thedoc.zettelnotes.plugins.base.utils.PatternUtils.Regex;
 
 public class RegexHelper {
 
+  private static RegexHelper sINSTANCE;
+
+  private RegexHelper() {}
+
+  public static RegexHelper getInstance() {
+    if (sINSTANCE == null) {
+      sINSTANCE = new RegexHelper();
+    }
+    return sINSTANCE;
+  }
+
+  public boolean matches(String text) {
+    Matcher matcher = Regex.ALARM.pattern.matcher(text);
+    return matcher.find();
+  }
+
   @Nullable
-  public static RecurrenceModel parse(AlarmModel model) {
+  public RecurrenceModel parse(AlarmModel model) {
     String recurrence = model.getRecurrence();
     Matcher matcher = Regex.RECURRENCE.pattern.matcher(recurrence);
     if (matcher.find()) {
@@ -39,11 +55,12 @@ public class RegexHelper {
     return null;
   }
 
-  public static List<AlarmModel> parse(String category, String fileTitle, String fileUri, String content) {
-    List<AlarmModel> list = new ArrayList<>();
+  public List<AlarmModel> parse(String category, String fileTitle, String fileUri, String content) {
+    List<AlarmModel> models = new ArrayList<>();
     Matcher matcher = Regex.ALARM.pattern.matcher(content);
     while (matcher.find()) {
       AlarmModel model = new AlarmModel();
+      model.setType(AlarmModel.TYPE_NOTE);
       model.setCategory(category);
       model.setFileTitle(fileTitle);
       model.setFileUri(fileUri);
@@ -66,16 +83,24 @@ public class RegexHelper {
       if (text != null && !text.isEmpty()) {
         model.setText(text);
         model.setIndexes(new int[]{matcher.start(5), matcher.end(5)});
+        //check if task
+        checkIfTask(model, text);
       } else {
         model.setText(fileTitle);
       }
-      list.add(model);
+      models.add(model);
     }
-    return list;
+    return models;
   }
 
-  public static boolean matches(String text) {
-    Matcher matcher = Regex.ALARM.pattern.matcher(text);
-    return matcher.find();
+  private void checkIfTask(AlarmModel model, String text) {
+    Matcher matcher = Regex.TASK.pattern.matcher(text);
+    if (matcher.find()) {
+      model.setType(AlarmModel.TYPE_TASK);
+      String checkedString = matcher.group(2);
+      if (checkedString != null) {
+        model.setChecked(checkedString.equals("x"));
+      }
+    }
   }
 }

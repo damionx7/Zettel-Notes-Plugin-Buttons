@@ -12,6 +12,9 @@ import java.util.Objects;
 @Entity(indices = {@Index(value = {"id"}, unique = true)})
 public class AlarmModel {
 
+  public static final String TYPE_NOTE = "note";
+  public static final String TYPE_TASK = "task";
+
   @PrimaryKey(autoGenerate = true)
   private int id;
   private String text;
@@ -21,6 +24,8 @@ public class AlarmModel {
   private String fileTitle;
   private String fileUri;
   private int[] indexes;
+  private boolean checked;
+  private String type;
 
   public String getFileTitle() {
     return fileTitle;
@@ -40,7 +45,7 @@ public class AlarmModel {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, text, calendar, category, fileTitle, fileUri, recurrence, indexes);
+    return Objects.hash(id, text, calendar, category, fileTitle, fileUri, recurrence, Arrays.hashCode(indexes), checked, type);
   }
 
   @Override
@@ -54,7 +59,8 @@ public class AlarmModel {
     AlarmModel that = (AlarmModel) o;
     return Objects.equals(text, that.text) && Objects.equals(calendar, that.calendar) && Objects.equals(category,
         that.category) && Objects.equals(fileTitle, that.fileTitle) && Objects.equals(fileUri, that.fileUri) && Objects.equals(recurrence,
-        that.recurrence) && Arrays.equals(indexes, that.indexes);
+        that.recurrence) && Arrays.equals(indexes, that.indexes) && Objects.equals(checked, that.checked) && Objects.equals(type,
+        that.type);
   }
 
   public int getId() {
@@ -104,4 +110,21 @@ public class AlarmModel {
   public void setIndexes(int[] indexes) {
     this.indexes = indexes;
   }
+
+  public boolean isChecked() {
+    return checked;
+  }
+
+  public void setChecked(boolean checked) {
+    this.checked = checked;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
 }
