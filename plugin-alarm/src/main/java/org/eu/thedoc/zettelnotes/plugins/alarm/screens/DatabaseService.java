@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,7 @@ import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.DatabaseRepository;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.NotificationHelper;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.RegexUtils;
-import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.RegexHelper;
 
 public class DatabaseService
     extends Service {
@@ -29,7 +29,7 @@ public class DatabaseService
   public static final String PACKAGE_NAME = BuildConfig.APPLICATION_ID;
 
   private static final String QUERY_INTENT_SCAN = "org.eu.thedoc.zettelnotes.plugins.alarm.SCAN";
-  private static final String QUERY_INTENT_DELETE_URIS = "org.eu.thedoc.zettelnotes.plugins.scan.DELETE_URIS";
+  private static final String QUERY_INTENT_DELETE_URIS = "org.eu.thedoc.zettelnotes.plugins.alarm.DELETE_URIS";
 
   private boolean isStarted = false;
 
@@ -62,7 +62,7 @@ public class DatabaseService
   @Override
   public void onCreate() {
     super.onCreate();
-    Logger.verbose(getClass(), "onCreate");
+    Log.v(getClass().getName(), "onCreate");
 
     mNotificationHelper = new NotificationHelper(getApplicationContext());
     mRepository = new DatabaseRepository(getApplicationContext());
@@ -71,7 +71,7 @@ public class DatabaseService
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Logger.verbose(getClass(), "onStartCommand");
+    Log.v(getClass().getName(), "onStartCommand");
 
     if (!isStarted) {
       makeForeground();
@@ -115,32 +115,31 @@ public class DatabaseService
   }
 
   private void processAction(Intent intent) {
-    Logger.verbose(getClass(), "processAction");
+    Log.v(getClass().getName(), "processAction");
     String action = intent.getAction();
     if (action == null) {
       return;
     }
 
     if (action.equals(QUERY_INTENT_SCAN)) {
-      Logger.verbose(getClass(), QUERY_INTENT_SCAN);
+      Log.v(getClass().getName(), QUERY_INTENT_SCAN);
       String text = intent.getStringExtra(ARGS_CONTENT);
       String category = intent.getStringExtra(ARGS_CATEGORY);
       String fileUri = intent.getStringExtra(ARGS_FILE_URI);
       String fileTitle = intent.getStringExtra(ARGS_TITLE);
 
       if (text != null && !text.isEmpty()) {
-        List<AlarmModel> models = RegexUtils.parse(category, fileTitle, fileUri, text);
+        List<AlarmModel> models = RegexHelper.parse(category, fileTitle, fileUri, text);
         //add in repository
         mRepository.addAll(category, fileUri, models);
       }
     } else if (action.equals(QUERY_INTENT_DELETE_URIS)) {
-      Logger.verbose(getClass(), QUERY_INTENT_DELETE_URIS);
-
+      Log.v(getClass().getName(), QUERY_INTENT_DELETE_URIS);
       String category = intent.getStringExtra(ARGS_CATEGORY);
       ArrayList<String> uris = intent.getStringArrayListExtra(ARGS_FILE_URIS);
 
       if (category != null && uris != null) {
-        Logger.verbose(getClass(), "uris " + uris.size());
+        Log.v(getClass().getName(), "uris " + uris.size());
         mRepository.deleteAll(category, uris);
       }
     }

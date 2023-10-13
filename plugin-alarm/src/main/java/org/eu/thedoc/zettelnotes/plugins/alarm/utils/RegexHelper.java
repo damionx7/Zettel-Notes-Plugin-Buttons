@@ -1,27 +1,21 @@
 package org.eu.thedoc.zettelnotes.plugins.alarm.utils;
 
+import android.util.Log;
 import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.RecurrenceModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.RecurrenceModel.COOKIE;
-import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.PatternUtils.Regex;
 
-public class RegexUtils {
-
-  // [scheduled]: <2023-09-01 09:12 .+1w>
-  private static final Pattern PATTERN = Pattern.compile(
-      "\\[scheduled\\]: <(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2})(| (\\+\\d+?\\w))>(\\n|)(^.*$|)",
-      Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
-  private static final Pattern RECURRENCE = Pattern.compile("(\\+)(\\d+?)(\\w)", Pattern.CASE_INSENSITIVE);
+public class RegexHelper {
 
   @Nullable
   public static RecurrenceModel parse(AlarmModel model) {
     String recurrence = model.getRecurrence();
-    Matcher matcher = RECURRENCE.matcher(recurrence);
+    Matcher matcher = Regex.RECURRENCE.pattern.matcher(recurrence);
     if (matcher.find()) {
       int digit = Integer.parseInt(matcher.group(2));
       final String string = matcher.group(3);
@@ -47,7 +41,7 @@ public class RegexUtils {
 
   public static List<AlarmModel> parse(String category, String fileTitle, String fileUri, String content) {
     List<AlarmModel> list = new ArrayList<>();
-    Matcher matcher = PATTERN.matcher(content);
+    Matcher matcher = Regex.ALARM.pattern.matcher(content);
     while (matcher.find()) {
       AlarmModel model = new AlarmModel();
       model.setCategory(category);
@@ -57,9 +51,9 @@ public class RegexUtils {
       String calendar = matcher.group(1);
       try {
         //Logger.err("ALARM::regex::calendar", calendar);
-        model.setCalendar(DateTimeUtils.getCalendar(calendar));
+        model.setCalendar(DateTimeHelper.getCalendar(calendar));
       } catch (Exception e) {
-        Logger.err(e.getClass(), e.toString());
+        Log.e(e.getClass().getName(), e.toString());
         continue;
       }
       //recurrence if set
@@ -81,7 +75,7 @@ public class RegexUtils {
   }
 
   public static boolean matches(String text) {
-    Matcher matcher = PATTERN.matcher(text);
+    Matcher matcher = Regex.ALARM.pattern.matcher(text);
     return matcher.find();
   }
 }

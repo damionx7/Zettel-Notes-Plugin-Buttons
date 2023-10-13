@@ -7,20 +7,20 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import org.eu.thedoc.zettelnotes.broadcasts.AbstractPluginReceiver;
+import org.eu.thedoc.zettelnotes.broadcasts.AbstractPluginReceiver.IntentBuilder;
 import org.eu.thedoc.zettelnotes.plugins.alarm.BuildConfig;
 import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.DatabaseRepository;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.Adapter.Listener;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmUtils;
-import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmHelper;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class MainActivity
@@ -31,14 +31,14 @@ public class MainActivity
   private static final int REQ_CODE_PERMISSION_ZETTEL_BROADCAST_PERMISSION = 3;
 
   private DatabaseRepository mRepository;
-  private AlarmUtils mAlarmUtils;
+  private AlarmHelper mAlarmHelper;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     mRepository = new DatabaseRepository(this);
-    mAlarmUtils = new AlarmUtils(this);
+    mAlarmHelper = new AlarmHelper(this);
 
     setTitle("Alarms");
 
@@ -46,8 +46,13 @@ public class MainActivity
     Adapter adapter = new Adapter(new Listener() {
       @Override
       public void onClick(AlarmModel model) {
-        AbstractPluginReceiver.IntentBuilder intentBuilder = AbstractPluginReceiver.IntentBuilder.getInstance().setActionOpenUri().setUri(
-            model.getFileUri()).setEdit(true).setLineIndexes(model.getIndexes()).setRepository(model.getCategory());
+        IntentBuilder intentBuilder = IntentBuilder
+            .getInstance()
+            .setActionOpenUri()
+            .setUri(model.getFileUri())
+            .setEdit(true)
+            .setLineIndexes(model.getIndexes())
+            .setRepository(model.getCategory());
         if (BuildConfig.DEBUG) {
           intentBuilder.setDebug();
         }
@@ -89,7 +94,7 @@ public class MainActivity
   }
 
   private void checkPermissions() {
-    Logger.verbose(getClass(), "checkPermissions");
+    Log.v(getClass().getName(), "checkPermissions");
 
     if (BuildConfig.DEBUG) {
       if (permissionNotGranted("org.eu.thedoc.zettelnotes.debug.permission.broadcast")) {
@@ -105,7 +110,7 @@ public class MainActivity
       requestPermission(permission.POST_NOTIFICATIONS, REQ_CODE_PERMISSION_POST_NOTIFICATION);
     }
 
-    if (VERSION.SDK_INT >= VERSION_CODES.S && !mAlarmUtils.canScheduleAlarms()) {
+    if (VERSION.SDK_INT >= VERSION_CODES.S && !mAlarmHelper.canScheduleAlarms()) {
       Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
       startActivity(intent);
       ToastsHelper.showToast(this, "Allow alarms permission for notification to be on exact time.");

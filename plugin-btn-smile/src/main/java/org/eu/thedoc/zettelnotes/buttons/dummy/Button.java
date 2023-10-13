@@ -2,16 +2,19 @@ package org.eu.thedoc.zettelnotes.buttons.dummy;
 
 import org.eu.thedoc.zettelnotes.interfaces.ButtonInterface;
 
-public class Button extends ButtonInterface {
+public class Button
+    extends ButtonInterface {
 
   private final Listener mListener = new Listener() {
     @Override
-    public void onClick () {
-      if (mCallback != null) mCallback.insertText("\uD83D\uDE04");
+    public void onClick() {
+      if (mCallback != null) {
+        mCallback.insertText("\uD83D\uDE04");
+      }
     }
 
     @Override
-    public boolean onLongClick () {
+    public boolean onLongClick() {
       if (mCallback != null) {
         String selectedText = mCallback.getTextSelected(false);
         if (!selectedText.isEmpty()) {
@@ -25,12 +28,12 @@ public class Button extends ButtonInterface {
   };
 
   @Override
-  public String getName () {
+  public String getName() {
     return "Donation";
   }
 
   @Override
-  public Listener getListener () {
+  public Listener getListener() {
     return mListener;
   }
 }

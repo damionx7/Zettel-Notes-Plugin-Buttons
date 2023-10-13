@@ -9,12 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.util.Log;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class ShareActivity
@@ -32,7 +32,7 @@ public class ShareActivity
           if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
             String txtToReplace = result.getData().getStringExtra(TextUtilsActivity.INTENT_EXTRA_REPLACE_TEXT);
             String txtToInsert = result.getData().getStringExtra(TextUtilsActivity.INTENT_EXTRA_INSERT_TEXT);
-            Logger.verbose(getClass(), "Got text");
+            Log.v(getClass().getName(), "Got text");
 
             String textToCopy = "";
             if (txtToReplace != null && !txtToReplace.isEmpty()) {
@@ -51,7 +51,7 @@ public class ShareActivity
           } else {
             if (result.getData() != null) {
               String error = result.getData().getStringExtra(TextUtilsActivity.ERROR_STRING);
-              Logger.err(getClass(), error);
+              Log.e(getClass().getName(), error);
             }
           }
           finish();

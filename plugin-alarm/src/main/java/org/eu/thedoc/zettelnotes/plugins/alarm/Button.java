@@ -1,7 +1,7 @@
 package org.eu.thedoc.zettelnotes.plugins.alarm;
 
 import org.eu.thedoc.zettelnotes.interfaces.ButtonInterface;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.DateTimeUtils;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.DateTimeHelper;
 
 public class Button
     extends ButtonInterface {
@@ -16,7 +16,7 @@ public class Button
     return new Listener() {
       @Override
       public void onClick() {
-        String date = String.format("[scheduled]: <%s>", DateTimeUtils.fromCurrentCalendar());
+        String date = String.format("[scheduled]: <%s>", DateTimeHelper.fromCurrentCalendar());
         if (mCallback != null) {
           mCallback.insertText(date);
         }

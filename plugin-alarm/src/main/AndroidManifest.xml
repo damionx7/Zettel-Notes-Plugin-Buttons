@@ -40,7 +40,7 @@
                 <action android:name="org.eu.thedoc.zettelnotes.plugins.alarm.SCAN" />
             </intent-filter>
             <intent-filter>
-                <action android:name="org.eu.thedoc.zettelnotes.plugins.scan.DELETE_URIS" />
+                <action android:name="org.eu.thedoc.zettelnotes.plugins.alarm.DELETE_URIS" />
             </intent-filter>
         </service>
 

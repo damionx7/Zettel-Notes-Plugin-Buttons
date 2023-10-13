@@ -1,6 +1,7 @@
 package org.eu.thedoc.zettelnotes.plugins.alarm.database;
 
 import android.content.Context;
+import android.util.Log;
 import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.paging.Pager;
@@ -16,8 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmUtils;
-import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmHelper;
 
 public class DatabaseRepository {
 
@@ -28,13 +28,13 @@ public class DatabaseRepository {
   private final AlarmModelDao mDao;
   private final ExecutorService mDiskIO;
   private final PagingConfig mPagingConfig;
-  private final AlarmUtils mAlarmUtils;
+  private final AlarmHelper mAlarmHelper;
 
   public DatabaseRepository(Context context) {
     mDao = AppDatabaseClient.getInstance(context).getAppDatabase().mAlarmModelDao();
     mDiskIO = Executors.newFixedThreadPool(3);
     mPagingConfig = new PagingConfig(20, 40, true, 20, 200, 200);
-    mAlarmUtils = new AlarmUtils(context);
+    mAlarmHelper = new AlarmHelper(context);
   }
 
   public LiveData<PagingData<AlarmModel>> getLiveData() {
@@ -56,7 +56,7 @@ public class DatabaseRepository {
           mHashMap.remove(LOCK_KEY_SCAN);
         }
       } else {
-        Logger.verbose(getClass(), "addAll already running");
+        Log.v(getClass().getName(), "addAll already running");
       }
     });
   }
@@ -75,7 +75,7 @@ public class DatabaseRepository {
           mHashMap.remove(LOCK_KEY_DELETE);
         }
       } else {
-        Logger.err(getClass(), "deleteAll already running");
+        Log.e(getClass().getName(), "deleteAll already running");
       }
     });
   }
@@ -84,17 +84,17 @@ public class DatabaseRepository {
   private void scheduleAndInsert(List<AlarmModel> models) {
     //insert new models
     List<Long> indexes = mDao.insert(models);
-    Logger.verbose(getClass(), String.format("inserted %s/%s alarms in database", indexes.size(), models.size()));
+    Log.v(getClass().getName(), String.format("inserted %s/%s alarms in database", indexes.size(), models.size()));
     //schedule alarms
     List<AlarmModel> alarmModels = mDao.get(indexes, Calendar.getInstance(TimeZone.getDefault()).getTimeInMillis());
-    mAlarmUtils.schedule(alarmModels);
+    mAlarmHelper.schedule(alarmModels);
   }
 
   @WorkerThread
   private void unScheduleAndDelete(String category, ArrayList<String> uris) {
     //unschedule existing alarms
     List<AlarmModel> models = unscheduleAlarms(category, uris);
-    Logger.verbose(getClass(), String.format("Got %s database alarms for category: %s uris: %s", models.size(), category, uris.size()));
+    Log.v(getClass().getName(), String.format("Got %s database alarms for category: %s uris: %s", models.size(), category, uris.size()));
     //delete from database
     mDao.delete(models);
   }
@@ -103,7 +103,7 @@ public class DatabaseRepository {
   private void unScheduleAndDelete(String category, String fileUri) {
     //unSchedule existing alarms
     List<AlarmModel> previousModels = unscheduleAlarms(category, fileUri);
-    Logger.verbose(getClass(), String.format("Got %s database alarms for category:%s uri: %s", previousModels.size(), category, fileUri));
+    Log.v(getClass().getName(), String.format("Got %s database alarms for category:%s uri: %s", previousModels.size(), category, fileUri));
     //delete previous models
     mDao.delete(previousModels);
   }
@@ -111,14 +111,14 @@ public class DatabaseRepository {
   @WorkerThread
   private List<AlarmModel> unscheduleAlarms(String category, List<String> uris) {
     List<AlarmModel> models = mDao.get(category, uris);
-    mAlarmUtils.unschedule(models);
+    mAlarmHelper.unschedule(models);
     return models;
   }
 
   @WorkerThread
   private List<AlarmModel> unscheduleAlarms(String category, String fileUri) {
     List<AlarmModel> models = mDao.get(category, fileUri);
-    mAlarmUtils.unschedule(models);
+    mAlarmHelper.unschedule(models);
     return models;
   }
 }

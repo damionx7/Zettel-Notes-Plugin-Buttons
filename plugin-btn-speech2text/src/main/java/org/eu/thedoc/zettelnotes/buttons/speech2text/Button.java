@@ -7,7 +7,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Locale;
 import org.eu.thedoc.zettelnotes.interfaces.ButtonInterface;
-import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
 
 public class Button
     extends ButtonInterface {
@@ -16,7 +15,7 @@ public class Button
     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
       ArrayList<String> arrayListExtra = result.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
       String text = arrayListExtra.get(0);
-      Logger.verbose(getClass(), text);
+      Log.v(getClass().getName(), text);
       if (mCallback != null) {
         mCallback.insertText(text);
       }

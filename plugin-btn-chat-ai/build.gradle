@@ -5,6 +5,16 @@ plugins {
 packageName = "org.eu.thedoc.zettelnotes.buttons.chat"
 versionMajor = 3
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+android {
+    defaultConfig {
+        buildConfigField("String", "OPENAI_API_KEY", "${properties.getProperty("openai-api-key")}")
+    }
+}
+
+
 dependencies {
     implementation libs.chat.gpt.api
     implementation libs.ok.http

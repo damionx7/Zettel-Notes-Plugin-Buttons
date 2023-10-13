@@ -2,8 +2,8 @@ package org.eu.thedoc.zettelnotes.buttons.translate;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import org.eu.thedoc.zettelnotes.interfaces.ButtonInterface;
-import org.eu.thedoc.zettelnotes.plugins.base.utils.Logger;
 
 public class Button
     extends ButtonInterface {
@@ -14,7 +14,7 @@ public class Button
     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
       String txtToReplace = result.getData().getStringExtra(TranslateActivity.INTENT_EXTRA_REPLACE_TEXT);
       String txtToInsert = result.getData().getStringExtra(TranslateActivity.INTENT_EXTRA_INSERT_TEXT);
-      Logger.verbose(getClass(), "Got text");
+      Log.v(getClass().getName(), "Got text");
       if (mCallback != null) {
         if (txtToReplace != null && !txtToReplace.isEmpty()) {
           mCallback.replaceTextSelected(txtToReplace);
@@ -25,7 +25,7 @@ public class Button
     } else {
       if (result.getData() != null) {
         String error = result.getData().getStringExtra(TranslateActivity.ERROR_STRING);
-        Logger.err(getClass(), error);
+        Log.e(getClass().getName(), error);
       }
     }
   };
@@ -33,7 +33,7 @@ public class Button
   private final Listener mListener = new Listener() {
     @Override
     public void onClick() {
-      Logger.verbose(getClass(), "onClick");
+      Log.v(getClass().getName(), "onClick");
       if (mCallback != null) {
         mCallback.setActivityResultListener(mActivityResultListener);
         mCallback.startActivityForResult(
@@ -44,7 +44,7 @@ public class Button
     //todo: use last selected language
     @Override
     public boolean onLongClick() {
-      Logger.verbose(getClass(), "onLongClick");
+      Log.v(getClass().getName(), "onLongClick");
       return false;
     }
   };

@@ -146,7 +146,7 @@ public class ChatActivity
     openai.streamChatCompletionAsync(request, chatResponse -> {
       String response = chatResponse.get(0).getDelta();
       stringBuilder.append(response);
-      //Logger.verbose(getClass(), "DELTA " + response);
+      //Log.v(getClass().getName(), "DELTA " + response);
       runOnUiThread(() -> {
         mMessageAdapter.updateItem(pos, ChatMessage.toAssistantMessage(stringBuilder.toString()));
         if (chatResponse.get(0).getFinishReason() != null) {

@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class DateTimeUtils {
+public class DateTimeHelper {
 
   //https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
   public static final String SIMPLE_DATE_FORMAT = "yyyy-MM-dd HH:mm";

@@ -10,14 +10,14 @@ import org.eu.thedoc.zettelnotes.broadcasts.AbstractPluginReceiver;
 import org.eu.thedoc.zettelnotes.plugins.alarm.BuildConfig;
 import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
-import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmUtils;
+import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmHelper;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.NotificationHelper;
 
 public class AlarmReceiver
     extends BroadcastReceiver {
 
   NotificationHelper mNotificationHelper;
-  AlarmUtils mAlarmUtils;
+  AlarmHelper mAlarmHelper;
 
   private String getNotificationChannelName() {
     return "Reminder";
@@ -34,7 +34,7 @@ public class AlarmReceiver
   @Override
   public void onReceive(Context context, Intent intent) {
     mNotificationHelper = new NotificationHelper(context);
-    mAlarmUtils = new AlarmUtils(context);
+    mAlarmHelper = new AlarmHelper(context);
 
     String json = intent.getStringExtra(DatabaseService.ARGS_CONTENT);
     if (json != null && !json.isEmpty()) {
