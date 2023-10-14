@@ -3,6 +3,7 @@ package org.eu.thedoc.zettelnotes.plugins.alarm.utils;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
@@ -68,7 +69,13 @@ public class RegexHelper {
       String calendar = matcher.group(1);
       try {
         //Logger.err("ALARM::regex::calendar", calendar);
-        model.setCalendar(DateTimeHelper.getCalendar(calendar));
+        Calendar parsedCalendar = DateTimeHelper.getCalendar(calendar);
+        if (parsedCalendar != null) {
+          model.setCalendar(parsedCalendar);
+        } else {
+          Log.e(getClass().getName(), String.format("Parsed Calendar Null Date Format %s", calendar));
+          continue;
+        }
       } catch (Exception e) {
         Log.e(e.getClass().getName(), e.toString());
         continue;

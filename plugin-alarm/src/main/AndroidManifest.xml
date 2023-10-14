@@ -33,6 +33,18 @@
             </intent-filter>
         </activity>
 
+        <activity
+           android:name=".screens.DateTimeActivity"
+           android:label="Date Time"
+           android:exported="true"
+           android:theme="@style/AppThemeTransparent">
+
+            <intent-filter>
+                <action android:name="org.eu.thedoc.zettelnotes.intent.buttons.alarm" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <service
            android:name=".screens.DatabaseService"
            android:exported="true">

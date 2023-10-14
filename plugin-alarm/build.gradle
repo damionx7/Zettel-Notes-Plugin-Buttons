@@ -25,4 +25,5 @@ dependencies {
     implementation libs.recyclerview
     implementation libs.bundles.room
     implementation libs.paging
+    implementation libs.material
 }
