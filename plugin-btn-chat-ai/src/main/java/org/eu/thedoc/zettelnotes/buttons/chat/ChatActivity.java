@@ -111,7 +111,6 @@ public class ChatActivity
     mChatMessages.add(promptMessage);
 
     sendButton.setOnClickListener(v -> {
-      sendButton.setEnabled(false);
       String text = editText.getText().toString();
       if (!text.isEmpty()) {
         editText.setText("");
@@ -124,6 +123,7 @@ public class ChatActivity
             .temperature(0.7f)
             .build();
         sendMessage(chatRequest);
+        sendButton.setEnabled(false);
       }
     });
   }
