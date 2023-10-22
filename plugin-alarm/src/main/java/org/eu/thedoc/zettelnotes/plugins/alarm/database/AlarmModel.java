@@ -127,4 +127,15 @@ public class AlarmModel {
     this.type = type;
   }
 
+  public String transformCommented() {
+    if (text.contains("\n")) {
+      return String.format("%%%%%s%%%%\n%s", text.split("\n")[0], text.split("\n")[1]);
+    } else {
+      return String.format("%%%%%s%%%%", text);
+    }
+  }
+
+  public String transformChecked() {
+    return transformCommented().replace("- [ ] ", "- [x] ");
+  }
 }

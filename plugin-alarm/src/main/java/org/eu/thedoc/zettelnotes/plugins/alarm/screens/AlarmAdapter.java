@@ -11,7 +11,7 @@ import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.jetbrains.annotations.NotNull;
 
-public class Adapter
+public class AlarmAdapter
     extends PagingDataAdapter<AlarmModel, ViewHolder> {
 
   private static final DiffUtil.ItemCallback<AlarmModel> DIFF_CALLBACK = new DiffUtil.ItemCallback<AlarmModel>() {
@@ -30,7 +30,7 @@ public class Adapter
   private final Listener mListener;
   private final Calendar mNow;
 
-  public Adapter(Listener listener) {
+  public AlarmAdapter(Listener listener) {
     super(DIFF_CALLBACK);
     mListener = listener;
     mNow = Calendar.getInstance(TimeZone.getDefault());
@@ -49,10 +49,18 @@ public class Adapter
     holder.bindTo(getItem(position), mNow, mListener);
   }
 
+  public AlarmModel getAlarmModel(int pos) {
+    return getItem(pos);
+  }
+
   public interface Listener {
 
     void onClick(AlarmModel model);
 
     boolean onLongPress(AlarmModel model);
+
+    void onDelete(AlarmModel model);
+
+    void onCheckTask(AlarmModel model);
   }
 }

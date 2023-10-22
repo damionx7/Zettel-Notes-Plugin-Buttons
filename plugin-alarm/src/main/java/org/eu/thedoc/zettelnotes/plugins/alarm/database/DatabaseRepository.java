@@ -121,4 +121,8 @@ public class DatabaseRepository {
     mAlarmHelper.unschedule(models);
     return models;
   }
+
+  public void delete(AlarmModel model) {
+    mDiskIO.execute(() -> mDao.delete(model));
+  }
 }

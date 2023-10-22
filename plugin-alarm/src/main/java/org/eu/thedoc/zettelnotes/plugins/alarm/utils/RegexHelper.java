@@ -88,13 +88,14 @@ public class RegexHelper {
       //text if present
       String text = matcher.group(5);
       if (text != null && !text.isEmpty()) {
-        model.setText(text);
-        model.setIndexes(new int[]{matcher.start(5), matcher.end(5)});
         //check if task
         checkIfTask(model, text);
-      } else {
-        model.setText(fileTitle);
+        //model.setText(text);
+        //model.setIndexes(new int[]{matcher.start(5), matcher.end(5)});
       }
+      model.setText(matcher.group());
+      model.setIndexes(new int[]{matcher.start(), matcher.end()});
+
       models.add(model);
     }
     return models;
@@ -106,7 +107,7 @@ public class RegexHelper {
       model.setType(AlarmModel.TYPE_TASK);
       String checkedString = matcher.group(2);
       if (checkedString != null) {
-        model.setChecked(checkedString.equals("x"));
+        model.setChecked(checkedString.equalsIgnoreCase("x"));
       }
     }
   }

@@ -13,12 +13,35 @@
 
         <androidx.appcompat.widget.AppCompatTextView
            android:id="@+id/text_view_text"
-           android:layout_width="match_parent"
+           android:layout_width="0dp"
            android:layout_height="wrap_content"
            app:layout_constraintTop_toTopOf="parent"
            app:layout_constraintStart_toStartOf="parent"
+           android:padding="8dp"
+           app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+           android:id="@+id/buttonCheck"
+           android:layout_width="48dp"
+           android:layout_height="48dp"
+           app:srcCompat="@drawable/ic_notification_check"
+           android:background="?selectableItemBackground"
+           android:cropToPadding="false"
+           android:padding="8dp"
+           app:layout_constraintBottom_toBottomOf="parent"
+           android:contentDescription="Check Task"
+           app:layout_constraintEnd_toStartOf="@+id/buttonDelete" />
+        <androidx.appcompat.widget.AppCompatImageButton
+           android:id="@+id/buttonDelete"
+           android:layout_width="48dp"
+           android:layout_height="48dp"
+           app:srcCompat="@drawable/ic_delete"
            app:layout_constraintEnd_toEndOf="parent"
-           android:padding="8dp" />
+           android:background="?selectableItemBackground"
+           android:cropToPadding="false"
+           android:padding="8dp"
+           app:layout_constraintBottom_toBottomOf="parent"
+           android:contentDescription="Delete" />
 
         <androidx.appcompat.widget.AppCompatTextView
            android:id="@+id/text_view_category"
@@ -46,15 +69,15 @@
 
         <androidx.appcompat.widget.AppCompatTextView
            android:id="@+id/text_view_calendar"
-           android:layout_width="match_parent"
+           android:layout_width="0dp"
            android:layout_height="wrap_content"
            app:layout_constraintTop_toBottomOf="@id/text_view_file"
            app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintEnd_toEndOf="parent"
            android:padding="4dp"
            app:drawableLeftCompat="@drawable/ic_time"
            android:drawablePadding="8dp"
-           android:gravity="center_vertical" />
+           android:gravity="center_vertical"
+           app:layout_constraintEnd_toStartOf="@+id/buttonCheck" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

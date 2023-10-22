@@ -14,12 +14,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import org.eu.thedoc.zettelnotes.broadcasts.AbstractPluginReceiver;
 import org.eu.thedoc.zettelnotes.broadcasts.AbstractPluginReceiver.IntentBuilder;
 import org.eu.thedoc.zettelnotes.plugins.alarm.BuildConfig;
 import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.DatabaseRepository;
-import org.eu.thedoc.zettelnotes.plugins.alarm.screens.Adapter.Listener;
+import org.eu.thedoc.zettelnotes.plugins.alarm.screens.AlarmAdapter.Listener;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmHelper;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
@@ -43,7 +44,7 @@ public class MainActivity
     setTitle("Alarms");
 
     RecyclerView recyclerView = findViewById(R.id.recycler_view);
-    Adapter adapter = new Adapter(new Listener() {
+    AlarmAdapter alarmAdapter = new AlarmAdapter(new Listener() {
       @Override
       public void onClick(AlarmModel model) {
         IntentBuilder intentBuilder = IntentBuilder
@@ -64,11 +65,50 @@ public class MainActivity
         //toggle alarm
         return false;
       }
+
+      @Override
+      public void onDelete(AlarmModel model) {
+        //remove from database
+        mRepository.delete(model);
+        //comment alarm from note
+        AbstractPluginReceiver.IntentBuilder intentBuilder = AbstractPluginReceiver.IntentBuilder
+            .getInstance()
+            .setActionOpenUri()
+            .setUri(model.getFileUri())
+            .setLineIndexes(model.getIndexes())
+            .setActionOpenAndReplace(model.transformCommented())
+            .setEdit(true)
+            .setRepository(model.getCategory());
+        if (BuildConfig.DEBUG) {
+          intentBuilder.setDebug();
+        }
+        startActivity(intentBuilder.build());
+      }
+
+      @Override
+      public void onCheckTask(AlarmModel model) {
+        //remove from database
+        mRepository.delete(model);
+        //tick and comment alarm from note
+        AbstractPluginReceiver.IntentBuilder intentBuilder = AbstractPluginReceiver.IntentBuilder
+            .getInstance()
+            .setActionOpenUri()
+            .setUri(model.getFileUri())
+            .setLineIndexes(model.getIndexes())
+            .setActionOpenAndReplace(model.transformChecked())
+            .setEdit(true)
+            .setRepository(model.getCategory());
+        if (BuildConfig.DEBUG) {
+          intentBuilder.setDebug();
+        }
+        startActivity(intentBuilder.build());
+      }
     });
-    recyclerView.setAdapter(adapter);
+    recyclerView.setAdapter(alarmAdapter);
     LinearLayoutManager manager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
     recyclerView.setLayoutManager(manager);
-    mRepository.getLiveData().observe(this, data -> adapter.submitData(getLifecycle(), data));
+    //set data
+    mRepository.getLiveData().observe(this, data -> alarmAdapter.submitData(getLifecycle(), data));
     //check for required android permissions
     checkPermissions();
   }
