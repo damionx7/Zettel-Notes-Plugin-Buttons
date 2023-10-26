@@ -85,6 +85,5 @@ public class AlarmHelper {
       PendingIntent pendingIntent = getPendingIntent(model);
       mAlarmManager.cancel(pendingIntent);
     }
-
   }
 }

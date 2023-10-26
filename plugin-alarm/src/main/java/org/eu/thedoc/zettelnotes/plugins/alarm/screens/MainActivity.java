@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.List;
 import org.eu.thedoc.zettelnotes.broadcasts.AbstractPluginReceiver;
 import org.eu.thedoc.zettelnotes.broadcasts.AbstractPluginReceiver.IntentBuilder;
 import org.eu.thedoc.zettelnotes.plugins.alarm.BuildConfig;
@@ -68,16 +69,13 @@ public class MainActivity
 
       @Override
       public void onDelete(AlarmModel model) {
+        //unschedule
+        mAlarmHelper.unschedule(List.of(model));
         //remove from database
         mRepository.delete(model);
         //comment alarm from note
-        AbstractPluginReceiver.IntentBuilder intentBuilder = AbstractPluginReceiver.IntentBuilder
-            .getInstance()
-            .setActionOpenUri()
-            .setUri(model.getFileUri())
-            .setLineIndexes(model.getIndexes())
-            .setActionOpenAndReplace(model.transformCommented())
-            .setEdit(true)
+        AbstractPluginReceiver.IntentBuilder intentBuilder = AbstractPluginReceiver.IntentBuilder.getInstance().setActionOpenUri().setUri(
+                                                                                       model.getFileUri()).setLineIndexes(model.getIndexes()).setActionOpenAndReplace(model.transformCommented()).setEdit(true)
             .setRepository(model.getCategory());
         if (BuildConfig.DEBUG) {
           intentBuilder.setDebug();
@@ -87,16 +85,13 @@ public class MainActivity
 
       @Override
       public void onCheckTask(AlarmModel model) {
+        //unschedule
+        mAlarmHelper.unschedule(List.of(model));
         //remove from database
         mRepository.delete(model);
         //tick and comment alarm from note
-        AbstractPluginReceiver.IntentBuilder intentBuilder = AbstractPluginReceiver.IntentBuilder
-            .getInstance()
-            .setActionOpenUri()
-            .setUri(model.getFileUri())
-            .setLineIndexes(model.getIndexes())
-            .setActionOpenAndReplace(model.transformChecked())
-            .setEdit(true)
+        AbstractPluginReceiver.IntentBuilder intentBuilder = AbstractPluginReceiver.IntentBuilder.getInstance().setActionOpenUri().setUri(
+                                                                                       model.getFileUri()).setLineIndexes(model.getIndexes()).setActionOpenAndReplace(model.transformChecked()).setEdit(true)
             .setRepository(model.getCategory());
         if (BuildConfig.DEBUG) {
           intentBuilder.setDebug();
