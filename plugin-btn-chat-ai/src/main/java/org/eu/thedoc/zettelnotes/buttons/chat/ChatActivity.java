@@ -15,11 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.cjcrafter.openai.OpenAI;
 import com.cjcrafter.openai.chat.ChatMessage;
 import com.cjcrafter.openai.chat.ChatRequest;
+import com.cjcrafter.openai.chat.ChatResponseChunk;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import org.eu.thedoc.zettelnotes.buttons.chat.CustomTextView.Listener;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.AppExecutor;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class ChatActivity
@@ -27,12 +30,13 @@ public class ChatActivity
     implements Listener {
 
   public static final String ERROR_STRING = "intent-error";
-
   public static final String INTENT_EXTRA_BUTTON_MODE = "intent-extra-button-mode";
   public static final String INTENT_EXTRA_TEXT_SELECTED = "intent-extra-text-selected";
   public static final String INTENT_EXTRA_REPLACE_TEXT = "intent-extra-text-replace";
   public static final String INTENT_EXTRA_INSERT_TEXT = "intent-extra-insert-text";
   private final List<ChatMessage> mChatMessages = new ArrayList<>();
+  private final Executor mHandler = AppExecutor.getInstance().mainThread();
+  private final Executor mNetworkIO = AppExecutor.getInstance().networkIO();
   private OpenAI openai;
   private MessageAdapter mMessageAdapter;
 
@@ -105,7 +109,7 @@ public class ChatActivity
       Log.w("ChatActivity", "Using demo api key");
     }
 
-    openai = new OpenAI(apiKey, null, client.build());
+    openai = OpenAI.builder().apiKey(apiKey).client(client.build()).build();
 
     ChatMessage promptMessage = ChatMessage.toSystemMessage(prompt);
     mChatMessages.add(promptMessage);
@@ -143,23 +147,27 @@ public class ChatActivity
   private void sendMessage(ChatRequest request) {
     StringBuilder stringBuilder = new StringBuilder();
     int pos = mMessageAdapter.addItem(ChatMessage.toAssistantMessage(""));
-    openai.streamChatCompletionAsync(request, chatResponse -> {
-      String response = chatResponse.get(0).getDelta();
-      stringBuilder.append(response);
-      //Log.v(getClass().getName(), "DELTA " + response);
-      runOnUiThread(() -> {
-        mMessageAdapter.updateItem(pos, ChatMessage.toAssistantMessage(stringBuilder.toString()));
-        if (chatResponse.get(0).getFinishReason() != null) {
-          mChatMessages.add(chatResponse.get(0).getMessage());
-          sendButton.setEnabled(true);
+    mNetworkIO.execute(() -> {
+      try {
+        for (ChatResponseChunk chunk : openai.streamChatCompletion(request)) {
+          // This is nullable! ChatGPT will return null AT LEAST ONCE PER MESSAGE.
+          String response = chunk.get(0).getDeltaContent();
+          if (response != null) {
+            stringBuilder.append(response);
+            runOnUiThread(() -> mMessageAdapter.updateItem(pos, ChatMessage.toAssistantMessage(stringBuilder.toString())));
+          }
+
+          // When the response is finished, we can add it to the messages list.
+          if (chunk.get(0).isFinished()) {
+            mChatMessages.add(chunk.get(0).getMessage());
+            runOnUiThread(() -> sendButton.setEnabled(true));
+          }
         }
-      });
-    }, openAIError -> {
-      if (openAIError != null) {
-        Log.e("ERROR", openAIError.toString());
-        ToastsHelper.showToast(this, openAIError.toString());
+      } catch (Exception e) {
+        Log.e("ERROR", e.toString());
+        ToastsHelper.showToast(this, e.getMessage() == null ? e.toString() : e.getMessage());
+        runOnUiThread(() -> sendButton.setEnabled(true));
       }
-      sendButton.setEnabled(true);
     });
   }
 
