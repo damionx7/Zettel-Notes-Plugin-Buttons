@@ -14,7 +14,9 @@ public class PatternUtils {
     //1. 0-1
     //2. 4-5	x
     //3. 7-11	task
-    TASK(Pattern.compile("^([ \\t]*)[-*]\\s\\[([\\sxX])\\]\\s(.+)$"));
+    TASK(Pattern.compile("^([ \\t]*)[-*]\\s\\[([\\sxX])\\]\\s(.+)$")),
+    //TodoTxt
+    TodoTxt(Pattern.compile("((x) |)\\((\\w)\\) ((\\d{4}-\\d{2}-\\d{2}) |)((\\d{4}-\\d{2}-\\d{2}) |)(.+)", Pattern.CASE_INSENSITIVE));
 
     public final Pattern pattern;
     public final String regex;
