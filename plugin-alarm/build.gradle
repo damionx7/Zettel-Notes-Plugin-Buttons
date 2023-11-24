@@ -3,7 +3,7 @@ plugins {
     id 'kotlin-android'
 }
 
-versionMajor = 2
+versionMajor = 3
 packageName = "org.eu.thedoc.zettelnotes.plugins.alarm"
 
 android {

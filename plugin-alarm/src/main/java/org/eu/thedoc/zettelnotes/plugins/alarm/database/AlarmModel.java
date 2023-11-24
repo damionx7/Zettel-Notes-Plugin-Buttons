@@ -128,14 +128,38 @@ public class AlarmModel {
   }
 
   public String transformCommented() {
-    if (text.contains("\n")) {
-      return String.format("%%%%%s%%%%\n%s", text.split("\n")[0], text.split("\n")[1]);
-    } else {
-      return String.format("%%%%%s%%%%", text);
+    try {
+      if (text.contains("\n")) {
+        return String.format("%%%%%s%%%%\n%s", text.split("\n")[0], text.split("\n")[1]);
+      } else {
+        return String.format("%%%%%s%%%%", text);
+      }
+    } catch (Exception e) {
+      return text;
     }
   }
 
   public String transformChecked() {
     return transformCommented().replace("- [ ] ", "- [x] ");
+  }
+
+  public enum Recurrence {
+
+    MIN("m"),
+    HOUR("h"),
+    DAY("d"),
+    WEEK("w"),
+    MONTH("M"),
+    YEAR("y");
+
+    final String constant;
+
+    Recurrence(String constant) {
+      this.constant = constant;
+    }
+
+    public String getConstant() {
+      return this.constant;
+    }
   }
 }

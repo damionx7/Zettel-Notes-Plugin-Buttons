@@ -8,7 +8,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.Action;
 import com.google.gson.Gson;
 import org.eu.thedoc.zettelnotes.broadcasts.AbstractPluginReceiver;
-import org.eu.thedoc.zettelnotes.plugins.alarm.BuildConfig;
 import org.eu.thedoc.zettelnotes.plugins.alarm.R;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmHelper;
@@ -48,9 +47,6 @@ public class AlarmReceiver
 
       AbstractPluginReceiver.IntentBuilder intentBuilder = AbstractPluginReceiver.IntentBuilder.getInstance().setActionOpenUri().setUri(
           model.getFileUri()).setLineIndexes(model.getIndexes()).setEdit(true).setRepository(model.getCategory());
-      if (BuildConfig.DEBUG) {
-        intentBuilder.setDebug();
-      }
       Intent pendingIntent = intentBuilder.build();
 
       PendingIntent pendingViewerIntent = PendingIntent.getActivity(context, model.getId(), pendingIntent,
@@ -71,7 +67,7 @@ public class AlarmReceiver
 
       //schedule recurrence
       if (model.getRecurrence() != null && !model.getRecurrence().isEmpty()) {
-        //mAlarmUtils.scheduleRecurrence(model);
+        mAlarmHelper.scheduleRecurrence(model);
       }
     }
   }

@@ -129,7 +129,7 @@ public class DatabaseService
       String fileTitle = intent.getStringExtra(ARGS_TITLE);
 
       if (text != null && !text.isEmpty()) {
-        List<AlarmModel> models = RegexHelper.getInstance().parse(category, fileTitle, fileUri, text);
+        List<AlarmModel> models = RegexHelper.parse(category, fileTitle, fileUri, text);
         //add in repository
         mRepository.addAll(category, fileUri, models);
       }

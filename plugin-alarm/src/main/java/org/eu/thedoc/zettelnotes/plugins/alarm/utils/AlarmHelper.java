@@ -12,10 +12,12 @@ import com.google.gson.Gson;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
-import org.eu.thedoc.zettelnotes.plugins.alarm.database.RecurrenceModel;
+import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel.Recurrence;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.AlarmReceiver;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.DatabaseService;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.PatternUtils.Regex;
 
 //https://github.com/orgzly/orgzly-android/blob/0783e64e122ec4a9595c98c99b975f3e7bbf2870/app/src/main/java/com/orgzly/android/reminders/RemindersScheduler.kt#L48
 //https://github.com/orgzly/orgzly-android/blob/20236b4626b1045c68d50d76d1b3bdfcbd90f618/app/src/main/java/com/orgzly/android/reminders/ReminderService.java
@@ -36,19 +38,30 @@ public class AlarmHelper {
   }
 
   public void scheduleRecurrence(AlarmModel alarmModel) {
-    RecurrenceModel recurrenceModel = RegexHelper.getInstance().parse(alarmModel);
-    if (recurrenceModel == null) {
-      return;
-    }
     Calendar calendar = alarmModel.getCalendar();
-    switch (recurrenceModel.getCOOKIE()) {
-      case HOUR -> calendar.add(Calendar.HOUR, recurrenceModel.getDigit());
-      case DAY -> calendar.add(Calendar.DATE, recurrenceModel.getDigit());
-      case WEEK -> calendar.add(Calendar.WEEK_OF_YEAR, recurrenceModel.getDigit());
-      case MONTH -> calendar.add(Calendar.MONTH, recurrenceModel.getDigit());
-      case YEAR -> calendar.add(Calendar.YEAR, recurrenceModel.getDigit());
+    String recurrence = alarmModel.getRecurrence();
+    Matcher matcher = Regex.RECURRENCE.pattern.matcher(recurrence);
+    if (matcher.find()) {
+      final String group1 = matcher.group(2);
+      final String string = matcher.group(3);
+      if (group1 != null && string != null) {
+        int digit = Integer.parseInt(group1);
+        if (string.equalsIgnoreCase(Recurrence.MIN.getConstant())) {
+          calendar.add(Calendar.MINUTE, digit);
+        } else if (string.equalsIgnoreCase(Recurrence.HOUR.getConstant())) {
+          calendar.add(Calendar.HOUR_OF_DAY, digit);
+        } else if (string.equalsIgnoreCase(Recurrence.DAY.getConstant())) {
+          calendar.add(Calendar.DAY_OF_YEAR, digit);
+        } else if (string.equalsIgnoreCase(Recurrence.WEEK.getConstant())) {
+          calendar.add(Calendar.WEEK_OF_YEAR, digit);
+        } else if (string.equalsIgnoreCase(Recurrence.MONTH.getConstant())) {
+          calendar.add(Calendar.MONTH, digit);
+        } else if (string.equalsIgnoreCase(Recurrence.YEAR.getConstant())) {
+          calendar.add(Calendar.YEAR, digit);
+        }
+        schedule(alarmModel, calendar);
+      }
     }
-    schedule(alarmModel, calendar);
   }
 
   public void schedule(AlarmModel model, Calendar calendar) throws SecurityException {
@@ -58,7 +71,8 @@ public class AlarmHelper {
               calendar.getTimeInMillis(), model.getId(), model.getText()));
       return;
     }
-    Log.v(getClass().getName(), String.format("schedule %s %s. %s", calendar.getTimeInMillis(), model.getId(), model.getText()));
+    Log.v(getClass().getName(),
+        String.format("%s schedule %s %s. %s", calendar.toString(), calendar.getTimeInMillis(), model.getId(), model.getText()));
 
     PendingIntent pendingIntent = getPendingIntent(model);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
