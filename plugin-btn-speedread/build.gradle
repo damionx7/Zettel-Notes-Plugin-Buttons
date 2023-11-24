@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
 }
 
-versionMajor = 3
 packageName = "org.eu.thedoc.zettelnotes.buttons.speedread"
 
 dependencies {

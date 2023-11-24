@@ -3,7 +3,6 @@ plugins {
 }
 
 packageName = "org.eu.thedoc.zettelnotes.buttons.chat"
-versionMajor = 4
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file("local.properties").newDataInputStream())

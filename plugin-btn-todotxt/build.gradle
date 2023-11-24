@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
 }
 
-versionMajor = 1
 packageName = "org.eu.thedoc.zettelnotes.buttons.todotxt"
 
 dependencies {

@@ -2,5 +2,4 @@ plugins {
     id 'com.android.application'
 }
 
-versionMajor = 10
 packageName = "org.eu.thedoc.zettelnotes.buttons.speech2text"

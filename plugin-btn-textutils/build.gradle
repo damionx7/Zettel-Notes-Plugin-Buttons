@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
 }
 
-versionMajor = 14
 packageName = "org.eu.thedoc.zettelnotes.buttons.textutils"
 
 dependencies {
