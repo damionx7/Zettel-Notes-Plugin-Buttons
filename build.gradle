@@ -15,6 +15,7 @@ apply from: rootProject.file(properties.getProperty("keystore.signing"))
 project.ext {
     minSdk = 21
     targetSdk = 33
+    compileSdk = 34
     keystore = rootProject.file(properties.getProperty("keystore"))
 }
 
@@ -32,7 +33,7 @@ subprojects { subproject ->
             //default values for subprojects
 
             subproject.android {
-                compileSdk project.targetSdk
+                compileSdk project.compileSdk
                 namespace "${subproject.packageName}"
 
                 signingConfigs {
@@ -95,8 +96,4 @@ subprojects { subproject ->
             }
         }
     }
-}
-
-tasks.register('clean', Delete) {
-    delete buildDir
 }
