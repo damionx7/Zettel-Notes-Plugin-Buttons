@@ -3,7 +3,14 @@ package org.eu.thedoc.zettelnotes.buttons.todotxt;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -11,7 +18,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class MainActivity
     extends AppCompatActivity {
@@ -49,26 +55,74 @@ public class MainActivity
     super.onCreate(savedInstanceState);
     String text = getIntent().getStringExtra(INTENT_EXTRA_TEXT);
     if (text == null || text.isEmpty()) {
-      setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "text empty"));
-      ToastsHelper.showToast(this, "Error: invalid todo format");
-      finish();
+      showNewTaskDialog();
+    } else {
+
+      mTodo = Todo.parse(text);
+
+      MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+      String[] formatOptions = {CHOICE_TOGGLE, CHOICE_PRIORITY, CHOICE_DUE_DATE, CHOICE_COMPLETION_DATE};
+      builder.setItems(formatOptions, (dialog, which) -> {
+        switch (formatOptions[which]) {
+          case CHOICE_TOGGLE -> toggleChecked();
+          case CHOICE_PRIORITY -> showPriorityDialog();
+          case CHOICE_DUE_DATE -> showDueDateDialog();
+          case CHOICE_COMPLETION_DATE -> showCompletionDateDialog();
+        }
+      });
+
+      builder.setOnCancelListener(dialog -> finish());
+      builder.show();
     }
+  }
 
-    mTodo = Todo.parse(text);
+  private void showNewTaskDialog() {
+    MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(this);
+    alert.setTitle("New Todo");
 
-    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-    String[] formatOptions = {CHOICE_TOGGLE, CHOICE_PRIORITY, CHOICE_DUE_DATE, CHOICE_COMPLETION_DATE};
-    builder.setItems(formatOptions, (dialog, which) -> {
-      switch (formatOptions[which]) {
-        case CHOICE_TOGGLE -> toggleChecked();
-        case CHOICE_PRIORITY -> showPriorityDialog();
-        case CHOICE_DUE_DATE -> showDueDateDialog();
-        case CHOICE_COMPLETION_DATE -> showCompletionDateDialog();
-      }
+    EditText editText = new EditText(this, null);
+    editText.setSingleLine(true);
+    editText.setText(String.format("(A) %s ", time2human(System.currentTimeMillis())));
+    editText.setHint("Todo");
+    editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+    LinearLayout linearLayout = new LinearLayout(this);
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT);
+    int dp16 = getResources().getDimensionPixelSize(R.dimen.dp16);
+    int dp8 = getResources().getDimensionPixelSize(R.dimen.dp8);
+    params.setMargins(dp16, dp8, dp16, dp8);
+    linearLayout.setLayoutParams(params);
+    editText.setLayoutParams(params);
+    linearLayout.addView(editText);
+    alert.setView(linearLayout);
+    alert.setPositiveButton("Save", null);
+
+    AlertDialog dialog = alert.create();
+    dialog.getWindow().setSoftInputMode(
+        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    dialog.setOnShowListener(dialog1 -> {
+      editText.setSelection(editText.getText().length());
+      editText.requestFocus();
+      Button positiveButton = ((AlertDialog) dialog1).getButton(AlertDialog.BUTTON_POSITIVE);
+      positiveButton.setOnClickListener(v -> {
+        String text = editText.getText().toString();
+        if (text.isEmpty()) {
+          editText.requestFocus();
+        } else {
+          setResult(text);
+        }
+      });
+      //bind enter key with ok btn
+      editText.setOnEditorActionListener((view, actionId, event) -> {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+          positiveButton.callOnClick();
+          return true;
+        }
+        return false;
+      });
     });
-
-    builder.setOnCancelListener(dialog -> finish());
-    builder.show();
+    dialog.setOnCancelListener(dialog12 -> finish());
+    dialog.show();
   }
 
   private void showCompletionDateDialog() {
