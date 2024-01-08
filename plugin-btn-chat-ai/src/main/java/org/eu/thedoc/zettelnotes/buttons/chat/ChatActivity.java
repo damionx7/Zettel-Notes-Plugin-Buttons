@@ -164,7 +164,7 @@ public class ChatActivity
           }
         }
       } catch (Exception e) {
-        Log.e("ERROR", e.toString());
+        Log.e("ERROR", e.toString(), e);
         ToastsHelper.showToast(this, e.getMessage() == null ? e.toString() : e.getMessage());
         runOnUiThread(() -> sendButton.setEnabled(true));
       }
