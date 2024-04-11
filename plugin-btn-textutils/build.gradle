@@ -5,5 +5,5 @@ plugins {
 packageName = "org.eu.thedoc.zettelnotes.buttons.textutils"
 
 dependencies {
-    implementation libs.apache.commons
+    implementation libs.commons.text
 }

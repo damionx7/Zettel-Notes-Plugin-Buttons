@@ -13,6 +13,11 @@ dependencyResolutionManagement {
         gradlePluginPortal()
         maven { url "https://jitpack.io" }
     }
+    versionCatalogs {
+        libs {
+            from(files("/home/dev/git/android/zettel-notes/zettel-notes/gradle/libs.versions.toml"))
+        }
+    }
 }
 
 rootProject.name = "Zettel Notes Plugins"

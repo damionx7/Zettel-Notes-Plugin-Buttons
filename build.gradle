@@ -88,7 +88,6 @@ subprojects { subproject ->
             }
 
             subproject.dependencies {
-                implementation libs.api
                 implementation project(path: ':base')
 
                 coreLibraryDesugaring libs.desugar
