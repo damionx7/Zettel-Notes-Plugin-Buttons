@@ -1,9 +1,13 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.ZettelNotes" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
 
-    <!--    transparent activity -->
-    <style name="AppThemeTransparent" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.Material3.DayNight" />
+
+    <style name="AppThemeNoActionbar" parent="Theme.Material3.DayNight.NoActionBar" />
+
+    <!--    Transparent Theme   -->
+
+    <style name="AppThemeTransparent" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>

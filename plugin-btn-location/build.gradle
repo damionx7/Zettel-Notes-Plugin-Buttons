@@ -5,6 +5,5 @@ plugins {
 packageName = "org.eu.thedoc.zettelnotes.buttons.location"
 
 dependencies {
-    implementation libs.preferencex
     implementation libs.gms.location
 }

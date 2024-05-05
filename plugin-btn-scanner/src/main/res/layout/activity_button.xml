@@ -6,7 +6,7 @@
    android:layout_height="match_parent">
 
     <ProgressBar
-       android:id="@+id/progressBar"
+       android:id="@+id/activity_button_progress_bar"
        style="?android:attr/progressBarStyle"
        android:layout_width="wrap_content"
        android:layout_height="match_parent"

@@ -34,8 +34,8 @@ public class ButtonActivity
   protected void onCreate(
       @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_location);
-    mProgressBar = findViewById(R.id.progressBar);
+    setContentView(R.layout.activity_button);
+    mProgressBar = findViewById(R.id.activity_button_progress_bar);
     mProgressBar.setIndeterminate(true);
 
     GmsDocumentScannerOptions options = new GmsDocumentScannerOptions.Builder()

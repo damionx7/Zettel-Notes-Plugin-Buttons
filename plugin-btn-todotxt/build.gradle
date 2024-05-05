@@ -3,7 +3,3 @@ plugins {
 }
 
 packageName = "org.eu.thedoc.zettelnotes.buttons.todotxt"
-
-dependencies {
-    implementation libs.material
-}

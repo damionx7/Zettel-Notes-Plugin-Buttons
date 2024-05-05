@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android = "http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-       android:allowBackup = "true"
-       android:icon = "@mipmap/ic_launcher"
-       android:label = "@string/app_name"
-       android:roundIcon = "@mipmap/ic_launcher_round"
-       android:supportsRtl = "true"
-       android:theme = "@style/Theme.ZettelNotes.NoActionBar">
+       android:allowBackup="true"
+       android:icon="@mipmap/ic_launcher"
+       android:label="@string/app_name"
+       android:roundIcon="@mipmap/ic_launcher_round"
+       android:supportsRtl="true"
+       android:theme="@style/AppTheme">
 
         <activity
            android:name=".MainActivity"
-           android:theme="@style/Theme.ZettelNotes"
            android:exported = "true">
             <intent-filter>
-                <action android:name = "org.eu.thedoc.zettelnotes.intent.buttons" />
-                <category android:name = "android.intent.category.DEFAULT" />
+                <action android:name="org.eu.thedoc.zettelnotes.intent.buttons" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,31 +22,30 @@
         </activity>
 
         <activity
-           android:name = ".SpeedReadActivity"
-           android:exported = "true">
+           android:name=".SpeedReadActivity"
+           android:theme="@style/AppThemeNoActionbar"
+           android:exported="true">
             <intent-filter>
-                <action android:name = "org.eu.thedoc.zettelnotes.intent.buttons.speedread" />
-                <category android:name = "android.intent.category.DEFAULT" />
+                <action android:name="org.eu.thedoc.zettelnotes.intent.buttons.speedread" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <activity
-           android:name = ".ShareActivity"
-           android:excludeFromRecents = "true"
-           android:exported = "true"
-           android:label = "@string/intent_share_text"
-           android:launchMode = "singleTop"
-           android:noHistory = "true"
-           android:theme = "@style/AppThemeTransparent">
+           android:name=".ShareActivity"
+           android:excludeFromRecents="true"
+           android:exported="true"
+           android:label="@string/intent_share_text"
+           android:launchMode="singleTop"
+           android:noHistory="true"
+           android:theme="@style/AppThemeTransparent">
             <intent-filter>
-                <action android:name = "android.intent.action.PROCESS_TEXT" />
-                <category android:name = "android.intent.category.DEFAULT" />
-                <data android:mimeType = "text/plain" />
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
 
     </application>
-
-
 
 </manifest>

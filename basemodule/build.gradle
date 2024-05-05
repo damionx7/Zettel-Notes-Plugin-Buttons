@@ -33,4 +33,7 @@ android {
 
 dependencies {
     api libs.button.api
+    api libs.constraintx
+    api libs.material
+    api libs.preferencex
 }

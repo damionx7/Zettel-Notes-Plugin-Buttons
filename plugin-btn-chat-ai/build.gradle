@@ -18,6 +18,4 @@ dependencies {
     implementation libs.chat.gpt.api
     implementation libs.okhttp
     implementation libs.cardviewx
-    implementation libs.constraintx
-    implementation libs.preferencex
 }

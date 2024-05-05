@@ -88,7 +88,7 @@ subprojects { subproject ->
             }
 
             subproject.dependencies {
-                implementation project(path: ':base')
+                implementation project(path: ':basemodule')
 
                 coreLibraryDesugaring libs.desugar
                 testImplementation libs.bundles.junit

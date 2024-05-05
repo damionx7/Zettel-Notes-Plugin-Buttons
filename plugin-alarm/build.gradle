@@ -18,11 +18,9 @@ android {
 dependencies {
     annotationProcessor libs.room.annotation.processor
 
-    implementation libs.constraintx
     implementation libs.cardviewx
     implementation libs.gson
     implementation libs.recyclerviewx
     implementation libs.bundles.room
     implementation libs.paging
-    implementation libs.material
 }

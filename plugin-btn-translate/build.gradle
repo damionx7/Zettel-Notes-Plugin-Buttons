@@ -5,6 +5,5 @@ plugins {
 packageName = "org.eu.thedoc.zettelnotes.buttons.translate"
 
 dependencies {
-    implementation libs.constraintx
     implementation libs.bundles.mlkit
 }

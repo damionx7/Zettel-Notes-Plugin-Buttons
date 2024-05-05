@@ -3,8 +3,3 @@ plugins {
 }
 
 packageName = "org.eu.thedoc.zettelnotes.buttons.speedread"
-
-dependencies {
-    implementation libs.constraintx
-    implementation libs.preferencex
-}
