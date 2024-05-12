@@ -24,6 +24,7 @@ rootProject.name = "Zettel Notes Plugins"
 include ':basemodule'
 include ':plugin-alarm'
 include ':plugin-btn-chat-ai'
+include ':plugin-btn-latex'
 include ':plugin-btn-location'
 include ':plugin-btn-scanner'
 include ':plugin-btn-smile'

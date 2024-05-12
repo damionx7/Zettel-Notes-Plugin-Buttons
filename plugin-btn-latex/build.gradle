@@ -1,0 +1,9 @@
+plugins {
+    alias libs.plugins.android.application
+}
+
+packageName = "org.eu.thedoc.zettelnotes.buttons.latex"
+
+dependencies {
+    api libs.gson
+}

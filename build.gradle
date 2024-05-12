@@ -80,6 +80,10 @@ subprojects { subproject ->
                     coreLibraryDesugaringEnabled true
                 }
 
+                buildFeatures {
+                    buildConfig true
+                }
+
                 testOptions {
                     unitTests.all {
                         useJUnitPlatform()

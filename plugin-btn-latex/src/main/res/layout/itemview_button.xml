@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.AppCompatButton
+   android:id="@+id/item_view_button"
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content"
+   android:scaleType="fitCenter"
+   android:padding="4dp"
+   android:background="?selectableItemBackground"
+   android:clickable="true"
+   android:focusable="true">
+
+</androidx.appcompat.widget.AppCompatButton>
