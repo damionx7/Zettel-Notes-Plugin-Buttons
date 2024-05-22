@@ -37,6 +37,8 @@ public class ButtonActivity
     builder.setView(view);
 
     AppCompatEditText searchView = view.findViewById(R.id.dialog_edit_text);
+    searchView.setVisibility(View.GONE);
+
     RecyclerView recyclerView = view.findViewById(R.id.dialog_recycler_view);
 
     Adapter adapter = new Adapter((symbol, desc) -> {
