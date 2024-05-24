@@ -12,14 +12,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.googlecode.leptonica.android.AdaptiveMap;
 import com.googlecode.leptonica.android.Binarize;
 import com.googlecode.leptonica.android.Convert;
@@ -174,14 +177,13 @@ public class MainActivity
 
       try {
         String text = mAPI.getHOCRText(1);
-        String clean_text = Html.fromHtml(text).toString().trim();
 
         if (text.isEmpty()) {
           showToast("Error : OCR Text is empty");
         } else {
+          Log.v(getPackageName(), text);
           Log.v(getPackageName(), "confidence " + mAPI.meanConfidence());
-          Log.v(getPackageName(), clean_text);
-          showToast("Got text with confidence  " + mAPI.meanConfidence());
+          mHandler.execute(() -> showText(text));
         }
       } catch (Exception e) {
         showToast("Error " + e);
@@ -193,6 +195,31 @@ public class MainActivity
         toggleProgressBar(false);
       }
     });
+  }
+
+  private void showText(final String text) {
+    String clean_text = Html.fromHtml(text).toString().trim();
+    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
+    builder.setMessage(clean_text);
+    AlertDialog dialog = builder.create();
+    dialog.setOnShowListener(dialog1 -> {
+      //make text selectable
+      View messageView = ((AlertDialog) dialog1).findViewById(android.R.id.message);
+      if (messageView instanceof TextView) {
+        ((TextView) messageView).setTextIsSelectable(true);
+      }
+    });
+    //show
+    dialog.show();
+
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    if (mAPI != null) {
+      mAPI.recycle();
+    }
   }
 
   private void showToast(String message) {
