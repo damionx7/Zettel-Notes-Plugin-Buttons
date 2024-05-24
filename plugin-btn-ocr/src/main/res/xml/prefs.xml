@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="General">
+
+        <ListPreference
+           android:defaultValue="eng"
+           android:entries="@array/ocr_languages"
+           android:entryValues="@array/ocr_languages_value"
+           android:key="@string/prefs_ocr_languages_key"
+           android:title="Select Language for OCR" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Advanced">
+
+        <ListPreference
+           android:defaultValue="1"
+           android:entries="@array/ocr_page_segmentation_mode"
+           android:entryValues="@array/ocr_page_segmentation_mode_value"
+           android:key="@string/prefs_ocr_page_segmentation_mode_key"
+           android:title="Page Segmentation Mode" />
+
+        <SwitchPreference
+           android:defaultValue="true"
+           android:key="@string/prefs_ocr_pre_process_image_key"
+           android:title="Pre process image" />
+
+        <SwitchPreference
+           android:defaultValue="true"
+           android:key="@string/prefs_ocr_pre_process_image_enhance_contrast_key"
+           android:title="Enhance Contrast"
+           android:dependency="@string/prefs_ocr_pre_process_image_key" />
+
+        <SwitchPreference
+           android:defaultValue="true"
+           android:key="@string/prefs_ocr_pre_process_image_unshare_masking_key"
+           android:title="Unsharp Masking"
+           android:dependency="@string/prefs_ocr_pre_process_image_key" />
+
+        <SwitchPreference
+           android:defaultValue="true"
+           android:key="@string/prefs_ocr_pre_process_image_otsu_threshold_key"
+           android:title="OTSU threshold"
+           android:dependency="@string/prefs_ocr_pre_process_image_key" />
+        <SwitchPreference
+           android:defaultValue="true"
+           android:key="@string/prefs_ocr_pre_process_image_deskew_image_key"
+           android:title="Deskew Image"
+           android:dependency="@string/prefs_ocr_pre_process_image_key" />
+
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

@@ -3,6 +3,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature
+       android:name="android.hardware.camera"
+       android:required="false" />
 
     <queries>
         <intent>
@@ -45,6 +48,9 @@
             </intent-filter>
         </activity>
 
+        <activity
+           android:name=".SettingsActivity"
+           android:exported="false" />
     </application>
 
 </manifest>
