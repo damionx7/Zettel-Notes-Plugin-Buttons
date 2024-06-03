@@ -65,20 +65,45 @@ public class MainActivity
   private String mLangCode;
   private int mPageSegmentationMode;
   private ProgressBar mProgressBar;
-  private boolean isFastModel;
+  private String mPreferredModel;
 
   private void initializePreferences() {
 
     mLangCode = mSharedPreferences.getString(getString(R.string.prefs_ocr_languages_key), Constants.DEFAULT_LANGUAGE);
     mPageSegmentationMode = Integer.parseInt(mSharedPreferences.getString(getString(R.string.prefs_ocr_page_segmentation_mode_key), "1"));
-    isFastModel = mSharedPreferences.getBoolean(getString(R.string.prefs_ocr_prefer_fast_model_key), false);
+    mPreferredModel = mSharedPreferences.getString(getString(R.string.prefs_ocr_model_key),
+        getString(R.string.ocr_language_model_value_best));
 
+  }
+
+  private File getParentDirectory() {
+    String folder = Constants.FOLDER;
+    if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_best))) {
+      folder = Constants.FOLDER;
+    } else if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_fast))) {
+      folder = Constants.FOLDER_FAST;
+    } else if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_standard))) {
+      folder = Constants.FOLDER_STANDARD;
+    }
+    return new File(getFilesDir(), folder);
+  }
+
+  private String getDownloadUrl() {
+    String url = Constants.TESS_DATA_DOWNLOAD_URL_BEST;
+    if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_best))) {
+      url = Constants.TESS_DATA_DOWNLOAD_URL_BEST;
+    } else if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_fast))) {
+      url = Constants.TESS_DATA_DOWNLOAD_URL_FAST;
+    } else if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_standard))) {
+      url = Constants.TESS_DATA_DOWNLOAD_URL_STANDARD;
+    }
+    return url;
   }
 
   private void initializeDirectory() {
 
     //set directory
-    File parent = new File(getFilesDir(), isFastModel ? Constants.FOLDER_FAST : Constants.FOLDER);
+    File parent = getParentDirectory();
     mDataDir = new File(parent, Constants.DATA_FOLDER);
     if (!mDataDir.exists() && mDataDir.mkdirs()) {
       //
@@ -275,7 +300,7 @@ public class MainActivity
 
   private void downloadLanguageData() {
     mNetworkIO.execute(() -> {
-      String downloadURL = String.format(isFastModel ? Constants.TESS_DATA_DOWNLOAD_URL_FAST : Constants.TESS_DATA_DOWNLOAD_URL, mLangCode);
+      String downloadURL = String.format(getDownloadUrl(), mLangCode);
       Log.v(getPackageName(), "Downloading... " + downloadURL);
       URL url, base, next;
       HttpURLConnection conn;

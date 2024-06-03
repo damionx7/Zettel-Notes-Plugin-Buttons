@@ -3,7 +3,7 @@
     <string name="prefs_ocr_languages_key">prefs_ocr_languages_key</string>
     <string name="prefs_ocr_page_segmentation_mode_key">prefs_ocr_page_segmentation_mode_key</string>
     <string name="prefs_ocr_pre_process_image_key">prefs_ocr_pre_process_image_key</string>
-    <string name="prefs_ocr_prefer_fast_model_key" translatable="false">prefs_ocr_prefer_fast_model_key</string>
+    <string name="prefs_ocr_model_key" translatable="false">prefs_ocr_model_key</string>
     <string name="prefs_ocr_pre_process_image_enhance_contrast_key">prefs_ocr_pre_process_image_enhance_contrast_key</string>
     <string name="prefs_ocr_pre_process_image_unshare_masking_key">prefs_ocr_pre_process_image_unshare_masking_key</string>
     <string name="prefs_ocr_pre_process_image_otsu_threshold_key">prefs_ocr_pre_process_image_OTSU_threshold_key</string>

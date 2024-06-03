@@ -3,22 +3,28 @@
 
     <PreferenceCategory android:title="General">
 
+        <SwitchPreference
+           android:defaultValue="true"
+           android:key="@string/prefs_plugin_start_with_camera_key"
+           android:title="Start plugin with camera" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Optical Character Recognition">
+
         <ListPreference
            android:defaultValue="eng"
            android:entries="@array/ocr_languages"
            android:entryValues="@array/ocr_languages_value"
            android:key="@string/prefs_ocr_languages_key"
-           android:title="Select Language for OCR" />
+           android:title="Select Language" />
 
-        <SwitchPreference
-           android:defaultValue="false"
-           android:key="@string/prefs_ocr_prefer_fast_model_key"
-           android:title="Prefer Fast Trained Model" />
-
-        <SwitchPreference
-           android:defaultValue="true"
-           android:key="@string/prefs_plugin_start_with_camera_key"
-           android:title="Start plugin with camera" />
+        <ListPreference
+           android:defaultValue="@string/ocr_language_model_value_best"
+           android:entries="@array/ocr_language_model"
+           android:entryValues="@array/ocr_language_model_values"
+           android:key="@string/prefs_ocr_model_key"
+           android:title="Select Training Model" />
 
     </PreferenceCategory>
 
