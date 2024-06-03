@@ -1,5 +1,8 @@
 package org.eu.thedoc.zettelnotes.buttons.ocr;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -12,15 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.googlecode.leptonica.android.AdaptiveMap;
@@ -51,10 +53,11 @@ public class MainActivity
     extends AppCompatActivity
     implements ProgressNotifier {
 
+  public static final String ARGS_CAMERA = "args-camera";
+  public static final String ARGS_RESULT = "args-result";
   private final Executor mHandler = AppExecutor.getInstance().mainThread();
   private final Executor mNetworkIO = AppExecutor.getInstance().networkIO();
   private final Executor mDiskIO = AppExecutor.getInstance().diskIO();
-
   private TessBaseAPI mAPI;
   private SharedPreferences mSharedPreferences;
   private boolean mSuccess;
@@ -62,26 +65,24 @@ public class MainActivity
   private String mLangCode;
   private int mPageSegmentationMode;
   private ProgressBar mProgressBar;
+  private boolean isFastModel;
 
-  @Override
-  protected void onCreate(
-      @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    mProgressBar = findViewById(R.id.activity_main_progress_bar);
+  private void initializePreferences() {
+
+    mLangCode = mSharedPreferences.getString(getString(R.string.prefs_ocr_languages_key), Constants.DEFAULT_LANGUAGE);
+    mPageSegmentationMode = Integer.parseInt(mSharedPreferences.getString(getString(R.string.prefs_ocr_page_segmentation_mode_key), "1"));
+    isFastModel = mSharedPreferences.getBoolean(getString(R.string.prefs_ocr_prefer_fast_model_key), false);
+
+  }
+
+  private void initializeDirectory() {
 
     //set directory
-    File parent = new File(getFilesDir(), Constants.FOLDER);
+    File parent = new File(getFilesDir(), isFastModel ? Constants.FOLDER_FAST : Constants.FOLDER);
     mDataDir = new File(parent, Constants.DATA_FOLDER);
     if (!mDataDir.exists() && mDataDir.mkdirs()) {
       //
     }
-
-    //set preferences
-    mSharedPreferences = getSharedPreferences(SettingsActivity.PREFS, MODE_PRIVATE);
-
-    mLangCode = mSharedPreferences.getString(getString(R.string.prefs_ocr_languages_key), Constants.DEFAULT_LANGUAGE);
-    mPageSegmentationMode = Integer.parseInt(mSharedPreferences.getString(getString(R.string.prefs_ocr_page_segmentation_mode_key), "1"));
 
     //check if language data exists
     if (languageDataExists()) {
@@ -101,6 +102,40 @@ public class MainActivity
       Log.v(getPackageName(), "Language " + mLangCode + " data doesn't exist. Downloading...");
       downloadLanguageData();
     }
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    initializePreferences();
+    initializeDirectory();
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    if (mAPI != null) {
+      mAPI.recycle();
+    }
+  }
+
+  private boolean shouldStartWithCamera() {
+    return shouldReturnResult() && getIntent() != null && getIntent().getBooleanExtra(ARGS_CAMERA, false);
+  }
+
+  private boolean shouldReturnResult() {
+    return getIntent() != null && getIntent().getBooleanExtra(ARGS_RESULT, false);
+  }
+
+  @Override
+  protected void onCreate(
+      @Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    mProgressBar = findViewById(R.id.activity_main_progress_bar);
+
+    //set preferences
+    mSharedPreferences = getSharedPreferences(SettingsActivity.PREFS, MODE_PRIVATE);
 
     //register listeners
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia = registerForActivityResult(new PickVisualMedia(), uri -> {
@@ -141,6 +176,15 @@ public class MainActivity
     buttonSelectImage.setOnClickListener(v -> pickMedia.launch(new PickVisualMediaRequest.Builder()
         .setMediaType(PickVisualMedia.ImageOnly.INSTANCE)
         .build()));
+
+    //check if should return result
+    if (shouldReturnResult()) {
+      if (shouldStartWithCamera()) {
+        buttonCamera.performClick();
+      } else {
+        buttonSelectImage.performClick();
+      }
+    }
   }
 
   private boolean languageDataExists() {
@@ -181,9 +225,13 @@ public class MainActivity
         if (text.isEmpty()) {
           showToast("Error : OCR Text is empty");
         } else {
-          Log.v(getPackageName(), text);
           Log.v(getPackageName(), "confidence " + mAPI.meanConfidence());
-          mHandler.execute(() -> showText(text));
+          final String clean_text = Html.fromHtml(text).toString().trim();
+          Log.v(getPackageName(), "text \n " + clean_text);
+
+          mHandler.execute(() -> {
+            showText(clean_text);
+          });
         }
       } catch (Exception e) {
         showToast("Error " + e);
@@ -198,28 +246,27 @@ public class MainActivity
   }
 
   private void showText(final String text) {
-    String clean_text = Html.fromHtml(text).toString().trim();
     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
-    builder.setMessage(clean_text);
-    AlertDialog dialog = builder.create();
-    dialog.setOnShowListener(dialog1 -> {
-      //make text selectable
-      View messageView = ((AlertDialog) dialog1).findViewById(android.R.id.message);
-      if (messageView instanceof TextView) {
-        ((TextView) messageView).setTextIsSelectable(true);
+    View view = getLayoutInflater().inflate(R.layout.dialog_text, null);
+    builder.setView(view);
+    AppCompatEditText editText = view.findViewById(R.id.dialog_text_edit_text);
+    editText.setText(text);
+
+    builder.setPositiveButton(shouldReturnResult() ? "Add in Note" : "Copy to clipboard", (dialog, which) -> {
+      //return result
+      if (shouldReturnResult()) {
+        setResult(RESULT_OK, new Intent().putExtra(ButtonActivity.RESULT_STRING, editText.getText().toString()));
+        finish();
+      } else {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+          ClipData clip = ClipData.newPlainText("zn-ocr", editText.getText().toString());
+          clipboard.setPrimaryClip(clip);
+        }
       }
     });
-    //show
-    dialog.show();
 
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    if (mAPI != null) {
-      mAPI.recycle();
-    }
+    builder.show();
   }
 
   private void showToast(String message) {
@@ -228,7 +275,8 @@ public class MainActivity
 
   private void downloadLanguageData() {
     mNetworkIO.execute(() -> {
-      String downloadURL = String.format(Constants.TESS_DATA_DOWNLOAD_URL, mLangCode);
+      String downloadURL = String.format(isFastModel ? Constants.TESS_DATA_DOWNLOAD_URL_FAST : Constants.TESS_DATA_DOWNLOAD_URL, mLangCode);
+      Log.v(getPackageName(), "Downloading... " + downloadURL);
       URL url, base, next;
       HttpURLConnection conn;
       String location;
@@ -331,6 +379,30 @@ public class MainActivity
   @Override
   public void onProgressValues(ProgressValues progressValues) {
     Log.v(getPackageName(), "onProgressValues" + progressValues.getPercent());
+  }
+
+  public static final class IntentBuilder {
+
+    private final Intent mIntent;
+
+    private IntentBuilder(Context context) {
+      mIntent = new Intent();
+      mIntent.setClass(context, MainActivity.class);
+      mIntent.putExtra(ARGS_RESULT, true);
+    }
+
+    public static IntentBuilder getInstance(Context context) {
+      return new IntentBuilder(context);
+    }
+
+    public IntentBuilder setCamera(boolean value) {
+      mIntent.putExtra(ARGS_CAMERA, value);
+      return this;
+    }
+
+    public Intent build() {
+      return mIntent;
+    }
   }
 }
 

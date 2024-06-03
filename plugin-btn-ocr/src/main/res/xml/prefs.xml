@@ -10,6 +10,16 @@
            android:key="@string/prefs_ocr_languages_key"
            android:title="Select Language for OCR" />
 
+        <SwitchPreference
+           android:defaultValue="false"
+           android:key="@string/prefs_ocr_prefer_fast_model_key"
+           android:title="Prefer Fast Trained Model" />
+
+        <SwitchPreference
+           android:defaultValue="true"
+           android:key="@string/prefs_plugin_start_with_camera_key"
+           android:title="Start plugin with camera" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Advanced">
