@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                                      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="General">
+
+        <ListPreference
+           android:defaultValue="en"
+           android:entries="@array/array_language"
+           android:entryValues="@array/array_language_value"
+           app:useSimpleSummaryProvider="true"
+           android:key="@string/prefs_language_key"
+           android:title="Select Language" />
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

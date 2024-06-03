@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Speech to Text</string>
+    <string name="app_name">ZN Plugin Speech to Text</string>
+    <string name="prefs_language_key">prefs_language_key</string>
 </resources>

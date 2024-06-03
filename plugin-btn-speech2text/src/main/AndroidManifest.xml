@@ -11,13 +11,33 @@
 
         <activity
            android:name=".RecognizerActivity"
+           android:launchMode="singleTask"
+           android:exported="true">
+            <intent-filter>
+                <action android:name="org.eu.thedoc.zettelnotes.intent.buttons.speech_to_text" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+           android:name=".SettingsActivity"
            android:exported="true">
             <intent-filter>
                 <action android:name="org.eu.thedoc.zettelnotes.intent.buttons" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.INFO" />
+            </intent-filter>
         </activity>
 
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 
 </manifest>

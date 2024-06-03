@@ -2,10 +2,7 @@ package org.eu.thedoc.zettelnotes.buttons.speech2text;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.speech.RecognizerIntent;
 import android.util.Log;
-import java.util.ArrayList;
-import java.util.Locale;
 import org.eu.thedoc.zettelnotes.interfaces.ButtonInterface;
 
 public class Button
@@ -13,11 +10,16 @@ public class Button
 
   private final ActivityResultListener mActivityResultListener = result -> {
     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-      ArrayList<String> arrayListExtra = result.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-      String text = arrayListExtra.get(0);
-      Log.v(getClass().getName(), text);
-      if (mCallback != null) {
+      String text = result.getData().getStringExtra(RecognizerActivity.RESULT_STRING);
+      Log.v(getClass().getName(), "Got Data");
+      if (mCallback != null && text != null) {
+        Log.v(getClass().getName(), "Got Text " + text);
         mCallback.insertText(text);
+      }
+    } else {
+      if (result.getData() != null) {
+        String error = result.getData().getStringExtra(RecognizerActivity.ERROR_STRING);
+        Log.e(getClass().getName(), error);
       }
     }
   };
@@ -27,15 +29,7 @@ public class Button
     public void onClick() {
       if (mCallback != null) {
         mCallback.setActivityResultListener(mActivityResultListener);
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech to text");
-        try {
-          mCallback.startActivityForResult(intent);
-        } catch (Exception e) {
-          Log.e("Error", e.getMessage());
-        }
+        mCallback.startActivityForResult(new Intent("org.eu.thedoc.zettelnotes.intent.buttons.speech_to_text"));
       }
     }
 

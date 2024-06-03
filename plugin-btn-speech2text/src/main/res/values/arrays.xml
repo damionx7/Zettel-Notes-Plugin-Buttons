@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="array_language">
+        <item>System</item>
+        <item>Arabic</item>
+        <item>Chinese Simplified</item>
+        <item>Chinese Traditional</item>
+        <item>Catalan</item>
+        <item>Dutch</item>
+        <item>English</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Hebrew</item>
+        <item>Hindi</item>
+        <item>Italian</item>
+        <item>Persian</item>
+        <item>Portuguese</item>
+        <item>Polish</item>
+        <item>Romanian</item>
+        <item>Russian</item>
+        <item>Spanish</item>
+        <item>Tagalog</item>
+        <item>Turkish</item>
+        <item>Ukrainian</item>
+        <item>Vietnamese</item>
+    </string-array>
+
+    <string-array name="array_language_value">
+        <item>system</item>
+        <item>ar-SA</item>
+        <item>zh-CN</item>
+        <item>zh-TW</item>
+        <item>ca-ES</item>
+        <item>nl-NL</item>
+        <item>en</item>
+        <item>fr-FR</item>
+        <item>de-DE</item>
+        <item>iw-IL</item>
+        <item>hi-IN</item>
+        <item>it-IT</item>
+        <item>fa-IR</item>
+        <item>pt-PT</item>
+        <item>pl-PL</item>
+        <item>ro-RO</item>
+        <item>ru-RU</item>
+        <item>es-ES</item>
+        <item>tl</item>
+        <item>tr-TR</item>
+        <item>uk-UA</item>
+        <item>vi-VN</item>
+    </string-array>
+
+</resources>

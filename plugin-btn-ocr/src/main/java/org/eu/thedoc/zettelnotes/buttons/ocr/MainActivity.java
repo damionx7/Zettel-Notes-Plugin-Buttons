@@ -73,7 +73,6 @@ public class MainActivity
     mPageSegmentationMode = Integer.parseInt(mSharedPreferences.getString(getString(R.string.prefs_ocr_page_segmentation_mode_key), "1"));
     mPreferredModel = mSharedPreferences.getString(getString(R.string.prefs_ocr_model_key),
         getString(R.string.ocr_language_model_value_best));
-
   }
 
   private File getParentDirectory() {

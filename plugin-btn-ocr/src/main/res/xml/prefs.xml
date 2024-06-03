@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                                      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory android:title="General">
 
@@ -16,6 +17,7 @@
            android:defaultValue="eng"
            android:entries="@array/ocr_languages"
            android:entryValues="@array/ocr_languages_value"
+           app:useSimpleSummaryProvider="true"
            android:key="@string/prefs_ocr_languages_key"
            android:title="Select Language" />
 
@@ -23,6 +25,7 @@
            android:defaultValue="@string/ocr_language_model_value_best"
            android:entries="@array/ocr_language_model"
            android:entryValues="@array/ocr_language_model_values"
+           app:useSimpleSummaryProvider="true"
            android:key="@string/prefs_ocr_model_key"
            android:title="Select Training Model" />
 

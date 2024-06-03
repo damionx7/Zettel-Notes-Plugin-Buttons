@@ -22,7 +22,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Zettel Notes Plugins"
 include ':basemodule'
-include ':base-text-to-speech'
 include ':plugin-alarm'
 include ':plugin-btn-chat-ai'
 include ':plugin-btn-latex'
