@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   xmlns:tools="http://schemas.android.com/tools"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent">
+
+    <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       android:layout_marginStart="16dp"
+       android:layout_marginEnd="16dp"
+       app:layout_constraintBottom_toTopOf="@+id/linearLayoutCompat"
+       app:layout_constraintTop_toTopOf="parent"
+       android:layout_marginTop="16dp"
+       android:id="@+id/scrollView2">
+
+        <androidx.appcompat.widget.AppCompatTextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:id="@+id/activity_main_text_view"
+           android:hint="Result"
+           android:padding="4dp" />
+    </ScrollView>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+       android:orientation="horizontal"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       android:id="@+id/linearLayoutCompat">
+        <com.google.android.material.button.MaterialButton
+           android:text="Stop"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:id="@+id/activity_main_button_stop"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           android:layout_weight="1"
+           android:layout_margin="16dp" />
+        <com.google.android.material.button.MaterialButton
+           android:text="Record"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:id="@+id/activity_main_button_record"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintEnd_toEndOf="parent"
+           tools:layout_editor_absoluteY="611dp"
+           android:layout_weight="1"
+           android:layout_margin="16dp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+       android:id="@+id/activity_main_extended_floating_action_button"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+       app:icon="@drawable/ic_copy"
+       android:layout_marginBottom="8dp"
+       android:layout_marginEnd="16dp"
+       android:text="Copy To Note" />
+</androidx.constraintlayout.widget.ConstraintLayout>

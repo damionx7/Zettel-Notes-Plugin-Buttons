@@ -3,3 +3,7 @@ plugins {
 }
 
 packageName = "org.eu.thedoc.zettelnotes.buttons.speech2text"
+
+dependencies {
+    implementation group: 'com.alphacephei', name: 'vosk-android', version: '0.3.47'
+}

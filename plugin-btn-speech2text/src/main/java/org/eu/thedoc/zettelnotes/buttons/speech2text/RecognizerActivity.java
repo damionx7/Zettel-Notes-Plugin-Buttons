@@ -15,8 +15,6 @@ import java.util.ArrayList;
 public class RecognizerActivity
     extends AppCompatActivity {
 
-  public static final String ERROR_STRING = "args-error";
-  public static final String RESULT_STRING = "args-result";
   private SharedPreferences mSharedPreferences;
   private String mLangCode;
 
@@ -29,11 +27,13 @@ public class RecognizerActivity
     progressBar.setIndeterminate(true);
 
     mSharedPreferences = getSharedPreferences(SettingsActivity.PREFS, MODE_PRIVATE);
-    mLangCode = mSharedPreferences.getString(getString(R.string.prefs_language_key), "en");
+    mLangCode = mSharedPreferences.getString(getString(R.string.prefs_language_key), getString(R.string.pref_lang_code_english));
 
     Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, mLangCode);
+    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, mLangCode);
+    intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
     intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech to text");
 
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -43,12 +43,12 @@ public class RecognizerActivity
             String text = arrayListExtra.get(0);
             Log.v(getPackageName(), text);
 
-            setResult(RESULT_OK, new Intent().putExtra(RESULT_STRING, text));
+            setResult(RESULT_OK, new Intent().putExtra(Button.RESULT_STRING, text));
             finish();
           } else {
             Log.e(getPackageName(), "Error Result is Null");
 
-            setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Error Result is Null"));
+            setResult(RESULT_CANCELED, new Intent().putExtra(Button.ERROR_STRING, "Error Result is Null"));
             finish();
           }
         });
@@ -59,6 +59,6 @@ public class RecognizerActivity
   @Override
   protected void onStart() {
     super.onStart();
-    mLangCode = mSharedPreferences.getString(getString(R.string.prefs_language_key), "en");
+    mLangCode = mSharedPreferences.getString(getString(R.string.prefs_language_key), getString(R.string.pref_lang_code_english));
   }
 }

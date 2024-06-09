@@ -4,6 +4,12 @@
 
     <PreferenceCategory android:title="General">
 
+        <SwitchPreferenceCompat
+           android:defaultValue="false"
+           android:title="Enable continuous recognition"
+           android:key="@string/prefs_use_continuous_recognition" />
+        />
+
         <ListPreference
            android:defaultValue="en"
            android:entries="@array/array_language"

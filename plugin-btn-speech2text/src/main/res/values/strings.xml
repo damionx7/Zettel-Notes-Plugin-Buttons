@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ZN Plugin Speech to Text</string>
-    <string name="prefs_language_key">prefs_language_key</string>
+    <string name="prefs_language_key" translatable="false">prefs_language_key</string>
+    <string name="prefs_use_continuous_recognition" translatable="false">prefs_use_continuous_recognition</string>
 </resources>

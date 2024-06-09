@@ -2,22 +2,19 @@
 <resources>
 
     <string-array name="array_language">
-        <item>System</item>
         <item>Arabic</item>
-        <item>Chinese Simplified</item>
-        <item>Chinese Traditional</item>
+        <item>Chinese</item>
         <item>Catalan</item>
         <item>Dutch</item>
         <item>English</item>
+        <item>English (India)</item>
         <item>French</item>
         <item>German</item>
-        <item>Hebrew</item>
         <item>Hindi</item>
         <item>Italian</item>
         <item>Persian</item>
         <item>Portuguese</item>
         <item>Polish</item>
-        <item>Romanian</item>
         <item>Russian</item>
         <item>Spanish</item>
         <item>Tagalog</item>
@@ -26,29 +23,46 @@
         <item>Vietnamese</item>
     </string-array>
 
+    <string name="pref_lang_code_arabic">ar-SA</string>
+    <string name="pref_lang_code_chinese">zh-CN</string>
+    <string name="pref_lang_code_catalan">ca-ES</string>
+    <string name="pref_lang_code_dutch">nl-NL</string>
+    <string name="pref_lang_code_english">en</string>
+    <string name="pref_lang_code_english_india">en_IN</string>
+    <string name="pref_lang_code_french">fr-FR</string>
+    <string name="pref_lang_code_german">de-DE</string>
+    <string name="pref_lang_code_hindi">hi-IN</string>
+    <string name="pref_lang_code_italian">it-IT</string>
+    <string name="pref_lang_code_persian">fa-IR</string>
+    <string name="pref_lang_code_portuguese">pt-PT</string>
+    <string name="pref_lang_code_polish">pl-PL</string>
+    <string name="pref_lang_code_russian">ru-RU</string>
+    <string name="pref_lang_code_spanish">es-ES</string>
+    <string name="pref_lang_code_tagalog">tl</string>
+    <string name="pref_lang_code_turkish">tr-TR</string>
+    <string name="pref_lang_code_ukrainian">uk-UA</string>
+    <string name="pref_lang_code_vietnamese">vi-VN</string>
+
     <string-array name="array_language_value">
-        <item>system</item>
-        <item>ar-SA</item>
-        <item>zh-CN</item>
-        <item>zh-TW</item>
-        <item>ca-ES</item>
-        <item>nl-NL</item>
-        <item>en</item>
-        <item>fr-FR</item>
-        <item>de-DE</item>
-        <item>iw-IL</item>
-        <item>hi-IN</item>
-        <item>it-IT</item>
-        <item>fa-IR</item>
-        <item>pt-PT</item>
-        <item>pl-PL</item>
-        <item>ro-RO</item>
-        <item>ru-RU</item>
-        <item>es-ES</item>
-        <item>tl</item>
-        <item>tr-TR</item>
-        <item>uk-UA</item>
-        <item>vi-VN</item>
+        <item>@string/pref_lang_code_arabic</item>
+        <item>@string/pref_lang_code_chinese</item>
+        <item>@string/pref_lang_code_catalan</item>
+        <item>@string/pref_lang_code_dutch</item>
+        <item>@string/pref_lang_code_english</item>
+        <item>@string/pref_lang_code_english_india</item>
+        <item>@string/pref_lang_code_french</item>
+        <item>@string/pref_lang_code_german</item>
+        <item>@string/pref_lang_code_hindi</item>
+        <item>@string/pref_lang_code_italian</item>
+        <item>@string/pref_lang_code_persian</item>
+        <item>@string/pref_lang_code_portuguese</item>
+        <item>@string/pref_lang_code_polish</item>
+        <item>@string/pref_lang_code_russian</item>
+        <item>@string/pref_lang_code_spanish</item>
+        <item>@string/pref_lang_code_tagalog</item>
+        <item>@string/pref_lang_code_turkish</item>
+        <item>@string/pref_lang_code_ukrainian</item>
+        <item>@string/pref_lang_code_vietnamese</item>
     </string-array>
 
 </resources>
