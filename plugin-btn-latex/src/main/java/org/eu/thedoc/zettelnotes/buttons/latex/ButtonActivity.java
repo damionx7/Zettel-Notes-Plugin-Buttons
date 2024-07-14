@@ -32,7 +32,10 @@ public class ButtonActivity
   private void showLatexDialog() {
     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
     builder.setTitle("Latex Symbols");
-
+    builder.setOnCancelListener(dialog -> {
+      setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Canceled Dialog"));
+      finish();
+    });
     View view = getLayoutInflater().inflate(R.layout.dialog_recycler_view, null);
     builder.setView(view);
 
@@ -46,7 +49,7 @@ public class ButtonActivity
       finish();
     });
     recyclerView.setAdapter(adapter);
-    GridLayoutManager layoutManager = new GridLayoutManager(this, 5);
+    GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
     recyclerView.setLayoutManager(layoutManager);
     view.post(() -> {
       int width = view.getWidth();
@@ -61,8 +64,8 @@ public class ButtonActivity
       adapter.submitData(treeMap);
       builder.show();
     } catch (Exception e) {
-      ToastsHelper.showToast(this, "Error: Can't load latex symbols.");
-      setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Error: Can't load latex symbols."));
+      ToastsHelper.showToast(getApplicationContext(), "Error: " + e);
+      setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Error: " + e));
       finish();
     }
   }
