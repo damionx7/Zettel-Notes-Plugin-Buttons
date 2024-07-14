@@ -8,7 +8,6 @@ import org.eu.thedoc.zettelnotes.interfaces.ButtonInterface;
 public class Button
     extends ButtonInterface {
 
-
   public static final String ERROR_STRING = "args-error";
   public static final String RESULT_STRING = "args-result";
 

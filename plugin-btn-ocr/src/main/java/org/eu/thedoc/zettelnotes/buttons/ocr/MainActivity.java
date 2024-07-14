@@ -45,7 +45,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Executor;
-import org.eu.thedoc.zettelnotes.buttons.ocr.Tessaract.Constants;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.AppExecutor;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
@@ -69,32 +68,32 @@ public class MainActivity
 
   private void initializePreferences() {
 
-    mLangCode = mSharedPreferences.getString(getString(R.string.prefs_ocr_languages_key), Constants.DEFAULT_LANGUAGE);
+    mLangCode = mSharedPreferences.getString(getString(R.string.prefs_ocr_languages_key), Tessaract.DEFAULT_LANGUAGE);
     mPageSegmentationMode = Integer.parseInt(mSharedPreferences.getString(getString(R.string.prefs_ocr_page_segmentation_mode_key), "1"));
     mPreferredModel = mSharedPreferences.getString(getString(R.string.prefs_ocr_model_key),
         getString(R.string.ocr_language_model_value_best));
   }
 
   private File getParentDirectory() {
-    String folder = Constants.FOLDER;
+    String folder = Tessaract.FOLDER;
     if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_best))) {
-      folder = Constants.FOLDER;
+      folder = Tessaract.FOLDER;
     } else if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_fast))) {
-      folder = Constants.FOLDER_FAST;
+      folder = Tessaract.FOLDER_FAST;
     } else if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_standard))) {
-      folder = Constants.FOLDER_STANDARD;
+      folder = Tessaract.FOLDER_STANDARD;
     }
     return new File(getFilesDir(), folder);
   }
 
   private String getDownloadUrl() {
-    String url = Constants.TESS_DATA_DOWNLOAD_URL_BEST;
+    String url = Tessaract.TESS_DATA_DOWNLOAD_URL_BEST;
     if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_best))) {
-      url = Constants.TESS_DATA_DOWNLOAD_URL_BEST;
+      url = Tessaract.TESS_DATA_DOWNLOAD_URL_BEST;
     } else if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_fast))) {
-      url = Constants.TESS_DATA_DOWNLOAD_URL_FAST;
+      url = Tessaract.TESS_DATA_DOWNLOAD_URL_FAST;
     } else if (mPreferredModel.equals(getString(R.string.ocr_language_model_value_standard))) {
-      url = Constants.TESS_DATA_DOWNLOAD_URL_STANDARD;
+      url = Tessaract.TESS_DATA_DOWNLOAD_URL_STANDARD;
     }
     return url;
   }
@@ -103,7 +102,7 @@ public class MainActivity
 
     //set directory
     File parent = getParentDirectory();
-    mDataDir = new File(parent, Constants.DATA_FOLDER);
+    mDataDir = new File(parent, Tessaract.DATA_FOLDER);
     if (!mDataDir.exists() && mDataDir.mkdirs()) {
       //
     }
@@ -216,7 +215,7 @@ public class MainActivity
   }
 
   private File getDataFile() {
-    return new File(mDataDir, String.format(Constants.LANGUAGE_CODE, mLangCode));
+    return new File(mDataDir, String.format(Tessaract.LANGUAGE_CODE, mLangCode));
   }
 
   public void getTextFromBitmap(final Bitmap bitmap) {
@@ -429,5 +428,3 @@ public class MainActivity
     }
   }
 }
-
-

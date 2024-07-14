@@ -7,13 +7,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
@@ -35,7 +33,6 @@ public class ProcessTextActivity
     }
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.M)
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -62,7 +59,6 @@ public class ProcessTextActivity
     }
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.M)
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
@@ -86,7 +82,6 @@ public class ProcessTextActivity
     }
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.M)
   private void processIntent() {
     Intent intent = getIntent();
     if (intent == null) {
