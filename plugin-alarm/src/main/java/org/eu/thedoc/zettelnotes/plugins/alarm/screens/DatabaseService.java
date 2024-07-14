@@ -5,8 +5,10 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.IBinder;
 import android.util.Log;
+import androidx.core.app.ServiceCompat;
 import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,14 +90,22 @@ public class DatabaseService
     throw new UnsupportedOperationException("Not yet implemented");
   }
 
+  @Override
+  public void onTimeout(int startId) {
+    super.onTimeout(startId);
+    Log.w(super.getClass().getSimpleName(), "%s: >>>>>>>>>>>>>>>>>>>>Short Service Timeout<<<<<<<<<<<<<<<<<<");
+    finish();
+  }
+
   private String getNotificationChannelName() {
     return "Scanner";
   }
 
   private void makeForeground() {
-    Notification notification = mNotificationHelper.buildNotification(getNotificationChannelID(), getNotificationTitle(), "", "",
-        getNotificationTitle(), getNotificationIcon(), true).build();
-    startForeground(getNotificationID(), notification);
+    Notification notification = mNotificationHelper
+        .buildNotification(getNotificationChannelID(), getNotificationTitle(), "", "", getNotificationTitle(), getNotificationIcon(), true)
+        .build();
+    ServiceCompat.startForeground(this, getNotificationID(), notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE);
   }
 
   private int getNotificationID() {
@@ -143,6 +153,13 @@ public class DatabaseService
         mRepository.deleteAll(category, uris);
       }
     }
+    //Stop this service
+    finish();
+  }
+
+  protected void finish() {
+    stopForeground(true);
+    stopSelf();
   }
 
 }

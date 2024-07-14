@@ -5,5 +5,5 @@ plugins {
 packageName = "org.eu.thedoc.zettelnotes.buttons.latex"
 
 dependencies {
-    api libs.gson
+    implementation libs.gson
 }

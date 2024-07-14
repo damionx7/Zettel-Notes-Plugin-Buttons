@@ -129,6 +129,20 @@ public class MainActivity
     }
   }
 
+  @Override
+  public void startActivity(Intent intent) {
+    try {
+      super.startActivity(intent);
+    } catch (SecurityException e) {
+      checkPermissions();
+      Log.e(getClass().getName(), e.toString());
+      ToastsHelper.showToast(this, e.toString());
+    } catch (Exception e) {
+      Log.e(getClass().getName(), e.toString());
+      ToastsHelper.showToast(this, e.toString());
+    }
+  }
+
   private void checkPermissions() {
     Log.v(getClass().getName(), "checkPermissions");
 
@@ -136,10 +150,10 @@ public class MainActivity
       if (permissionNotGranted("org.eu.thedoc.zettelnotes.debug.permission.broadcast")) {
         requestPermission("org.eu.thedoc.zettelnotes.debug.permission.broadcast", REQ_CODE_PERMISSION_ZETTEL_BROADCAST_PERMISSION);
       }
-    } else {
-      if (permissionNotGranted("org.eu.thedoc.zettelnotes.permission.broadcast")) {
-        requestPermission("org.eu.thedoc.zettelnotes.permission.broadcast", REQ_CODE_PERMISSION_ZETTEL_BROADCAST_PERMISSION);
-      }
+    }
+    //
+    if (permissionNotGranted("org.eu.thedoc.zettelnotes.permission.broadcast")) {
+      requestPermission("org.eu.thedoc.zettelnotes.permission.broadcast", REQ_CODE_PERMISSION_ZETTEL_BROADCAST_PERMISSION);
     }
 
     if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU && permissionNotGranted(permission.POST_NOTIFICATIONS)) {
@@ -161,4 +175,3 @@ public class MainActivity
     ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
   }
 }
-

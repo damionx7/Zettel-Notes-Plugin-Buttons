@@ -46,7 +46,9 @@
 
         <service
            android:name=".screens.DatabaseService"
-           android:exported="true">
+           android:foregroundServiceType="shortService"
+           android:exported="true"
+           android:permission="android.permission.FOREGROUND_SERVICE">
             <intent-filter>
                 <action android:name="org.eu.thedoc.zettelnotes.plugins.alarm.SCAN" />
             </intent-filter>

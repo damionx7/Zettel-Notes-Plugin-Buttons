@@ -1,5 +1,6 @@
 package org.eu.thedoc.zettelnotes.plugins.alarm.database;
 
+import android.util.Log;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
@@ -130,11 +131,13 @@ public class AlarmModel {
   public String transformCommented() {
     try {
       if (text.contains("\n")) {
-        return String.format("%%%%%s%%%%\n%s", text.split("\n")[0], text.split("\n")[1]);
+        String[] strings = text.split("\n");
+        return String.format("%%%%%s%%%%\n%s", strings[0], (strings.length == 1 || strings[1].isEmpty()) ? "" : strings[1]);
       } else {
         return String.format("%%%%%s%%%%", text);
       }
     } catch (Exception e) {
+      Log.e(getClass().getName(), e + ", text: " + text);
       return text;
     }
   }

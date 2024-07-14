@@ -38,7 +38,7 @@ public class Scan
       @Override
       public void onDeleteUris(Context context, String category, List<String> fileUris) {
         Log.v(getClass().getName(), "onDeleteUris");
-        if (fileUris.size() > 0) {
+        if (!fileUris.isEmpty()) {
           DatabaseService.startService(context, category, new ArrayList<>(fileUris));
         }
       }
@@ -46,4 +46,3 @@ public class Scan
   }
 
 }
-

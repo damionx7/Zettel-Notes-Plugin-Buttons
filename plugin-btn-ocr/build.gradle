@@ -5,6 +5,5 @@ plugins {
 packageName = "org.eu.thedoc.zettelnotes.buttons.ocr"
 
 dependencies {
-    // To use Standard variant:
-    implementation 'cz.adaptech.tesseract4android:tesseract4android:4.7.0'
+    implementation libs.tesseract
 }

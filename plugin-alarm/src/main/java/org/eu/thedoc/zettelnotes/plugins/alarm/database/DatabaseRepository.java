@@ -42,7 +42,7 @@ public class DatabaseRepository {
   }
 
   public void addAll(String category, String fileUri, List<AlarmModel> models) {
-    if (models.size() == 0) {
+    if (models.isEmpty()) {
       return;
     }
     mDiskIO.execute(() -> {
