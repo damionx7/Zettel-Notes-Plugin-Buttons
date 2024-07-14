@@ -13,8 +13,8 @@ properties.load(project.rootProject.file("local.properties").newDataInputStream(
 apply from: rootProject.file(properties.getProperty("keystore.signing"))
 
 project.ext {
-    minSdk = 21
-    targetSdk = 33
+    minSdk = 23
+    targetSdk = 34
     compileSdk = 34
     keystore = rootProject.file(properties.getProperty("keystore"))
 }

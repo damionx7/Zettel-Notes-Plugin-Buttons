@@ -12,6 +12,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import com.cjcrafter.openai.Models.Chat;
 import com.cjcrafter.openai.OpenAI;
 import com.cjcrafter.openai.chat.ChatMessage;
 import com.cjcrafter.openai.chat.ChatRequest;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor.Level;
 import org.eu.thedoc.zettelnotes.buttons.chat.CustomTextView.Listener;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.AppExecutor;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
@@ -103,6 +106,9 @@ public class ChatActivity
     OkHttpClient.Builder client = new OkHttpClient.Builder();
     client.writeTimeout(30, TimeUnit.SECONDS);
     client.connectTimeout(30, TimeUnit.SECONDS);
+    if (BuildConfig.DEBUG) {
+      client.addInterceptor(new HttpLoggingInterceptor().setLevel(Level.BODY)).build();
+    }
     if (apiKey.isEmpty()) {
       apiKey = BuildConfig.OPENAI_API_KEY;
       ToastsHelper.showToast(this, "Using demo api key. This can stop working anytime. Please set your Open AI Api key in settings.");
@@ -121,8 +127,7 @@ public class ChatActivity
         addMessage(ChatMessage.toUserMessage(text));
 
         ChatRequest chatRequest = ChatRequest
-            .builder()
-            .model(isGpt4 ? ChatModels.GPT_4 : ChatModels.GPT_3_5)
+            .builder().model(isGpt4 ? Chat.GPT_4 : Chat.GPT_3_5_TURBO)
             .messages(mChatMessages)
             .temperature(0.7f)
             .build();
@@ -160,12 +165,13 @@ public class ChatActivity
           // When the response is finished, we can add it to the messages list.
           if (chunk.get(0).isFinished()) {
             mChatMessages.add(chunk.get(0).getMessage());
-            runOnUiThread(() -> sendButton.setEnabled(true));
           }
         }
       } catch (Exception e) {
         Log.e("ERROR", e.toString(), e);
         ToastsHelper.showToast(this, e.getMessage() == null ? e.toString() : e.getMessage());
+        runOnUiThread(() -> mMessageAdapter.updateItem(pos, ChatMessage.toAssistantMessage(e.toString())));
+      } finally {
         runOnUiThread(() -> sendButton.setEnabled(true));
       }
     });

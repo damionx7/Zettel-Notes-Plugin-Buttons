@@ -18,4 +18,5 @@ dependencies {
     implementation libs.chat.gpt.api
     implementation libs.okhttp
     implementation libs.cardviewx
+    implementation libs.okhttp.logging
 }
