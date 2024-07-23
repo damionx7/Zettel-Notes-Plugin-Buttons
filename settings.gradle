@@ -23,6 +23,7 @@ dependencyResolutionManagement {
 rootProject.name = "Zettel Notes Plugins"
 include ':basemodule'
 include ':plugin-alarm'
+include ':plugin-btn-anki'
 include ':plugin-btn-chat-ai'
 include ':plugin-btn-latex'
 include ':plugin-btn-location'
