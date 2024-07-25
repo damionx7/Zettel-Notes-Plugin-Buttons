@@ -3,3 +3,7 @@ plugins {
 }
 
 packageName = "org.eu.thedoc.zettelnotes.buttons.anki"
+
+dependencies {
+    implementation 'com.github.ankidroid:Anki-Android:api-v1.1.0'
+}
