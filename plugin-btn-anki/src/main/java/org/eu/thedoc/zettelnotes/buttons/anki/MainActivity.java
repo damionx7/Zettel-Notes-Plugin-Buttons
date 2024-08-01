@@ -5,8 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -68,9 +74,27 @@ public class MainActivity
   }
 
   private void handleText(String text) {
+    //Get Cards From Text
+    List<Card> list = Parser.getCards(text);
+    //Sort List
+    list.sort((o1, o2) -> o1.question().compareToIgnoreCase(o2.question()));
+    //Show User Generated Cards in A List
+    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+    View view = LayoutInflater.from(this).inflate(R.layout.dialog_card, null);
+    MaterialButton button = view.findViewById(R.id.dialog_card_button_submit);
+    RecyclerView recyclerView = view.findViewById(R.id.dialog_card_recycler_view);
+    CardAdapter adapter = new CardAdapter(new ArrayList<>(list));
+    recyclerView.setAdapter(adapter);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    builder.setView(view);
+    builder.setOnCancelListener(dialog -> onSuccess());
+    builder.setOnDismissListener(dialog -> onSuccess());
+    button.setOnClickListener(v -> addInAnki(list));
+    builder.show();
+  }
+
+  private void addInAnki(List<Card> list) {
     if (Anki.isApiAvailable(this)) {
-      //Get Cards From Text
-      List<Card> list = Parser.getCards(text);
       ArrayList<HashMap<String, String>> basicQA = AnkiConfig.getData(list);
       //ArrayList<HashMap<String, String>> cloze = AnkiConfig.getData(list);
       Log.v(getClass().getName(), "Data Size: " + basicQA.size());
@@ -103,12 +127,13 @@ public class MainActivity
         tags.add(AnkiConfig.TAGS);
         fields.add(flds);
       }
+
       int added = mAnki.getApi().addNotes(modelId, deckId, fields, tags);
       if (added != 0) {
         ToastsHelper.showToast(this, "Success. Added " + added + " Notes.");
         onSuccess();
       } else {
-        // API indicates that a 0 return value is an error
+        //API indicates that a 0 return value is an error
         onFailure("Api Error. Can't Add Notes.");
       }
     } else {

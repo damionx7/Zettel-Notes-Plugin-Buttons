@@ -2,7 +2,9 @@ package org.eu.thedoc.zettelnotes.buttons.anki;
 
 import androidx.annotation.StringDef;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import org.eu.thedoc.zettelnotes.buttons.anki.Parser.Type.Types;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.PatternUtils.Regex;
@@ -14,12 +16,12 @@ public class Parser {
       return new ArrayList<>();
     }
 
-    List<Card> list = new ArrayList<>();
-    list.addAll(getClozes(text));
-    list.addAll(getRuled(text));
-    list.addAll(getQA(text));
-    list.addAll(getHeader(text));
-    return list;
+    Set<Card> set = new HashSet<>();
+    set.addAll(getClozes(text));
+    set.addAll(getRuled(text));
+    set.addAll(getQA(text));
+    set.addAll(getHeader(text));
+    return new ArrayList<>(set);
   }
 
   private static List<Card> getClozes(String text) {

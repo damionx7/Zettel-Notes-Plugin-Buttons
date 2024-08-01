@@ -23,8 +23,7 @@ public class AnkiConfig {
 
   public static ArrayList<HashMap<String, String>> getData(List<Card> list) {
     ArrayList<HashMap<String, String>> data = new ArrayList<>();
-    for (int idx = 0; idx < list.size(); idx++) {
-      Card card = list.get(idx);
+    for (Card card : list) {
       //Skip Cloze
       if (!card.type().equals(Type.CLOZE)) {
         HashMap<String, String> hm = new HashMap<>();

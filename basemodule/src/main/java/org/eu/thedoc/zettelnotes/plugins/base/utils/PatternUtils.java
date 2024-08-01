@@ -26,13 +26,13 @@ public class PatternUtils {
      * <br>
      * This style is suitable for having the header as the front, and the answer as the back
      */
-    ANKI_HEADER(Pattern.compile("^# (.+?)\\n+([^#]*)\\n{2,}")),
+    ANKI_HEADER(Pattern.compile("^# (.+?)\\n{2}(.+)", Pattern.MULTILINE)),
     /**
      * Q: How do you use this style?
      * <br>
      * A: Just like this.
      */
-    ANKI_QA(Pattern.compile("^Q: (.+?)\\n+A: (.+?)$")),
+    ANKI_QA(Pattern.compile("^Q: (.+?)\\n+A: (.+?)$", Pattern.MULTILINE)),
     /**
      * How do you use ruled style?
      * <br>
@@ -40,11 +40,11 @@ public class PatternUtils {
      * <br>
      * You need at least three '-' between the front and back of the card.
      */
-    ANKI_RULED(Pattern.compile("(.+?)\\n-{3,}\\n(.+?)$")),
+    ANKI_RULED(Pattern.compile("(.+?)\\n-{3,}\\n(.+?)$", Pattern.MULTILINE)),
     /**
      * The idea of {cloze paragraph style} is to be able to recognise any paragraphs that contain {cloze deletions}.
      */
-    ANKI_CLOZE(Pattern.compile("^(.*?)\\{(.+?)\\}(.*?)$")),
+    ANKI_CLOZE(Pattern.compile("^(.*?)\\{(.+?)\\}(.*?)$", Pattern.MULTILINE)),
     /**
      * Find cloze only
      */
