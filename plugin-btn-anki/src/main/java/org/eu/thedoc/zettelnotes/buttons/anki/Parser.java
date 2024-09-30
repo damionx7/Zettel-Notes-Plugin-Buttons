@@ -1,5 +1,6 @@
 package org.eu.thedoc.zettelnotes.buttons.anki;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringDef;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import org.eu.thedoc.zettelnotes.plugins.base.utils.PatternUtils.Regex;
 
 public class Parser {
 
+  @NonNull
   public static List<Card> getCards(String text) {
     if (text == null || text.isEmpty()) {
       return new ArrayList<>();

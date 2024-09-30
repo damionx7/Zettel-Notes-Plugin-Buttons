@@ -76,21 +76,25 @@ public class MainActivity
   private void handleText(String text) {
     //Get Cards From Text
     List<Card> list = Parser.getCards(text);
-    //Sort List
-    list.sort((o1, o2) -> o1.question().compareToIgnoreCase(o2.question()));
-    //Show User Generated Cards in A List
-    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-    View view = LayoutInflater.from(this).inflate(R.layout.dialog_card, null);
-    MaterialButton button = view.findViewById(R.id.dialog_card_button_submit);
-    RecyclerView recyclerView = view.findViewById(R.id.dialog_card_recycler_view);
-    CardAdapter adapter = new CardAdapter(new ArrayList<>(list));
-    recyclerView.setAdapter(adapter);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    builder.setView(view);
-    builder.setOnCancelListener(dialog -> onSuccess());
-    builder.setOnDismissListener(dialog -> onSuccess());
-    button.setOnClickListener(v -> addInAnki(list));
-    builder.show();
+    if (list.isEmpty()) {
+      onFailure("Error. No Notes Found.");
+    } else {
+      //Sort List
+      list.sort((o1, o2) -> o1.question().compareToIgnoreCase(o2.question()));
+      //Show User Generated Cards in A List
+      MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+      View view = LayoutInflater.from(this).inflate(R.layout.dialog_card, null);
+      MaterialButton button = view.findViewById(R.id.dialog_card_button_submit);
+      RecyclerView recyclerView = view.findViewById(R.id.dialog_card_recycler_view);
+      CardAdapter adapter = new CardAdapter(new ArrayList<>(list));
+      recyclerView.setAdapter(adapter);
+      recyclerView.setLayoutManager(new LinearLayoutManager(this));
+      builder.setView(view);
+      builder.setOnCancelListener(dialog -> onSuccess());
+      builder.setOnDismissListener(dialog -> onSuccess());
+      button.setOnClickListener(v -> addInAnki(list));
+      builder.show();
+    }
   }
 
   private void addInAnki(List<Card> list) {
