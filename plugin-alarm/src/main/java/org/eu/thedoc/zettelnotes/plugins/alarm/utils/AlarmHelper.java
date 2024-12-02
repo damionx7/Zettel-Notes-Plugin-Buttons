@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.util.Log;
 import androidx.annotation.RequiresApi;
@@ -75,11 +74,7 @@ public class AlarmHelper {
         String.format("%s schedule %s %s. %s", calendar.toString(), calendar.getTimeInMillis(), model.getId(), model.getText()));
 
     PendingIntent pendingIntent = getPendingIntent(model);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-    } else {
-      mAlarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-    }
+    mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
   }
 
   private PendingIntent getPendingIntent(AlarmModel model) {

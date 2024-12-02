@@ -147,7 +147,7 @@ public class ContinuousRecognizerActivity
       if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
         initializeSpeechModel();
       } else {
-        ToastsHelper.showToast(this, "Record permission Not Granted!");
+        ToastsHelper.showToast(this, "Record Permission not Granted!");
       }
     }
   }
@@ -194,7 +194,7 @@ public class ContinuousRecognizerActivity
   }
 
   private void initializeSpeechModel() {
-    LibVosk.setLogLevel(LogLevel.INFO);
+    LibVosk.setLogLevel(LogLevel.WARNINGS);
 
     // Check if user has given permission to record audio, init the model after permission is granted
     int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), permission.RECORD_AUDIO);
