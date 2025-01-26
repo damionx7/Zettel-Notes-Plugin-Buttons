@@ -19,4 +19,8 @@ dependencies {
     implementation libs.okhttp
     implementation libs.cardviewx
     implementation libs.okhttp.logging
+
+    implementation(libs.bundles.markwon) {
+        exclude group: 'org.jetbrains', module: 'annotations-java5'
+    }
 }
