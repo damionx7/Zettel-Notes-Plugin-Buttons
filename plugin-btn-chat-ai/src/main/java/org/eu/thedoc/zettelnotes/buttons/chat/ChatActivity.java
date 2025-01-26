@@ -12,7 +12,6 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import com.cjcrafter.openai.Models.Chat;
 import com.cjcrafter.openai.OpenAI;
 import com.cjcrafter.openai.chat.ChatMessage;
 import com.cjcrafter.openai.chat.ChatRequest;
@@ -48,7 +47,8 @@ public class ChatActivity
   private SharedPreferences sharedPreferences;
   private String prompt;
   private String apiKey;
-  private boolean isGpt4;
+  private String apiUrl;
+  private String apiModel;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -72,7 +72,12 @@ public class ChatActivity
   private void initializeSharedPrefs() {
     prompt = sharedPreferences.getString(getString(R.string.prefs_system_prompt_key), "You a helpful writer.");
     apiKey = sharedPreferences.getString(getString(R.string.prefs_api_key), "");
-    isGpt4 = !apiKey.isEmpty() && sharedPreferences.getBoolean(getString(R.string.prefs_gpt_4_model_key), false);
+    apiUrl = sharedPreferences.getString(getString(R.string.prefs_api_url_key), getString(R.string.prefs_default_api_url));
+    apiModel = sharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_4));
+    if (apiModel.equals(getString(R.string.model_custom))) {
+      //set custom model
+      apiModel = sharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_4));
+    }
   }
 
   private String getTextSelected() {
@@ -115,7 +120,7 @@ public class ChatActivity
       Log.w("ChatActivity", "Using demo api key");
     }
 
-    openai = OpenAI.builder().apiKey(apiKey).client(client.build()).build();
+    openai = OpenAI.builder().baseUrl(apiUrl).apiKey(apiKey).client(client.build()).build();
 
     ChatMessage promptMessage = ChatMessage.toSystemMessage(prompt);
     mChatMessages.add(promptMessage);
@@ -126,11 +131,7 @@ public class ChatActivity
         editText.setText("");
         addMessage(ChatMessage.toUserMessage(text));
 
-        ChatRequest chatRequest = ChatRequest
-            .builder().model(isGpt4 ? Chat.GPT_4 : Chat.GPT_3_5_TURBO)
-            .messages(mChatMessages)
-            .temperature(0.7f)
-            .build();
+        ChatRequest chatRequest = ChatRequest.builder().model(apiModel).messages(mChatMessages).temperature(0.8f).build();
         sendMessage(chatRequest);
         sendButton.setEnabled(false);
       }

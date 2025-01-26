@@ -1,6 +1,8 @@
 package org.eu.thedoc.zettelnotes.buttons.chat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +27,10 @@ public class SettingsActivity
 
   public static class SettingsFragment
       extends PreferenceFragmentCompat
-      implements OnPreferenceTreeClickListener {
+      implements OnPreferenceTreeClickListener, OnSharedPreferenceChangeListener {
+
+    private SharedPreferences mSharedPreferences;
+    private Preference mCustomModelPreference;
 
     public static SettingsFragment newInstance() {
       return new SettingsFragment();
@@ -35,7 +40,14 @@ public class SettingsActivity
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
       getPreferenceManager().setSharedPreferencesName(PREFS);
       addPreferencesFromResource(R.xml.prefs);
+      mCustomModelPreference = getPreferenceManager().findPreference(getString(R.string.prefs_custom_model_key));
+
+      mSharedPreferences = getPreferenceManager().getSharedPreferences();
+
+      String model = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_4));
+      mCustomModelPreference.setEnabled(model.equals(getString(R.string.model_custom)));
     }
+
 
     @Override
     public boolean onPreferenceTreeClick(
@@ -52,7 +64,30 @@ public class SettingsActivity
       }
       return super.onPreferenceTreeClick(preference);
     }
+
+    @Override
+    public void onResume() {
+      super.onResume();
+      getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+      super.onPause();
+      getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+        @Nullable String key) {
+      if (key == null) {
+        return;
+      }
+
+      if (key.equals(getString(R.string.prefs_api_model_key))) {
+        String model = mSharedPreferences.getString(key, getString(R.string.model_gpt_4));
+        mCustomModelPreference.setEnabled(model.equals(getString(R.string.model_custom)));
+      }
+    }
   }
 }
-
-

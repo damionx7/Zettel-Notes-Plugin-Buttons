@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+                  xmlns:android="http://schemas.android.com/apk/res/android">
 
     <EditTextPreference
        android:defaultValue=""
@@ -16,13 +17,29 @@
        android:selectAllOnFocus="true"
        android:title="System Prompt" />
 
-    <SwitchPreference
+    <EditTextPreference
+       android:defaultValue="@string/prefs_default_api_url"
+       android:key="@string/prefs_api_url_key"
+       android:selectAllOnFocus="true"
+       app:useSimpleSummaryProvider="true"
+       android:title="API Url" />
+
+    <ListPreference
        android:dependency="@string/prefs_api_key"
-       android:defaultValue="false"
-       android:title="Chat GPT Model"
-       android:summaryOff="gpt-3.5-turbo"
-       android:summaryOn="gpt-4"
-       android:key="@string/prefs_gpt_4_model_key" />
+       android:defaultValue="@string/model_gpt_4"
+       android:title="API Model"
+       android:summary="Select the API model"
+       android:key="@string/prefs_api_model_key"
+       android:entries="@array/model_entries"
+       android:entryValues="@array/model_values" />
+
+    <EditTextPreference
+       android:defaultValue=""
+       android:key="@string/prefs_custom_model_key"
+       android:summary="Name of the Custom Model"
+       android:selectAllOnFocus="true"
+       app:useSimpleSummaryProvider="true"
+       android:title="Custom Model" />
 
     <PreferenceCategory
        android:title="Misc"
