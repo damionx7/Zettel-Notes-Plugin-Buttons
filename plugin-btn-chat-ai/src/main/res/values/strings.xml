@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">ZN AI Chat Plugin</string>
     <string name="prefs_system_prompt_key" translatable="false">prefs_system_prompt_key</string>
+    <string name="prefs_user_selected_system_prompt_key" translatable="false">prefs_user_selected_system_prompt_key</string>
     <string name="prefs_register_key" translatable="false">prefs_register_key</string>
     <string name="prefs_api_key" translatable="false">prefs_api_key</string>
     <string name="prefs_api_url_key" translatable="false">prefs_api_url_key</string>
     <string name="prefs_default_api_url" translatable="false">https://api.openai.com</string>
     <string name="prefs_api_model_key" translatable="false">prefs_api_model_key</string>
     <string name="prefs_custom_model_key" translatable="false">prefs_custom_model_key</string>
+    <string name="prefs_system_prompts_key" translatable="false">prefs_system_prompts_key</string>
+    <string name="prefs_default_system_prompt" translatable="false">You a helpful writer.</string>
 </resources>

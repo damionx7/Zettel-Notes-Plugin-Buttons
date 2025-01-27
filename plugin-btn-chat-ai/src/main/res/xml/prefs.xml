@@ -11,9 +11,9 @@
        android:title="API Key" />
 
     <EditTextPreference
-       android:defaultValue="You a helpful writer"
+       android:defaultValue="@string/prefs_default_system_prompt"
        android:key="@string/prefs_system_prompt_key"
-       android:summary="Use this to prescribe the style and steer the behavior of AI"
+       android:summary="Use this to prescribe the style and behavior of AI"
        android:selectAllOnFocus="true"
        android:title="System Prompt" />
 

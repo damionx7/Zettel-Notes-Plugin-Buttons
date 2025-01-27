@@ -6,20 +6,28 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.TooltipCompat;
 import com.cjcrafter.openai.OpenAI;
 import com.cjcrafter.openai.chat.ChatMessage;
 import com.cjcrafter.openai.chat.ChatRequest;
 import com.cjcrafter.openai.chat.ChatResponseChunk;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
@@ -42,10 +50,10 @@ public class ChatActivity
   private OpenAI openai;
   private MessageAdapter mMessageAdapter;
 
-  private ImageButton sendButton;
+  private AppCompatImageButton sendButton, mPromptButton;
 
-  private SharedPreferences sharedPreferences;
-  private String prompt;
+  private SharedPreferences mSharedPreferences;
+  private String mSystemPrompt;
   private String apiKey;
   private String apiUrl;
   private String apiModel;
@@ -70,22 +78,46 @@ public class ChatActivity
   }
 
   private void initializeSharedPrefs() {
-    prompt = sharedPreferences.getString(getString(R.string.prefs_system_prompt_key), "You a helpful writer.");
-    apiKey = sharedPreferences.getString(getString(R.string.prefs_api_key), "");
-    apiUrl = sharedPreferences.getString(getString(R.string.prefs_api_url_key), getString(R.string.prefs_default_api_url));
-    apiModel = sharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_4));
+    mSystemPrompt = mSharedPreferences.getString(getString(R.string.prefs_system_prompt_key),
+        getString(R.string.prefs_default_system_prompt));
+    //restore user prompt
+    String userPrompt = mSharedPreferences.getString(getString(R.string.prefs_user_selected_system_prompt_key), "");
+    if (!userPrompt.isEmpty()) {
+      mSystemPrompt = userPrompt;
+    }
+
+    apiKey = mSharedPreferences.getString(getString(R.string.prefs_api_key), "");
+    apiUrl = mSharedPreferences.getString(getString(R.string.prefs_api_url_key), getString(R.string.prefs_default_api_url));
+    apiModel = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_4));
     if (apiModel.equals(getString(R.string.model_custom))) {
       //set custom model
-      apiModel = sharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_4));
+      apiModel = mSharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_4));
     }
   }
 
   private String getTextSelected() {
-    return getIntent().getStringExtra(INTENT_EXTRA_TEXT_SELECTED);
+    String string = getIntent().getStringExtra(INTENT_EXTRA_TEXT_SELECTED);
+    if (string != null && !string.isEmpty()) {
+      return String.format("\"%s\"", string);
+    }
+    return "";
   }
 
   private boolean isButtonMode() {
     return getIntent().getBooleanExtra(INTENT_EXTRA_BUTTON_MODE, false);
+  }
+
+  private List<String> getPrompts() {
+    String json = mSharedPreferences.getString(getString(R.string.prefs_system_prompts_key), "");
+    List<String> prompts = new Gson().fromJson(json, new TypeToken<LinkedList<String>>() {}.getType());
+    if (prompts == null) {
+      prompts = new LinkedList<>();
+    }
+    return prompts;
+  }
+
+  private void savePrompts(List<String> prompts) {
+    mSharedPreferences.edit().putString(getString(R.string.prefs_system_prompts_key), new Gson().toJson(prompts)).apply();
   }
 
   @Override
@@ -94,12 +126,16 @@ public class ChatActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    sharedPreferences = getSharedPreferences(SettingsActivity.PREFS, MODE_PRIVATE);
+    mSharedPreferences = getSharedPreferences(SettingsActivity.PREFS, MODE_PRIVATE);
     initializeSharedPrefs();
 
     EditText editText = findViewById(R.id.edit_text);
     editText.setText(getTextSelected());
     editText.requestFocus();
+
+    mPromptButton = findViewById(R.id.activity_main_button_system_prompt);
+    mPromptButton.setOnClickListener(v -> showPromptSelectDialog());
+    TooltipCompat.setTooltipText(mPromptButton, mPromptButton.getContentDescription());
 
     sendButton = findViewById(R.id.send_button);
     mMessageAdapter = new MessageAdapter();
@@ -109,8 +145,9 @@ public class ChatActivity
     listView.setAdapter(mMessageAdapter);
 
     OkHttpClient.Builder client = new OkHttpClient.Builder();
-    client.writeTimeout(30, TimeUnit.SECONDS);
     client.connectTimeout(30, TimeUnit.SECONDS);
+    client.readTimeout(30, TimeUnit.SECONDS);
+    client.writeTimeout(30, TimeUnit.SECONDS);
     if (BuildConfig.DEBUG) {
       client.addInterceptor(new HttpLoggingInterceptor().setLevel(Level.BODY)).build();
     }
@@ -122,8 +159,7 @@ public class ChatActivity
 
     openai = OpenAI.builder().baseUrl(apiUrl).apiKey(apiKey).client(client.build()).build();
 
-    ChatMessage promptMessage = ChatMessage.toSystemMessage(prompt);
-    mChatMessages.add(promptMessage);
+    setSystemPrompt(mSystemPrompt);
 
     sendButton.setOnClickListener(v -> {
       String text = editText.getText().toString();
@@ -142,6 +178,62 @@ public class ChatActivity
   protected void onResume() {
     super.onResume();
     initializeSharedPrefs();
+  }
+
+  private void showPromptSelectDialog() {
+    final List<String> prompts = getPrompts();
+
+    AtomicInteger index = new AtomicInteger(prompts.indexOf(mSystemPrompt));
+    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+    builder.setTitle("Select Prompt");
+    ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, prompts);
+    builder.setSingleChoiceItems(adapter, index.get(), (dialog, which) -> {
+      index.set(which);
+      setSystemPrompt(prompts.get(which));
+      //
+      dialog.dismiss();
+    });
+    builder.setNeutralButton("Default",
+        (dialog, which) -> setSystemPrompt(mSharedPreferences.getString(getString(R.string.prefs_system_prompt_key),
+            getString(R.string.prefs_default_system_prompt))));
+    builder.setPositiveButton("Add", (dialog, which) -> {
+      //
+      showPromptEnterDialog();
+    });
+    builder.setNegativeButton("Remove", (dialog, which) -> {
+      prompts.remove(index.get());
+      savePrompts(prompts);
+      //
+      showPromptSelectDialog();
+    });
+    builder.show();
+  }
+
+  private void setSystemPrompt(String prompt) {
+    mChatMessages.clear();
+    //
+    mSystemPrompt = prompt;
+    mChatMessages.add(ChatMessage.toSystemMessage(prompt));
+    //
+    mSharedPreferences.edit().putString(getString(R.string.prefs_user_selected_system_prompt_key), prompt).apply();
+  }
+
+  private void showPromptEnterDialog() {
+    final EditText editText = new EditText(this);
+
+    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+    builder.setTitle("Enter Prompt");
+    builder.setView(editText);
+    builder.setPositiveButton("Add", (dialog, which) -> {
+      List<String> prompts = getPrompts();
+      if (editText.length() > 0) {
+        prompts.add(editText.getText().toString());
+        savePrompts(prompts);
+      }
+      //
+      showPromptSelectDialog();
+    });
+    builder.show();
   }
 
   private void addMessage(ChatMessage prompt) {
@@ -211,6 +303,6 @@ public class ChatActivity
 
   @Override
   public boolean enableReplaceMenuItem() {
-    return getTextSelected() != null && !getTextSelected().isEmpty();
+    return !getTextSelected().isEmpty();
   }
 }

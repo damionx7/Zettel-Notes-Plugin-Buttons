@@ -15,7 +15,6 @@
        android:stackFromBottom="true"
        android:transcriptMode="alwaysScroll" />
 
-
     <View
        android:background="@android:color/black"
        android:layout_margin="4dp"
@@ -27,7 +26,18 @@
        android:layout_height="wrap_content"
        android:layout_gravity="bottom"
        android:layout_margin="8dp"
-       android:orientation="horizontal">
+       android:orientation="horizontal"
+       android:gravity="center_vertical">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+           android:id="@+id/activity_main_button_system_prompt"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:layout_margin="4dp"
+           android:background="?attr/selectableItemBackground"
+           android:contentDescription="Select Prompt"
+           app:srcCompat="@drawable/baseline_terminal_24" />
 
         <androidx.appcompat.widget.AppCompatEditText
            android:id="@+id/edit_text"
