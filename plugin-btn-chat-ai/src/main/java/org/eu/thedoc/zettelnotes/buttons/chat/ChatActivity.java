@@ -53,12 +53,9 @@ public class ChatActivity
   private AppCompatImageButton sendButton, mPromptButton;
 
   private SharedPreferences mSharedPreferences;
-  private String mSystemPrompt;
-  private String apiKey;
-  private String apiUrl;
-  private String apiModel;
+  private String mSystemPrompt, mApiKey, mApiUrl, mApiModel;
   private boolean mSingleMessage;
-  private int mTemp;
+  private float mTemp;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,16 +85,16 @@ public class ChatActivity
       mSystemPrompt = userPrompt;
     }
 
-    apiKey = mSharedPreferences.getString(getString(R.string.prefs_api_key), "");
-    apiUrl = mSharedPreferences.getString(getString(R.string.prefs_api_url_key), "");
-    apiModel = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_4));
-    if (apiModel.equals(getString(R.string.model_custom))) {
+    mApiKey = mSharedPreferences.getString(getString(R.string.prefs_api_key), "");
+    mApiUrl = mSharedPreferences.getString(getString(R.string.prefs_api_url_key), "");
+    mApiModel = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_4));
+    if (mApiModel.equals(getString(R.string.model_custom))) {
       //set custom model
-      apiModel = mSharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_4));
+      mApiModel = mSharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_4));
     }
 
     mSingleMessage = mSharedPreferences.getBoolean(getString(R.string.prefs_single_message_key), false);
-    mTemp = mSharedPreferences.getInt(getString(R.string.prefs_temperature_key), 8) / 10;
+    mTemp = mSharedPreferences.getInt(getString(R.string.prefs_temperature_key), 8) / 10f;
   }
 
   private String getTextSelected() {
@@ -131,9 +128,6 @@ public class ChatActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    mSharedPreferences = getSharedPreferences(SettingsActivity.PREFS, MODE_PRIVATE);
-    initializeSharedPrefs();
-
     EditText editText = findViewById(R.id.edit_text);
     editText.setText(getTextSelected());
     editText.requestFocus();
@@ -149,26 +143,10 @@ public class ChatActivity
     ListView listView = findViewById(R.id.list_view);
     listView.setAdapter(mMessageAdapter);
 
-    OkHttpClient.Builder client = new OkHttpClient.Builder();
-    client.connectTimeout(30, TimeUnit.SECONDS);
-    client.readTimeout(30, TimeUnit.SECONDS);
-    client.writeTimeout(30, TimeUnit.SECONDS);
-    if (BuildConfig.DEBUG) {
-      client.addInterceptor(new HttpLoggingInterceptor().setLevel(Level.BODY)).build();
-    }
-    if (apiKey.isEmpty()) {
-      apiKey = BuildConfig.OPENAI_API_KEY;
-      ToastsHelper.showToast(this, "Using demo api key. This can stop working anytime. Please set your Open AI Api key in settings.");
-      Log.w("ChatActivity", "Using demo api key");
-    }
+    mSharedPreferences = getSharedPreferences(SettingsActivity.PREFS, MODE_PRIVATE);
 
-    OpenAI.Builder builder = OpenAI.builder();
-    if (!apiUrl.isBlank()) {
-      builder.baseUrl(apiUrl);
-    }
-    builder.apiKey(apiKey).client(client.build());
-    openai = builder.build();
-
+    initializeSharedPrefs();
+    initializeAiAgent();
     setSystemPrompt(mSystemPrompt);
 
     sendButton.setOnClickListener(v -> {
@@ -184,7 +162,7 @@ public class ChatActivity
           mChatMessages.add(message);
         }
 
-        ChatRequest chatRequest = ChatRequest.builder().model(apiModel).messages(mChatMessages).temperature(mTemp).build();
+        ChatRequest chatRequest = ChatRequest.builder().model(mApiModel).messages(mChatMessages).temperature(mTemp).build();
         sendMessage(chatRequest);
         sendButton.setEnabled(false);
       }
@@ -194,7 +172,31 @@ public class ChatActivity
   @Override
   protected void onResume() {
     super.onResume();
+    //
     initializeSharedPrefs();
+    initializeAiAgent();
+  }
+
+  private void initializeAiAgent() {
+    OkHttpClient.Builder client = new OkHttpClient.Builder();
+    client.connectTimeout(30, TimeUnit.SECONDS);
+    client.readTimeout(30, TimeUnit.SECONDS);
+    client.writeTimeout(30, TimeUnit.SECONDS);
+    if (BuildConfig.DEBUG) {
+      client.addInterceptor(new HttpLoggingInterceptor().setLevel(Level.BODY)).build();
+    }
+    if (mApiKey.isEmpty()) {
+      mApiKey = BuildConfig.OPENAI_API_KEY;
+      ToastsHelper.showToast(this, "Using demo api key. This can stop working anytime. Please set your Open AI Api key in settings.");
+      Log.w("ChatActivity", "Using demo api key");
+    }
+
+    OpenAI.Builder builder = OpenAI.builder();
+    if (!mApiUrl.isBlank()) {
+      builder.baseUrl(mApiUrl);
+    }
+    builder.apiKey(mApiKey).client(client.build());
+    openai = builder.build();
   }
 
   private void showPromptSelectDialog() {
