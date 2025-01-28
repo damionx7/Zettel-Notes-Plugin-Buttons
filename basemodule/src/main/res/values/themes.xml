@@ -1,7 +1,9 @@
 <resources>
     <!-- Base application theme. -->
 
-    <style name="AppTheme" parent="Theme.Material3.DayNight" />
+    <style name="AppTheme" parent="Theme.Material3.DayNight">
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
 
     <style name="AppThemeNoActionbar" parent="Theme.Material3.DayNight.NoActionBar" />
 

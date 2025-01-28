@@ -87,7 +87,7 @@ public class ChatActivity
     }
 
     apiKey = mSharedPreferences.getString(getString(R.string.prefs_api_key), "");
-    apiUrl = mSharedPreferences.getString(getString(R.string.prefs_api_url_key), getString(R.string.prefs_default_api_url));
+    apiUrl = mSharedPreferences.getString(getString(R.string.prefs_api_url_key), "");
     apiModel = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_4));
     if (apiModel.equals(getString(R.string.model_custom))) {
       //set custom model
@@ -157,7 +157,12 @@ public class ChatActivity
       Log.w("ChatActivity", "Using demo api key");
     }
 
-    openai = OpenAI.builder().baseUrl(apiUrl).apiKey(apiKey).client(client.build()).build();
+    OpenAI.Builder builder = OpenAI.builder();
+    if (!apiUrl.isBlank()) {
+      builder.baseUrl(apiUrl);
+    }
+    builder.apiKey(apiKey).client(client.build());
+    openai = builder.build();
 
     setSystemPrompt(mSystemPrompt);
 

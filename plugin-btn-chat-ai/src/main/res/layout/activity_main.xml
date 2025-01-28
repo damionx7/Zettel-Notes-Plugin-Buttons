@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+   xmlns:android="http://schemas.android.com/apk/res/android"
    xmlns:app="http://schemas.android.com/apk/res-auto"
    android:orientation="vertical"
    android:layout_width="match_parent"
@@ -16,10 +17,12 @@
        android:transcriptMode="alwaysScroll" />
 
     <View
-       android:background="@android:color/black"
-       android:layout_margin="4dp"
+       android:background="?colorControlNormal"
+       android:layout_marginStart="12dp"
+       android:layout_marginEnd="12dp"
+       android:layout_marginTop="2dp"
        android:layout_width="match_parent"
-       android:layout_height="0.5dp" />
+       android:layout_height="1dp" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
        android:layout_width="match_parent"
@@ -34,7 +37,7 @@
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:layout_gravity="center"
-           android:layout_margin="4dp"
+           android:padding="4dp"
            android:background="?attr/selectableItemBackground"
            android:contentDescription="Select Prompt"
            app:srcCompat="@drawable/baseline_terminal_24" />
@@ -45,17 +48,17 @@
            android:layout_height="wrap_content"
            android:layout_weight="1"
            android:imeOptions="normal"
-           android:layout_margin="4dp"
            android:inputType="textMultiLine|textCapSentences"
            android:hint="Message"
-           android:maxLines="5" />
+           android:maxLines="5"
+           android:padding="12dp" />
 
         <androidx.appcompat.widget.AppCompatImageButton
            android:id="@+id/send_button"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:layout_gravity="center"
-           android:layout_margin="4dp"
+           android:padding="8dp"
            android:background="?attr/selectableItemBackground"
            app:srcCompat="@drawable/ic_send" />
     </androidx.appcompat.widget.LinearLayoutCompat>
