@@ -57,6 +57,8 @@ public class ChatActivity
   private String apiKey;
   private String apiUrl;
   private String apiModel;
+  private boolean mSingleMessage;
+  private int mTemp;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -93,6 +95,9 @@ public class ChatActivity
       //set custom model
       apiModel = mSharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_4));
     }
+
+    mSingleMessage = mSharedPreferences.getBoolean(getString(R.string.prefs_single_message_key), false);
+    mTemp = mSharedPreferences.getInt(getString(R.string.prefs_temperature_key), 8) / 10;
   }
 
   private String getTextSelected() {
@@ -169,10 +174,17 @@ public class ChatActivity
     sendButton.setOnClickListener(v -> {
       String text = editText.getText().toString();
       if (!text.isEmpty()) {
+        ChatMessage message = ChatMessage.toUserMessage(text);
         editText.setText("");
-        addMessage(ChatMessage.toUserMessage(text));
+        addMessage(message);
 
-        ChatRequest chatRequest = ChatRequest.builder().model(apiModel).messages(mChatMessages).temperature(0.8f).build();
+        if (mSingleMessage) {
+          //clear prev messages
+          setSystemPrompt(mSystemPrompt);
+          mChatMessages.add(message);
+        }
+
+        ChatRequest chatRequest = ChatRequest.builder().model(apiModel).messages(mChatMessages).temperature(mTemp).build();
         sendMessage(chatRequest);
         sendButton.setEnabled(false);
       }

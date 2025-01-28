@@ -10,4 +10,9 @@
     <string name="prefs_custom_model_key" translatable="false">prefs_custom_model_key</string>
     <string name="prefs_system_prompts_key" translatable="false">prefs_system_prompts_key</string>
     <string name="prefs_default_system_prompt" translatable="false">You a helpful writer.</string>
+    <string name="prefs_single_message_key">prefs_single_message_key</string>
+    <string name="prefs_single_message_title">Single Message</string>
+    <string name="prefs_single_message_summary">Only send single message. Don\'t send previous messages to server.</string>
+    <string name="prefs_temperature_key">prefs_temperature_key</string>
+    <string name="prefs_temperature_title">Temperature</string>
 </resources>
