@@ -8,13 +8,12 @@ import android.os.Bundle;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager.OnPreferenceTreeClickListener;
 
 public class SettingsActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   public static final String PREFS = "_prefs";
 

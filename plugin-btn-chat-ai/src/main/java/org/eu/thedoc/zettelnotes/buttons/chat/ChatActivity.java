@@ -12,7 +12,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.TooltipCompat;
 import com.cjcrafter.openai.OpenAI;
@@ -36,7 +35,7 @@ import org.eu.thedoc.zettelnotes.plugins.base.utils.AppExecutor;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class ChatActivity
-    extends AppCompatActivity
+    extends BaseActivity
     implements Listener {
 
   public static final String ERROR_STRING = "intent-error";

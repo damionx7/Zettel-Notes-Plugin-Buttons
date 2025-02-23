@@ -1,35 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
    xmlns:android="http://schemas.android.com/apk/res/android"
    xmlns:app="http://schemas.android.com/apk/res-auto"
-   android:orientation="vertical"
    android:layout_width="match_parent"
-   android:layout_height="match_parent">
+   android:layout_height="match_parent"
+   android:layout_margin="8dp">
 
     <ListView
        android:id="@+id/list_view"
        android:layout_width="match_parent"
        android:layout_height="0dp"
-       android:layout_weight="1"
-       android:layout_margin="8dp"
        android:divider="@null"
        android:stackFromBottom="true"
-       android:transcriptMode="alwaysScroll" />
+       android:transcriptMode="alwaysScroll"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintBottom_toTopOf="@id/textInputLayout" />
 
-    <View
-       android:background="?colorControlNormal"
-       android:layout_marginStart="12dp"
-       android:layout_marginEnd="12dp"
-       android:layout_marginTop="2dp"
+    <com.google.android.material.textfield.TextInputLayout
+       android:id="@+id/textInputLayout"
        android:layout_width="match_parent"
-       android:layout_height="1dp" />
+       android:layout_height="wrap_content"
+       app:layout_constraintTop_toBottomOf="@id/list_view"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+           android:id="@+id/edit_text"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:imeOptions="normal"
+           android:inputType="textMultiLine|textCapSentences"
+           android:hint="Message"
+           android:maxLines="5" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:layout_gravity="bottom"
+       app:layout_constraintTop_toBottomOf="@id/textInputLayout"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
        android:orientation="horizontal"
-       android:gravity="center_vertical">
+       android:gravity="end|center_vertical"
+       app:layout_constraintBottom_toBottomOf="parent"
+       android:padding="4dp">
 
         <androidx.appcompat.widget.AppCompatImageButton
            android:id="@+id/activity_main_button_system_prompt"
@@ -39,29 +55,16 @@
            android:background="?attr/selectableItemBackground"
            android:contentDescription="Select Prompt"
            app:srcCompat="@drawable/baseline_terminal_24"
-           android:layout_margin="8dp" />
-
-        <androidx.appcompat.widget.AppCompatEditText
-           android:id="@+id/edit_text"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_weight="1"
-           android:imeOptions="normal"
-           android:inputType="textMultiLine|textCapSentences"
-           android:hint="Message"
-           android:maxLines="5"
-           android:minHeight="52dp"
-           android:paddingStart="8dp"
-           android:paddingEnd="8dp" />
+           android:padding="8dp" />
 
         <androidx.appcompat.widget.AppCompatImageButton
            android:id="@+id/send_button"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_gravity="center"
+           android:layout_gravity="center_vertical"
            android:background="?attr/selectableItemBackground"
            app:srcCompat="@drawable/ic_send"
-           android:layout_margin="8dp" />
+           android:padding="8dp" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

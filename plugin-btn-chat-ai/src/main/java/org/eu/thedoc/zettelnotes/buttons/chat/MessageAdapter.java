@@ -27,12 +27,18 @@ public class MessageAdapter
 
   @Override
   public int getItemViewType(int position) {
-    if (mList.get(position).getRole().equals(ChatUser.ASSISTANT)) {
+    final ChatUser role = mList.get(position).getRole();
+    if (role.equals(ChatUser.ASSISTANT)) {
       return REMOTE;
-    } else if (mList.get(position).getRole().equals(ChatUser.USER)) {
+    } else if (role.equals(ChatUser.USER)) {
       return LOCAL;
     }
     return INVALID;
+  }
+
+  @Override
+  public int getViewTypeCount() {
+    return 2;
   }
 
   public int addItem(ChatMessage message) {
@@ -40,7 +46,6 @@ public class MessageAdapter
     notifyDataSetChanged();
     return mList.size() - 1;
   }
-
 
   public void updateItem(int pos, ChatMessage chatMessage) {
     ChatMessage message = getItem(pos);
@@ -77,11 +82,15 @@ public class MessageAdapter
           holder = new MessageViewHolder(convertView, this);
         }
       }
-      convertView.setTag(holder);
+      if (convertView != null) {
+        convertView.setTag(holder);
+      }
     } else {
       holder = (MessageViewHolder) convertView.getTag();
     }
-    holder.bindTo(getItem(position));
+    if (holder != null) {
+      holder.bindTo(getItem(position));
+    }
     return convertView;
   }
 
