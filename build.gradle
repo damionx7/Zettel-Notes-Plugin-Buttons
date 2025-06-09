@@ -4,6 +4,7 @@ plugins {
     alias libs.plugins.android.application apply false
     alias libs.plugins.android.library apply false
     alias libs.plugins.jetbrains.kotlin apply false
+    alias libs.plugins.android.junit5 apply false
 }
 
 Properties properties = new Properties()
@@ -31,6 +32,7 @@ subprojects { subproject ->
     afterEvaluate {
         if (subproject.plugins.hasPlugin("com.android.application")) {
             //default values for subprojects
+            project.plugins.apply(libs.plugins.android.junit5.get().pluginId)
 
             subproject.android {
                 compileSdk project.compileSdk
@@ -95,6 +97,8 @@ subprojects { subproject ->
                 implementation project(path: ':basemodule')
 
                 coreLibraryDesugaring libs.desugar
+
+                testImplementation(platform(libs.junit.bom))
                 testImplementation libs.bundles.junit
             }
         }
