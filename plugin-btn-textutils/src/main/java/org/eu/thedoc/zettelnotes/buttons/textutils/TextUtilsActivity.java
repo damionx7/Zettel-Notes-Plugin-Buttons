@@ -7,9 +7,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
@@ -78,26 +80,35 @@ public class TextUtilsActivity
     return line;
   }
 
+  public static String sortLines(String text, boolean ascending) {
+    if (StringUtils.isBlank(text)) {
+      return text;
+    }
+
+    List<String> lines = Arrays.asList(StringUtils.split(text, "\n"));
+    lines.sort(ascending ? String.CASE_INSENSITIVE_ORDER : Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER));
+
+    return StringUtils.join(lines, "\n");
+  }
+
   @Override
   protected void onCreate(
       @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    String[] formatOptions = {"Remove newlines", "Split to newlines", "Uppercase", "Lowercase", "Title Case", "Swap Case",
-        "Create Task list", "Remove Task list", "Add Month Table", "Add Month Table With Empty Rows", "Add Year Table",
-        "Add Year Table with Empty Rows"};
-    builder.setItems(formatOptions, (dialog, which) -> {
-      String txtSelected = getIntent().getStringExtra(INTENT_EXTRA_TEXT_SELECTED);
 
+    builder.setItems(FormatOption.LIST, (dialog, which) -> {
+      String txtSelected = getIntent().getStringExtra(INTENT_EXTRA_TEXT_SELECTED);
+      String option = FormatOption.LIST[which];
       if (txtSelected == null || txtSelected.isEmpty()) {
-        switch (which) {
-          case 8 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
+        switch (option) {
+          case FormatOption.ADD_MONTH_TABLE -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
               CalendarUtils.getMonthTable(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), false)));
-          case 9 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
+          case FormatOption.ADD_MONTH_TABLE_WITH_EMPTY_ROWS -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
               CalendarUtils.getMonthTable(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), true)));
-          case 10 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
+          case FormatOption.ADD_YEAR_TABLE -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT,
               CalendarUtils.getYearTable(Calendar.getInstance().get(Calendar.YEAR), false)));
-          case 11 -> setResult(RESULT_OK,
+          case FormatOption.ADD_YEAR_TABLE_WITH_EMPTY_ROWS -> setResult(RESULT_OK,
               new Intent().putExtra(INTENT_EXTRA_INSERT_TEXT, CalendarUtils.getYearTable(Calendar.getInstance().get(Calendar.YEAR), true)));
           default -> {
             setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Select some text"));
@@ -105,15 +116,27 @@ public class TextUtilsActivity
           }
         }
       } else {
-        switch (which) {
-          case 0 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, removeNewLines(txtSelected)));
-          case 1 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, addNewLines(txtSelected)));
-          case 2 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, txtSelected.toUpperCase(Locale.ROOT)));
-          case 3 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, txtSelected.toLowerCase(Locale.ROOT)));
-          case 4 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, WordUtils.capitalizeFully(txtSelected)));
-          case 5 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, WordUtils.swapCase(txtSelected)));
-          case 6 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, formatToTaskList(txtSelected)));
-          case 7 -> setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, removeTaskList(txtSelected)));
+        switch (option) {
+          case FormatOption.REMOVE_NEWLINES ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, removeNewLines(txtSelected)));
+          case FormatOption.SPLIT_TO_NEWLINES ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, addNewLines(txtSelected)));
+          case FormatOption.UPPERCASE ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, txtSelected.toUpperCase(Locale.ROOT)));
+          case FormatOption.LOWERCASE ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, txtSelected.toLowerCase(Locale.ROOT)));
+          case FormatOption.TITLE_CASE ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, WordUtils.capitalizeFully(txtSelected)));
+          case FormatOption.SWAP_CASE ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, WordUtils.swapCase(txtSelected)));
+          case FormatOption.CREATE_TASK_LIST ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, formatToTaskList(txtSelected)));
+          case FormatOption.REMOVE_TASK_LIST ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, removeTaskList(txtSelected)));
+          case FormatOption.SORT_ASC ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, sortLines(txtSelected, true)));
+          case FormatOption.SORT_DESC ->
+              setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_REPLACE_TEXT, sortLines(txtSelected, false)));
         }
       }
       finish();
@@ -128,6 +151,30 @@ public class TextUtilsActivity
 
   private String addNewLines(String selectedText) {
     return selectedText.replaceAll("\\s+", "\n");
+  }
+
+  private @interface FormatOption {
+
+    String REMOVE_NEWLINES = "Join Lines";
+    String SPLIT_TO_NEWLINES = "Split into Lines";
+    String UPPERCASE = "Convert to Uppercase";
+    String LOWERCASE = "Convert to Lowercase";
+    String TITLE_CASE = "Convert to Title Case";
+    String SWAP_CASE = "Swap Letter Case";
+    String CREATE_TASK_LIST = "Convert to Task List";
+    String REMOVE_TASK_LIST = "Remove Task List";
+    String SORT_ASC = "Sort Asc";
+    String SORT_DESC = "Sort Desc";
+    String ADD_MONTH_TABLE = "Insert Month Table";
+    String ADD_MONTH_TABLE_WITH_EMPTY_ROWS = "Insert Month Table (Empty Rows)";
+    String ADD_YEAR_TABLE = "Insert Year Table";
+    String ADD_YEAR_TABLE_WITH_EMPTY_ROWS = "Insert Year Table (Empty Rows)";
+
+    String[] LIST = {FormatOption.REMOVE_NEWLINES, FormatOption.SPLIT_TO_NEWLINES, FormatOption.UPPERCASE, FormatOption.LOWERCASE,
+        FormatOption.TITLE_CASE, FormatOption.SWAP_CASE, FormatOption.CREATE_TASK_LIST, FormatOption.REMOVE_TASK_LIST,
+        FormatOption.SORT_ASC, FormatOption.SORT_DESC, FormatOption.ADD_MONTH_TABLE, FormatOption.ADD_MONTH_TABLE_WITH_EMPTY_ROWS,
+        FormatOption.ADD_YEAR_TABLE, FormatOption.ADD_YEAR_TABLE_WITH_EMPTY_ROWS};
+
   }
 
 }
