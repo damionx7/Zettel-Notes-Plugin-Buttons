@@ -16,7 +16,7 @@ apply from: rootProject.file(properties.getProperty("keystore.signing"))
 project.ext {
     minSdk = 24
     targetSdk = 35
-    compileSdk = 34
+    compileSdk = 36
     keystore = rootProject.file(properties.getProperty("keystore"))
 }
 
