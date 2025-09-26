@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -19,6 +20,8 @@ import com.cjcrafter.openai.chat.ChatMessage;
 import com.cjcrafter.openai.chat.ChatRequest;
 import com.cjcrafter.openai.chat.ChatResponseChunk;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
@@ -49,7 +52,9 @@ public class ChatActivity
   private OpenAI openai;
   private MessageAdapter mMessageAdapter;
 
-  private AppCompatImageButton sendButton, mPromptButton;
+  private AppCompatImageButton mSendButton, mPromptButton;
+
+  private LinearProgressIndicator mProgressIndicator;
 
   private SharedPreferences mSharedPreferences;
   private String mSystemPrompt, mApiKey, mApiUrl, mApiModel;
@@ -86,10 +91,10 @@ public class ChatActivity
 
     mApiKey = mSharedPreferences.getString(getString(R.string.prefs_api_key), "");
     mApiUrl = mSharedPreferences.getString(getString(R.string.prefs_api_url_key), "");
-    mApiModel = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_4));
+    mApiModel = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_5));
     if (mApiModel.equals(getString(R.string.model_custom))) {
       //set custom model
-      mApiModel = mSharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_4));
+      mApiModel = mSharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_5));
     }
 
     mSingleMessage = mSharedPreferences.getBoolean(getString(R.string.prefs_single_message_key), false);
@@ -127,15 +132,18 @@ public class ChatActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    EditText editText = findViewById(R.id.edit_text);
+    TextInputEditText editText = findViewById(R.id.edit_text);
     editText.setText(getTextSelected());
     editText.requestFocus();
+
+    mProgressIndicator = findViewById(R.id.activity_main_progress_bar);
 
     mPromptButton = findViewById(R.id.activity_main_button_system_prompt);
     mPromptButton.setOnClickListener(v -> showPromptSelectDialog());
     TooltipCompat.setTooltipText(mPromptButton, mPromptButton.getContentDescription());
 
-    sendButton = findViewById(R.id.send_button);
+    mSendButton = findViewById(R.id.send_button);
+
     mMessageAdapter = new MessageAdapter();
     mMessageAdapter.setListener(this);
 
@@ -148,7 +156,7 @@ public class ChatActivity
     initializeAiAgent();
     setSystemPrompt(mSystemPrompt);
 
-    sendButton.setOnClickListener(v -> {
+    mSendButton.setOnClickListener(v -> {
       String text = editText.getText().toString();
       if (!text.isEmpty()) {
         ChatMessage message = ChatMessage.toUserMessage(text);
@@ -163,7 +171,8 @@ public class ChatActivity
 
         ChatRequest chatRequest = ChatRequest.builder().model(mApiModel).messages(mChatMessages).temperature(mTemp).build();
         sendMessage(chatRequest);
-        sendButton.setEnabled(false);
+
+        toggleUIProgressIndicators(false);
       }
     });
   }
@@ -211,9 +220,8 @@ public class ChatActivity
       //
       dialog.dismiss();
     });
-    builder.setNeutralButton("Default",
-        (dialog, which) -> setSystemPrompt(mSharedPreferences.getString(getString(R.string.prefs_system_prompt_key),
-            getString(R.string.prefs_default_system_prompt))));
+    builder.setNeutralButton("Default", (dialog, which) -> setSystemPrompt(
+        mSharedPreferences.getString(getString(R.string.prefs_system_prompt_key), getString(R.string.prefs_default_system_prompt))));
     builder.setPositiveButton("Add", (dialog, which) -> {
       //
       showPromptEnterDialog();
@@ -283,9 +291,14 @@ public class ChatActivity
         ToastsHelper.showToast(this, e.getMessage() == null ? e.toString() : e.getMessage());
         runOnUiThread(() -> mMessageAdapter.updateItem(pos, ChatMessage.toAssistantMessage(e.toString())));
       } finally {
-        runOnUiThread(() -> sendButton.setEnabled(true));
+        runOnUiThread(() -> toggleUIProgressIndicators(true));
       }
     });
+  }
+
+  private void toggleUIProgressIndicators(boolean b) {
+    mProgressIndicator.setVisibility(b ? View.GONE : View.VISIBLE);
+    mSendButton.setEnabled(b);
   }
 
   @Override

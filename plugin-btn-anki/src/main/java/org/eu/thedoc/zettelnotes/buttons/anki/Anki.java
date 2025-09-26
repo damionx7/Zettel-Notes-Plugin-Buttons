@@ -44,14 +44,14 @@ public class Anki {
   /**
    * Get the ID of the deck which matches the name
    *
-   * @param deckName Exact name of deck (note: deck names are unique in Anki)
+   * @param deck Exact name of deck (note: deck names are unique in Anki)
    * @return the ID of the deck that has given name, or null if no deck was found or API error
    */
-  private Long findDeckId(String deckName) {
+  private Long findDeckId(String deck) {
     Map<Long, String> deckList = mApi.getDeckList();
     if (deckList != null) {
       for (Map.Entry<Long, String> entry : deckList.entrySet()) {
-        if (entry.getValue().equalsIgnoreCase(deckName)) {
+        if (entry.getValue().equalsIgnoreCase(deck)) {
           return entry.getKey();
         }
       }
@@ -64,10 +64,10 @@ public class Anki {
    *
    * @return might be null if there was a problem
    */
-  public Long getDeckId() {
-    Long did = findDeckId(AnkiConfig.DECK_NAME);
+  public Long getDeckId(String deck) {
+    Long did = findDeckId(deck);
     if (did == null) {
-      did = getApi().addNewDeck(AnkiConfig.DECK_NAME);
+      did = getApi().addNewDeck(deck);
     }
     return did;
   }

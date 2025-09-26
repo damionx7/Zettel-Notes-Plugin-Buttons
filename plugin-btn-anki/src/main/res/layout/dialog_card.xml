@@ -7,6 +7,12 @@
    android:orientation="vertical"
    android:padding="8dp">
 
+    <androidx.appcompat.widget.AppCompatEditText
+       android:id="@+id/dialog_card_edit_text_deck_title"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:hint="Deck" />
+
     <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/dialog_card_recycler_view"
        android:layout_width="match_parent"

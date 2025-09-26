@@ -26,7 +26,7 @@
 
     <ListPreference
        android:dependency="@string/prefs_api_key"
-       android:defaultValue="@string/model_gpt_4"
+       android:defaultValue="@string/model_gpt_5"
        android:title="API Model"
        android:summary="Select the API model"
        android:key="@string/prefs_api_model_key"

@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="model_entries">
-        <item>GPT-3.5 Turbo</item>
-        <item>GPT-4</item>
+        <item>GPT-5</item>
+        <item>GPT-5 mini</item>
+        <item>GPT-4.1</item>
         <item>Custom</item>
     </string-array>
     <string-array name="model_values">
-        <item>@string/model_gpt_3_5_turbo</item>
-        <item>@string/model_gpt_4</item>
+        <item>@string/model_gpt_5</item>
+        <item>@string/model_gpt_5_mini</item>
+        <item>@string/model_gpt_4_1</item>
         <item>@string/model_custom</item>
     </string-array>
 
-    <string name="model_gpt_4" translatable="false">gpt-4</string>
-    <string name="model_gpt_3_5_turbo" translatable="false">gpt-3.5-turbo</string>
+    <string name="model_gpt_5" translatable="false">gpt-5</string>
+    <string name="model_gpt_5_mini" translatable="false">gpt-5 mini</string>
+    <string name="model_gpt_4_1" translatable="false">gpt-4.1</string>
     <string name="model_custom" translatable="false">custom</string>
 </resources>

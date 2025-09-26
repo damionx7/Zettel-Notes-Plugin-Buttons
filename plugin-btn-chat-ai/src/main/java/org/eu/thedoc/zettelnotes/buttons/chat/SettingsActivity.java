@@ -43,7 +43,7 @@ public class SettingsActivity
 
       mSharedPreferences = getPreferenceManager().getSharedPreferences();
 
-      String model = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_4));
+      String model = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_5));
       mCustomModelPreference.setEnabled(model.equals(getString(R.string.model_custom)));
     }
 
@@ -84,7 +84,7 @@ public class SettingsActivity
       }
 
       if (key.equals(getString(R.string.prefs_api_model_key))) {
-        String model = mSharedPreferences.getString(key, getString(R.string.model_gpt_4));
+        String model = mSharedPreferences.getString(key, getString(R.string.model_gpt_5));
         mCustomModelPreference.setEnabled(model.equals(getString(R.string.model_custom)));
       }
     }

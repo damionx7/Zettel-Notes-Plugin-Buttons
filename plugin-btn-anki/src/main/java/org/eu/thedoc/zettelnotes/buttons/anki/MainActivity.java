@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -83,27 +84,40 @@ public class MainActivity
       list.sort((o1, o2) -> o1.question().compareToIgnoreCase(o2.question()));
       //Show User Generated Cards in A List
       MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+      builder.setTitle("Anki Plugin");
+      //
       View view = LayoutInflater.from(this).inflate(R.layout.dialog_card, null);
+      //
+      AppCompatEditText deckEditText = view.findViewById(R.id.dialog_card_edit_text_deck_title);
+      deckEditText.setText(AnkiConfig.DECK_NAME);
+      //
       MaterialButton button = view.findViewById(R.id.dialog_card_button_submit);
+      //
       RecyclerView recyclerView = view.findViewById(R.id.dialog_card_recycler_view);
       CardAdapter adapter = new CardAdapter(new ArrayList<>(list));
       recyclerView.setAdapter(adapter);
       recyclerView.setLayoutManager(new LinearLayoutManager(this));
+      //
       builder.setView(view);
       builder.setOnCancelListener(dialog -> onSuccess());
       builder.setOnDismissListener(dialog -> onSuccess());
-      button.setOnClickListener(v -> addInAnki(list));
+      button.setOnClickListener(v -> addInAnki(deckEditText, list));
       builder.show();
     }
   }
 
-  private void addInAnki(List<Card> list) {
+  private void addInAnki(AppCompatEditText deckEditText, List<Card> list) {
+    if (deckEditText.length() == 0) {
+      onFailure("Deck Title Can't be Empty.");
+      return;
+    }
+
     if (Anki.isApiAvailable(this)) {
       ArrayList<HashMap<String, String>> basicQA = AnkiConfig.getData(list);
       //ArrayList<HashMap<String, String>> cloze = AnkiConfig.getData(list);
       Log.v(getClass().getName(), "Data Size: " + basicQA.size());
       //
-      Long deckId = mAnki.getDeckId();
+      Long deckId = mAnki.getDeckId(deckEditText.getText().toString());
       Long modelId = mAnki.getModelId();
       if ((deckId == null) || (modelId == null)) {
         // we had an API error, report failure and return

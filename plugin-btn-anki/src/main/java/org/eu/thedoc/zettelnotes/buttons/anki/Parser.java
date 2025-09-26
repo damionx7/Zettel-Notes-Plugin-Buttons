@@ -2,12 +2,13 @@ package org.eu.thedoc.zettelnotes.buttons.anki;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringDef;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
-import org.eu.thedoc.zettelnotes.buttons.anki.Parser.Type.Types;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.PatternUtils.Regex;
 
 public class Parser {
@@ -19,14 +20,14 @@ public class Parser {
     }
 
     Set<Card> set = new HashSet<>();
-    set.addAll(getClozes(text));
+    set.addAll(getCloze(text));
     set.addAll(getRuled(text));
     set.addAll(getQA(text));
     set.addAll(getHeader(text));
     return new ArrayList<>(set);
   }
 
-  private static List<Card> getClozes(String text) {
+  private static List<Card> getCloze(String text) {
     List<Card> list = new ArrayList<>();
     Matcher clozeMatcher = Regex.ANKI_CLOZE.pattern.matcher(text);
     while (clozeMatcher.find()) {
@@ -87,18 +88,15 @@ public class Parser {
     return list;
   }
 
-  public static final class Type {
+  @Retention(RetentionPolicy.SOURCE)
+  @StringDef({Type.CLOZE, Type.HEADER, Type.QA, Type.RULED})
+  public @interface Type {
 
-    public static final String CLOZE = "cloze";
-    public static final String HEADER = "header";
-    public static final String QA = "qa";
-    public static final String RULED = "ruled";
-
-    @StringDef({CLOZE, HEADER, QA, RULED})
-    public @interface Types {
-      //
-    }
+    String CLOZE = "cloze";
+    String HEADER = "header";
+    String RULED = "ruled";
+    String QA = "qa";
   }
 
-  public record Card(String question, String answer, @Types String type) {}
+  public record Card(String question, String answer, @Type String type) {}
 }
