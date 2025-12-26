@@ -13,6 +13,5 @@
     <string name="prefs_single_message_key">prefs_single_message_key</string>
     <string name="prefs_single_message_title">Single Message</string>
     <string name="prefs_single_message_summary">Only send single message. Don\'t send previous messages to server.</string>
-    <string name="prefs_temperature_key" translatable="false">prefs_temperature_key</string>
     <string name="prefs_temperature_title">Temperature</string>
 </resources>

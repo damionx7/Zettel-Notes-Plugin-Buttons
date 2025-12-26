@@ -26,7 +26,7 @@
 
     <ListPreference
        android:dependency="@string/prefs_api_key"
-       android:defaultValue="@string/model_gpt_5"
+       android:defaultValue="@string/model_gpt_5_1"
        android:title="API Model"
        android:summary="Select the API model"
        android:key="@string/prefs_api_model_key"
@@ -56,15 +56,6 @@
            android:summary="@string/prefs_single_message_summary"
            app:defaultValue="false" />
 
-        <SeekBarPreference
-           android:title="@string/prefs_temperature_title"
-           android:key="@string/prefs_temperature_key"
-           app:min="0"
-           android:max="20"
-           app:seekBarIncrement="1"
-           app:showSeekBarValue="true"
-           android:defaultValue="8" />
-
-    </PreferenceCategory>
+       </PreferenceCategory>
 
 </PreferenceScreen>

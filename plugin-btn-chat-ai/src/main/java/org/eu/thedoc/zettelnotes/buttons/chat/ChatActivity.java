@@ -47,8 +47,12 @@ public class ChatActivity
   public static final String INTENT_EXTRA_REPLACE_TEXT = "intent-extra-text-replace";
   public static final String INTENT_EXTRA_INSERT_TEXT = "intent-extra-insert-text";
   private final List<ChatMessage> mChatMessages = new ArrayList<>();
-  private final Executor mHandler = AppExecutor.getInstance().mainThread();
-  private final Executor mNetworkIO = AppExecutor.getInstance().networkIO();
+  private final Executor mHandler = AppExecutor
+      .getInstance()
+      .mainThread();
+  private final Executor mNetworkIO = AppExecutor
+      .getInstance()
+      .networkIO();
   private OpenAI openai;
   private MessageAdapter mMessageAdapter;
 
@@ -59,7 +63,6 @@ public class ChatActivity
   private SharedPreferences mSharedPreferences;
   private String mSystemPrompt, mApiKey, mApiUrl, mApiModel;
   private boolean mSingleMessage;
-  private float mTemp;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -91,14 +94,13 @@ public class ChatActivity
 
     mApiKey = mSharedPreferences.getString(getString(R.string.prefs_api_key), "");
     mApiUrl = mSharedPreferences.getString(getString(R.string.prefs_api_url_key), "");
-    mApiModel = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_5));
+    mApiModel = mSharedPreferences.getString(getString(R.string.prefs_api_model_key), getString(R.string.model_gpt_5_1));
     if (mApiModel.equals(getString(R.string.model_custom))) {
       //set custom model
-      mApiModel = mSharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_5));
+      mApiModel = mSharedPreferences.getString(getString(R.string.prefs_custom_model_key), getString(R.string.model_gpt_5_1));
     }
 
     mSingleMessage = mSharedPreferences.getBoolean(getString(R.string.prefs_single_message_key), false);
-    mTemp = mSharedPreferences.getInt(getString(R.string.prefs_temperature_key), 8) / 10f;
   }
 
   private String getTextSelected() {
@@ -123,7 +125,10 @@ public class ChatActivity
   }
 
   private void savePrompts(List<String> prompts) {
-    mSharedPreferences.edit().putString(getString(R.string.prefs_system_prompts_key), new Gson().toJson(prompts)).apply();
+    mSharedPreferences
+        .edit()
+        .putString(getString(R.string.prefs_system_prompts_key), new Gson().toJson(prompts))
+        .apply();
   }
 
   @Override
@@ -157,7 +162,9 @@ public class ChatActivity
     setSystemPrompt(mSystemPrompt);
 
     mSendButton.setOnClickListener(v -> {
-      String text = editText.getText().toString();
+      String text = editText
+          .getText()
+          .toString();
       if (!text.isEmpty()) {
         ChatMessage message = ChatMessage.toUserMessage(text);
         editText.setText("");
@@ -169,7 +176,11 @@ public class ChatActivity
           mChatMessages.add(message);
         }
 
-        ChatRequest chatRequest = ChatRequest.builder().model(mApiModel).messages(mChatMessages).temperature(mTemp).build();
+        ChatRequest chatRequest = ChatRequest
+            .builder()
+            .model(mApiModel)
+            .messages(mChatMessages)
+            .build();
         sendMessage(chatRequest);
 
         toggleUIProgressIndicators(false);
@@ -191,7 +202,9 @@ public class ChatActivity
     client.readTimeout(30, TimeUnit.SECONDS);
     client.writeTimeout(30, TimeUnit.SECONDS);
     if (BuildConfig.DEBUG) {
-      client.addInterceptor(new HttpLoggingInterceptor().setLevel(Level.BODY)).build();
+      client
+          .addInterceptor(new HttpLoggingInterceptor().setLevel(Level.BODY))
+          .build();
     }
     if (mApiKey.isEmpty()) {
       mApiKey = BuildConfig.OPENAI_API_KEY;
@@ -203,7 +216,9 @@ public class ChatActivity
     if (!mApiUrl.isBlank()) {
       builder.baseUrl(mApiUrl);
     }
-    builder.apiKey(mApiKey).client(client.build());
+    builder
+        .apiKey(mApiKey)
+        .client(client.build());
     openai = builder.build();
   }
 
@@ -241,7 +256,10 @@ public class ChatActivity
     mSystemPrompt = prompt;
     mChatMessages.add(ChatMessage.toSystemMessage(prompt));
     //
-    mSharedPreferences.edit().putString(getString(R.string.prefs_user_selected_system_prompt_key), prompt).apply();
+    mSharedPreferences
+        .edit()
+        .putString(getString(R.string.prefs_user_selected_system_prompt_key), prompt)
+        .apply();
   }
 
   private void showPromptEnterDialog() {
@@ -253,7 +271,9 @@ public class ChatActivity
     builder.setPositiveButton("Add", (dialog, which) -> {
       List<String> prompts = getPrompts();
       if (editText.length() > 0) {
-        prompts.add(editText.getText().toString());
+        prompts.add(editText
+            .getText()
+            .toString());
         savePrompts(prompts);
       }
       //
@@ -275,15 +295,21 @@ public class ChatActivity
       try {
         for (ChatResponseChunk chunk : openai.streamChatCompletion(request)) {
           // This is nullable! ChatGPT will return null AT LEAST ONCE PER MESSAGE.
-          String response = chunk.get(0).getDeltaContent();
+          String response = chunk
+              .get(0)
+              .getDeltaContent();
           if (response != null) {
             stringBuilder.append(response);
             runOnUiThread(() -> mMessageAdapter.updateItem(pos, ChatMessage.toAssistantMessage(stringBuilder.toString())));
           }
 
           // When the response is finished, we can add it to the messages list.
-          if (chunk.get(0).isFinished()) {
-            mChatMessages.add(chunk.get(0).getMessage());
+          if (chunk
+              .get(0)
+              .isFinished()) {
+            mChatMessages.add(chunk
+                .get(0)
+                .getMessage());
           }
         }
       } catch (Exception e) {

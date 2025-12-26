@@ -7,14 +7,14 @@
         <item>Custom</item>
     </string-array>
     <string-array name="model_values">
-        <item>@string/model_gpt_5</item>
+        <item>@string/model_gpt_5_1</item>
         <item>@string/model_gpt_5_mini</item>
         <item>@string/model_gpt_4_1</item>
         <item>@string/model_custom</item>
     </string-array>
 
-    <string name="model_gpt_5" translatable="false">gpt-5</string>
-    <string name="model_gpt_5_mini" translatable="false">gpt-5 mini</string>
+    <string name="model_gpt_5_1" translatable="false">gpt-5.1</string>
+    <string name="model_gpt_5_mini" translatable="false">gpt-5-mini</string>
     <string name="model_gpt_4_1" translatable="false">gpt-4.1</string>
     <string name="model_custom" translatable="false">custom</string>
 </resources>
