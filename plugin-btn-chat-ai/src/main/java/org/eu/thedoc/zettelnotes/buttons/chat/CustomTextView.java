@@ -36,7 +36,7 @@ public class CustomTextView
 
   @Override
   protected void onCreateContextMenu(ContextMenu menu) {
-    if (mListener != null) {
+    if (mListener != null && (mListener.enableInsertMenuItem() || mListener.enableReplaceMenuItem())) {
       menu.add(Menu.NONE, R.id.menu_settings, 0, INSERT_TEXT).setOnMenuItemClickListener(this).setEnabled(mListener.enableInsertMenuItem());
       menu.add(Menu.NONE, R.id.menu_settings, 0, REPLACE_TEXT).setOnMenuItemClickListener(this).setEnabled(
           mListener.enableReplaceMenuItem());
