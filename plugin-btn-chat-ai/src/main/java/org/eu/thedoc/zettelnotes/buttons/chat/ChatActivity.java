@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,13 +29,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 import org.eu.thedoc.zettelnotes.buttons.chat.CustomTextView.Listener;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.AppExecutor;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
+import org.eu.thedoc.zettelnotes.plugins.base.utils.Utils;
 
 public class ChatActivity
     extends BaseActivity
@@ -223,31 +223,26 @@ public class ChatActivity
   }
 
   private void showPromptSelectDialog() {
-    final List<String> prompts = getPrompts();
+    List<String> prompts = getPrompts();
+    int selected = Math.max(-1, prompts.indexOf(mSystemPrompt));
 
-    AtomicInteger index = new AtomicInteger(prompts.indexOf(mSystemPrompt));
-    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-    builder.setTitle("Select Prompt");
-    ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, prompts);
-    builder.setSingleChoiceItems(adapter, index.get(), (dialog, which) -> {
-      index.set(which);
-      setSystemPrompt(prompts.get(which));
-      //
-      dialog.dismiss();
-    });
-    builder.setNeutralButton("Default", (dialog, which) -> setSystemPrompt(
-        mSharedPreferences.getString(getString(R.string.prefs_system_prompt_key), getString(R.string.prefs_default_system_prompt))));
-    builder.setPositiveButton("Add", (dialog, which) -> {
-      //
-      showPromptEnterDialog();
-    });
-    builder.setNegativeButton("Remove", (dialog, which) -> {
-      prompts.remove(index.get());
-      savePrompts(prompts);
-      //
-      showPromptSelectDialog();
-    });
-    builder.show();
+    new MaterialAlertDialogBuilder(this)
+        .setTitle("Select prompt")
+        .setSingleChoiceItems(new ArrayAdapter<>(this, R.layout.item_prompt_single_choice, prompts), selected, (d, which) -> {
+          setSystemPrompt(prompts.get(which));
+          d.dismiss();
+        })
+        .setNeutralButton("Default", (d, w) -> setSystemPrompt(
+            mSharedPreferences.getString(getString(R.string.prefs_system_prompt_key), getString(R.string.prefs_default_system_prompt))))
+        .setPositiveButton("Add", (d, w) -> showPromptEnterDialog())
+        .setNegativeButton("Remove", (d, w) -> {
+          if (!prompts.isEmpty() && selected >= 0) {
+            prompts.remove(selected);
+            savePrompts(prompts);
+            showPromptSelectDialog();
+          }
+        })
+        .show();
   }
 
   private void setSystemPrompt(String prompt) {
@@ -263,23 +258,32 @@ public class ChatActivity
   }
 
   private void showPromptEnterDialog() {
-    final EditText editText = new EditText(this);
+    int pad = Utils.getPx(this, 16);
 
-    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-    builder.setTitle("Enter Prompt");
-    builder.setView(editText);
-    builder.setPositiveButton("Add", (dialog, which) -> {
-      List<String> prompts = getPrompts();
-      if (editText.length() > 0) {
-        prompts.add(editText
-            .getText()
-            .toString());
-        savePrompts(prompts);
-      }
-      //
-      showPromptSelectDialog();
-    });
-    builder.show();
+    EditText input = new EditText(this);
+    input.setHint("Type your prompt");
+
+    FrameLayout box = new FrameLayout(this);
+    box.setPadding(pad, pad / 2, pad, 0);
+    box.addView(input);
+
+    new MaterialAlertDialogBuilder(this)
+        .setTitle("Enter prompt")
+        .setView(box)
+        .setPositiveButton("Add", (d, w) -> {
+          String text = input
+              .getText()
+              .toString()
+              .trim();
+          if (!text.isEmpty()) {
+            List<String> prompts = getPrompts();
+            prompts.add(text);
+            savePrompts(prompts);
+          }
+          showPromptSelectDialog();
+        })
+        .setNegativeButton("Cancel", null)
+        .show();
   }
 
   private void addMessage(ChatMessage prompt) {
