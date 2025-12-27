@@ -36,7 +36,7 @@ public class NotificationHelper {
     notificationBuilder.setTicker(ticker);
     notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
     notificationBuilder.setWhen(System.currentTimeMillis());
-    notificationBuilder.setColor(ContextCompat.getColor(mContext, R.color.ic_launcher_background));
+    notificationBuilder.setColor(ContextCompat.getColor(mContext, org.eu.thedoc.zettelnotes.plugins.base.R.color.ic_launcher_background));
     notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
     notificationBuilder.setAutoCancel(false);
     notificationBuilder.setSilent(silent);
