@@ -1,0 +1,1 @@
+sed -i 's/String contentJson = .*;/String contentJson = new com.google.gson.Gson().toJson(java.util.Collections.singletonList(content));/g' plugin-btn-telegraph/src/main/java/org/eu/thedoc/zettelnotes/buttons/telegraph/TelegraphActivity.java
