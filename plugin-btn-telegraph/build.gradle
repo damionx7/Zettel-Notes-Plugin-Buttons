@@ -5,7 +5,13 @@ plugins {
 packageName = "org.eu.thedoc.zettelnotes.buttons.telegraph"
 
 dependencies {
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
+    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
+
+    implementation "com.vladsch.flexmark:flexmark:0.64.8"
+    implementation "com.vladsch.flexmark:flexmark-ext-gfm-tasklist:0.64.8"
+    implementation "com.vladsch.flexmark:flexmark-ext-gfm-strikethrough:0.64.8"
+    implementation "com.vladsch.flexmark:flexmark-ext-tables:0.64.8"
+
     implementation libs.gson
 }
