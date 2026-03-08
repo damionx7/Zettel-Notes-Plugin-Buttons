@@ -1,0 +1,92 @@
+name: Build Changed Modules
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build Changed Modules
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Identify Changed Modules
+        id: changed-modules
+        run: |
+          # Get list of changed files in the PR
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
+
+          # Find unique top-level directories of changed files
+          MODULES=""
+          for FILE in $CHANGED_FILES; do
+            DIR=$(echo "$FILE" | cut -d/ -f1)
+            # Check if directory exists and has a build.gradle
+            if [ -d "$DIR" ] && [ -f "$DIR/build.gradle" ]; then
+              # Append to modules list if not already there
+              if [[ ! " $MODULES " =~ " $DIR " ]]; then
+                MODULES="$MODULES $DIR"
+              fi
+            fi
+          done
+
+          echo "Changed modules: $MODULES"
+          echo "modules=$MODULES" >> $GITHUB_OUTPUT
+
+      - name: Setup Keystore and Properties
+        if: steps.changed-modules.outputs.modules != ''
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          # Create keystore from base64 secret if provided
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 --decode > zettel_notes.jks
+          else
+            # Generate a dummy keystore for PR builds if secret is missing
+            keytool -genkey -v -keystore zettel_notes.jks -alias dummy -keyalg RSA -keysize 2048 -validity 10000 -storepass dummy123 -keypass dummy123 -dname "CN=Dummy, OU=Dummy, O=Dummy, L=Dummy, ST=Dummy, C=US"
+            KEY_ALIAS="dummy"
+            KEYSTORE_PASSWORD="dummy123"
+            KEY_PASSWORD="dummy123"
+          fi
+
+          # Create local.properties
+          echo "keystore.signing=keystore.gradle" > local.properties
+          echo "keystore=zettel_notes.jks" >> local.properties
+
+          # Create keystore.gradle
+          echo "ext.PROP_KEY_ALIAS=\"$KEY_ALIAS\"" > keystore.gradle
+          echo "ext.PROP_STORE_PASSWORD=\"$KEYSTORE_PASSWORD\"" >> keystore.gradle
+          echo "ext.PROP_KEY_PASSWORD=\"$KEY_PASSWORD\"" >> keystore.gradle
+
+      - name: Setup libs.versions.toml
+        if: steps.changed-modules.outputs.modules != ''
+        run: |
+          mkdir -p ${HOME}/git/android/zettel-notes/gradle
+          if [ -f "gradle/libs.versions.toml" ]; then
+            cp gradle/libs.versions.toml ${HOME}/git/android/zettel-notes/gradle/libs.versions.toml
+          else
+            # Try downloading from main repo if local fallback isn't available
+            curl -sL https://raw.githubusercontent.com/thedoc97/zettel-notes/master/gradle/libs.versions.toml -o ${HOME}/git/android/zettel-notes/gradle/libs.versions.toml || echo "Failed to download libs.versions.toml"
+          fi
+
+      - name: Build Modules
+        if: steps.changed-modules.outputs.modules != ''
+        run: |
+          MODULES="${{ steps.changed-modules.outputs.modules }}"
+          for MODULE in $MODULES; do
+            echo "Building module: $MODULE"
+            ./gradlew :$MODULE:assembleDebug
+          done
