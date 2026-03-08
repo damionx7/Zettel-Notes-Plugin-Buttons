@@ -2,11 +2,11 @@ package org.eu.thedoc.zettelnotes.buttons.latex;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class MainActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   @Override
   protected void onCreate(

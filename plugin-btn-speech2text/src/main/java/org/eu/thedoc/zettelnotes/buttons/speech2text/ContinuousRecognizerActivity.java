@@ -6,10 +6,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.AppExecutor;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 import org.json.JSONObject;
@@ -38,8 +40,27 @@ import org.vosk.android.SpeechService;
 
 //https://github.com/alphacep/vosk-android-demo/blob/master/app/src/main/java/org/vosk/demo/VoskActivity.java
 public class ContinuousRecognizerActivity
-    extends AppCompatActivity
+    extends BaseActivity
     implements RecognitionListener {
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_continous_recognizer_activity, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(
+      @NonNull MenuItem item) {
+    int id = item.getItemId();
+
+    if (id == R.id.action_settings) {
+      Intent intent = new Intent(this, SettingsActivity.class);
+      startActivity(intent);
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
+  }
 
   private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
   private String mLangCode;

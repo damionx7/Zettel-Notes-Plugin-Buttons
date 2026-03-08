@@ -9,11 +9,11 @@ import android.widget.ProgressBar;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class RecognizerActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   private SharedPreferences mSharedPreferences;
   private String mLangCode;

@@ -5,10 +5,10 @@ import static org.eu.thedoc.zettelnotes.buttons.chat.Button.INTENT_ACTION;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class ShareActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {

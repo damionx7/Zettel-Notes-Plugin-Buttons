@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,11 +11,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.LinkedHashMap;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.Utils;
 
 public class ButtonActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   public static final String ERROR_STRING = "intent-error-string";
   public static final String DATA_STRING = "data-string";

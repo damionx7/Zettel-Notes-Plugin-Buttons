@@ -1,6 +1,5 @@
 package org.eu.thedoc.zettelnotes.buttons.anki;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -21,10 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eu.thedoc.zettelnotes.buttons.anki.Parser.Card;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class MainActivity
-    extends Activity {
+    extends BaseActivity {
 
   public static final int REQ_CODE = 0;
   public static final String EXTRA_TEXT_SELECTED = "intent-extra-text-selected";

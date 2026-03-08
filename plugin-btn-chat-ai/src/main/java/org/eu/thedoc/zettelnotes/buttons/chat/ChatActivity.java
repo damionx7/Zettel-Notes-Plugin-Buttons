@@ -33,6 +33,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 import org.eu.thedoc.zettelnotes.buttons.chat.CustomTextView.Listener;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.AppExecutor;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.Utils;

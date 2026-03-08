@@ -7,12 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class SettingsActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   public static final String PREFS = "prefs";
 
@@ -20,7 +20,10 @@ public class SettingsActivity
   protected void onCreate(
       @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    getSupportFragmentManager().beginTransaction().replace(android.R.id.content, SettingsFragment.newInstance()).commit();
+    getSupportFragmentManager()
+        .beginTransaction()
+        .replace(android.R.id.content, SettingsFragment.newInstance())
+        .commit();
   }
 
   public static class SettingsFragment
@@ -61,20 +64,16 @@ public class SettingsActivity
       PackageManager packageManager = getActivity().getPackageManager();
 
       if (enableContinuousRecognizer) {
-        packageManager.setComponentEnabledSetting(recognizerComponent,
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+        packageManager.setComponentEnabledSetting(recognizerComponent, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
             PackageManager.DONT_KILL_APP);
 
-        packageManager.setComponentEnabledSetting(continuousRecognizerComponent,
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+        packageManager.setComponentEnabledSetting(continuousRecognizerComponent, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
             PackageManager.DONT_KILL_APP);
       } else {
-        packageManager.setComponentEnabledSetting(recognizerComponent,
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+        packageManager.setComponentEnabledSetting(recognizerComponent, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
             PackageManager.DONT_KILL_APP);
 
-        packageManager.setComponentEnabledSetting(continuousRecognizerComponent,
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+        packageManager.setComponentEnabledSetting(continuousRecognizerComponent, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
             PackageManager.DONT_KILL_APP);
       }
 

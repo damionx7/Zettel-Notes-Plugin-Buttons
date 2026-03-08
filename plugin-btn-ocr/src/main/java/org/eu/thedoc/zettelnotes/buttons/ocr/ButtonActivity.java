@@ -8,10 +8,10 @@ import android.widget.ProgressBar;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class ButtonActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   public static final String ERROR_STRING = "intent-error";
   public static final String RESULT_STRING = "result-string";

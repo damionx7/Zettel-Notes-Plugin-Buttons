@@ -2,11 +2,11 @@ package org.eu.thedoc.zettelnotes.buttons.speedread;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class MainActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   public static final String PREFS = "prefs";
 

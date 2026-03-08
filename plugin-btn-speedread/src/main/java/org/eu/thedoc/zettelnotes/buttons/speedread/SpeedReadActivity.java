@@ -7,11 +7,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 //https://github.com/syniuhin/Readily/blob/master/ui/src/main/java/com/infmme/readilyapp/ReaderFragment.java
-public class SpeedReadActivity extends AppCompatActivity {
+public class SpeedReadActivity
+    extends BaseActivity {
 
   public static final String INTENT_EXTRA = "intent-extra";
   public static final String ERROR_STRING = "intent-error";

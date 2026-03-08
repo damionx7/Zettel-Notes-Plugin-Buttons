@@ -3,7 +3,6 @@ import java.time.LocalDate
 plugins {
     alias libs.plugins.android.application apply false
     alias libs.plugins.android.library apply false
-    alias libs.plugins.jetbrains.kotlin apply false
     alias libs.plugins.android.junit5 apply false
 }
 
@@ -83,7 +82,8 @@ subprojects { subproject ->
                 }
 
                 buildFeatures {
-                    buildConfig true
+                    buildConfig = true
+                    resValues = true
                 }
 
                 testOptions {

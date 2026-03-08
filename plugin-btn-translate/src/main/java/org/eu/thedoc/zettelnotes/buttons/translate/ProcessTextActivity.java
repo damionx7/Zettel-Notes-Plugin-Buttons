@@ -12,11 +12,11 @@ import android.util.Log;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class ProcessTextActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   private static final String CONTENT_STRING = "args-content";
 

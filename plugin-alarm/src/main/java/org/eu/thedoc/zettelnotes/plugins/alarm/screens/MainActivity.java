@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,10 +22,11 @@ import org.eu.thedoc.zettelnotes.plugins.alarm.database.AlarmModel;
 import org.eu.thedoc.zettelnotes.plugins.alarm.database.DatabaseRepository;
 import org.eu.thedoc.zettelnotes.plugins.alarm.screens.AlarmAdapter.Listener;
 import org.eu.thedoc.zettelnotes.plugins.alarm.utils.AlarmHelper;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class MainActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   private static final int REQ_CODE_PERMISSION_POST_NOTIFICATION = 1;
   private static final int REQ_CODE_PERMISSION_SCHEDULE_EXACT_ALARM = 2;

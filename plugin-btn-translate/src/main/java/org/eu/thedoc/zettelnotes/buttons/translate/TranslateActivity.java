@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.mlkit.nl.languageid.LanguageIdentification;
 import com.google.mlkit.nl.languageid.LanguageIdentifier;
@@ -26,10 +25,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class TranslateActivity
-    extends AppCompatActivity
+    extends BaseActivity
     implements OnFailureListener {
 
   public static final String INTENT_EXTRA_TEXT_SELECTED = "intent-extra-text-selected";

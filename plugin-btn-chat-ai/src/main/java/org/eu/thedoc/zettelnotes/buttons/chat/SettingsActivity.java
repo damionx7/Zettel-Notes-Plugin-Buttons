@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager.OnPreferenceTreeClickListener;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class SettingsActivity
     extends BaseActivity {

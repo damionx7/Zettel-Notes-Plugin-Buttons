@@ -1,10 +1,10 @@
 package org.eu.thedoc.zettelnotes.buttons.dummy;
 
-import android.app.Activity;
 import android.os.Bundle;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class MainActivity
-    extends Activity {
+    extends BaseActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

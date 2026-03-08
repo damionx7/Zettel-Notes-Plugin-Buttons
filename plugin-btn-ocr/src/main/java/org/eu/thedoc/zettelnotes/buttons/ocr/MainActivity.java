@@ -21,7 +21,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -45,11 +44,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Executor;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.AppExecutor;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class MainActivity
-    extends AppCompatActivity
+    extends BaseActivity
     implements ProgressNotifier {
 
   public static final String ARGS_CAMERA = "args-camera";

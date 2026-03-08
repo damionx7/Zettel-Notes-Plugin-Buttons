@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
@@ -24,11 +23,11 @@ import com.google.android.gms.location.LocationServices;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
-//Dummy activity for intent filter
 public class LocationActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   public static final String INTENT_EXTRA_LOCATION = "intent-extra-location";
   public static final String ERROR_STRING = "intent-error";

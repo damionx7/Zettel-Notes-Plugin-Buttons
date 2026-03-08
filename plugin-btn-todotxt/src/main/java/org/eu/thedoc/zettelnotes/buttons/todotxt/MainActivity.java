@@ -11,16 +11,16 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class MainActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   public static final String INTENT_EXTRA_TEXT = "intent-extra-text";
   public static final String INTENT_EXTRA_INDEX = "intent-extra-index";
@@ -88,8 +88,8 @@ public class MainActivity
     LinearLayout linearLayout = new LinearLayout(this);
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
         ViewGroup.LayoutParams.WRAP_CONTENT);
-    int dp16 = getResources().getDimensionPixelSize(R.dimen.dp16);
-    int dp8 = getResources().getDimensionPixelSize(R.dimen.dp8);
+    int dp16 = getResources().getDimensionPixelSize(org.eu.thedoc.zettelnotes.plugins.base.R.dimen.dp16);
+    int dp8 = getResources().getDimensionPixelSize(org.eu.thedoc.zettelnotes.plugins.base.R.dimen.dp8);
     params.setMargins(dp16, dp8, dp16, dp8);
     linearLayout.setLayoutParams(params);
     editText.setLayoutParams(params);

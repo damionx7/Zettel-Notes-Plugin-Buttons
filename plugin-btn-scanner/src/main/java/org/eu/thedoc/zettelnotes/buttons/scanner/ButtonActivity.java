@@ -13,7 +13,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanner;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions;
@@ -21,10 +20,11 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScanning;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult.Pdf;
 import java.io.File;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class ButtonActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   public static final String ERROR_STRING = "intent-error";
 

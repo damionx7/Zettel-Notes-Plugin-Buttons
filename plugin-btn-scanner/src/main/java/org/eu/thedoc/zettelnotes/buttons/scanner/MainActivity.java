@@ -14,7 +14,6 @@ import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.FileProvider;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,10 +23,11 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScanning;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult.Pdf;
 import java.io.File;
+import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 import org.eu.thedoc.zettelnotes.plugins.base.utils.ToastsHelper;
 
 public class MainActivity
-    extends AppCompatActivity {
+    extends BaseActivity {
 
   public static final String FILE_PROVIDER = "org.eu.thedoc.zettelnotes.buttons.scanner.provider.file";
 
