@@ -19,6 +19,48 @@ project.ext {
     keystore = rootProject.file(properties.getProperty("keystore"))
 }
 
+
+def releaseRoot = layout.buildDirectory.dir("release")
+def artifactTasks = []
+
+subprojects { subproject ->
+
+    subproject.plugins.withId("com.android.application") {
+
+        def safeName = subproject.name.replaceAll('[^A-Za-z0-9]', '')
+        def taskName = "collect${safeName.capitalize()}ReleaseArtifacts"
+
+        def t = tasks.register(taskName, Sync) {
+
+            dependsOn(
+                    subproject.tasks.matching {
+                        it.name == "assembleRelease" || it.name == "bundleRelease"
+                    }
+            )
+
+            from(subproject.layout.buildDirectory.dir("outputs")) {
+                include("**/*.apk")
+                include("**/*.aab")
+                include("**/*metadata.json")
+
+                eachFile { f ->
+                    f.path = f.name
+                }
+
+                includeEmptyDirs = false
+            }
+
+            into(releaseRoot.map { it.dir(subproject.name) })
+        }
+
+        artifactTasks.add(t)
+    }
+}
+
+tasks.register("collectReleaseArtifacts") {
+    dependsOn(artifactTasks)
+}
+
 //shared config for modules
 subprojects { subproject ->
     //shared variables

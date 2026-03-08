@@ -120,7 +120,7 @@ public class TelegraphConverter {
   private static Object convertInline(Node node) {
 
     if (node instanceof Text) {
-      return ((Text) node)
+      return node
           .getChars()
           .toString();
     }
