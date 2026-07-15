@@ -17,9 +17,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import com.google.android.gms.location.CurrentLocationRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.CancellationTokenSource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -35,6 +37,7 @@ public class LocationActivity
   //private static final String DEFAULT_LOC_STRING = "![map](latlong:$lat$,$long$)";
 
   private ProgressBar mProgressBar;
+  private CancellationTokenSource mCancellationTokenSource;
 
   private String time2humanFromLastModified(Long time2convert) {
     try {
@@ -91,6 +94,9 @@ public class LocationActivity
   @Override
   protected void onStop() {
     super.onStop();
+    if (mCancellationTokenSource != null) {
+      mCancellationTokenSource.cancel();
+    }
     if (mProgressBar != null) {
       mProgressBar.setVisibility(View.GONE);
     }
@@ -98,29 +104,38 @@ public class LocationActivity
 
   @SuppressLint("MissingPermission")
   private void sendLastLocation() {
+    if (!isLocationEnabled()) {
+      setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Location disabled"));
+      ToastsHelper.showToast(this, "Error: Location disabled");
+      finish();
+      return;
+    }
+
     FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-    fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-      // Got last known location. In some rare situations this can be null.
-      if (location != null) {
-        setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_LOCATION, computeLocationString(location)));
-        finish();
-      } else {
-        if (!isLocationEnabled()) {
-          setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Location disabled"));
-          ToastsHelper.showToast(this, "Error: Location disabled");
+    mProgressBar.setVisibility(View.VISIBLE);
+
+    CurrentLocationRequest currentLocationRequest = new CurrentLocationRequest.Builder()
+        .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+        .setMaxUpdateAgeMillis(0)
+        .setDurationMillis(15000)
+        .build();
+
+    mCancellationTokenSource = new CancellationTokenSource();
+    fusedLocationClient
+        .getCurrentLocation(currentLocationRequest, mCancellationTokenSource.getToken())
+        .addOnSuccessListener(location -> {
+          if (location != null) {
+            setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_LOCATION, computeLocationString(location)));
+          } else {
+            setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, "Unable to obtain location"));
+            ToastsHelper.showToast(this, "Error: Unable to obtain location");
+          }
           finish();
-        } else {
-          mProgressBar.setVisibility(View.VISIBLE);
-          fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY, null).addOnSuccessListener(location1 -> {
-            setResult(RESULT_OK, new Intent().putExtra(INTENT_EXTRA_LOCATION, computeLocationString(location1)));
-            finish();
-          }).addOnFailureListener(e -> {
-            setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, e.toString()));
-            finish();
-          });
-        }
-      }
-    });
+        })
+        .addOnFailureListener(e -> {
+          setResult(RESULT_CANCELED, new Intent().putExtra(ERROR_STRING, e.toString()));
+          finish();
+        });
   }
 
   private boolean isLocationEnabled() {
