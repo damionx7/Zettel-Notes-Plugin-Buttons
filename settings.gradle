@@ -18,7 +18,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         libs {
-            from(files("${System.getenv("HOME")}/git/android/zettel-notes/gradle/libs.versions.toml"))
+            from(files("gradle/libs.versions.toml"))
         }
     }
 }
