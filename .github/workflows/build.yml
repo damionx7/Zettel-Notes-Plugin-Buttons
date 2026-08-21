@@ -24,6 +24,9 @@ jobs:
     - name: Remove corrupted TOML file
       run: rm -f gradle/libs.versions.toml
 
+    - name: Create dummy local.properties
+      run: touch local.properties
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
