@@ -21,8 +21,8 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Download missing TOML file
-      run: curl -sL https://raw.githubusercontent.com/damionx7/Zettel-Notes/master/gradle/libs.versions.toml -o gradle/libs.versions.toml --create-dirs
+    - name: Remove corrupted TOML file
+      run: rm -f gradle/libs.versions.toml
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
