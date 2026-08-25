@@ -1,0 +1,53 @@
+// Collects APK/AAB/metadata.json outputs from every com.android.application
+// module into build/release/<moduleName>/, wiping stale output first.
+
+def releaseArtifactsDir = layout.buildDirectory.dir("release")
+
+def cleanReleaseArtifacts = tasks.register("cleanReleaseArtifacts", Delete) {
+    group = "release"
+    description = "Deletes previously collected release artifacts"
+    delete(releaseArtifactsDir)
+}
+
+def collectArtifactTasks = []
+
+subprojects { subproject ->
+    subproject.plugins.withId("com.android.application") {
+        def moduleId = subproject.name.replaceAll('[^A-Za-z0-9]', '').capitalize()
+        def collectTaskName = "collectReleaseArtifacts${moduleId}"
+
+        def collectTask = tasks.register(collectTaskName, Sync) {
+            group = "release"
+            description = "Collects release artifacts for ${subproject.name}"
+
+            dependsOn(cleanReleaseArtifacts)
+            dependsOn(
+                    subproject.tasks.matching {
+                        it.name == "assembleRelease" || it.name == "bundleRelease"
+                    }
+            )
+
+            from(subproject.layout.buildDirectory.dir("outputs")) {
+                include("**/*.apk")
+                include("**/*.aab")
+                include("**/*metadata.json")
+
+                eachFile { f ->
+                    f.path = "${f.file.parentFile.name}/${f.name}"
+                }
+
+                includeEmptyDirs = false
+            }
+
+            into(releaseArtifactsDir.map { it.dir(subproject.name) })
+        }
+
+        collectArtifactTasks.add(collectTask)
+    }
+}
+
+tasks.register("collectAllReleaseArtifacts") {
+    group = "release"
+    description = "Collects release artifacts from all Android app modules"
+    dependsOn(collectArtifactTasks)
+}
