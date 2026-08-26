@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="temperature_entries">
+        <item>Precise</item>
+        <item>Balanced</item>
+        <item>Creative</item>
+    </string-array>
+    <string-array name="temperature_values">
+        <item>0.2</item>
+        <item>0.7</item>
+        <item>1.0</item>
+    </string-array>
+</resources>

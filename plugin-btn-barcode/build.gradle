@@ -5,6 +5,6 @@ plugins {
 packageName = "org.eu.thedoc.zettelnotes.buttons.barcode"
 
 dependencies {
-    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
-    implementation 'com.google.zxing:core:3.5.4'
+    implementation libs.zxing
+    implementation libs.zxing.scanner
 }

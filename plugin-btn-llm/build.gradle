@@ -1,0 +1,23 @@
+plugins {
+    alias libs.plugins.android.application
+}
+
+packageName = "org.eu.thedoc.zettelnotes.buttons.llm"
+
+dependencies {
+    implementation libs.google.ai.litertlm
+    implementation libs.jetbrains.kotlin.coroutines.core
+    implementation libs.jetbrains.kotlin.coroutines.android
+
+    implementation libs.workx
+    implementation libs.okhttp
+    implementation libs.okhttp.logging
+}
+
+android {
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+}

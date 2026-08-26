@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+       android:key="prefs_enable"
+       android:title="Enable plugin"
+       android:defaultValue="true" />
+
+    <PreferenceCategory android:title="Model">
+
+        <ListPreference
+           android:key="prefs_model"
+           android:title="Model size"
+           android:summary="%s"
+           android:defaultValue="QWEN_1_5B"
+           app:useSimpleSummaryProvider="true" />
+
+        <Preference
+           android:key="prefs_model_storage"
+           android:title="Downloaded models"
+           android:summary="Tap to manage storage used by downloaded models" />
+
+        <SwitchPreferenceCompat
+           android:key="prefs_wifi_only_download"
+           android:title="Download on Wi-Fi only"
+           android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Generation">
+
+        <SeekBarPreference
+           android:key="prefs_max_tokens"
+           android:title="Max response length"
+           android:summary="Longer responses take more time and battery"
+           android:defaultValue="512"
+           android:max="1024"
+           app:min="64"
+           app:showSeekBarValue="true" />
+
+        <ListPreference
+           android:key="prefs_temperature"
+           android:title="Response style"
+           android:summary="%s"
+           android:entries="@array/temperature_entries"
+           android:entryValues="@array/temperature_values"
+           android:defaultValue="0.7"
+           app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+           android:key="prefs_use_gpu"
+           android:title="Use GPU acceleration"
+           android:summary="Faster on supported devices; disable if you see crashes"
+           android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Remote fallback (optional)">
+
+        <SwitchPreferenceCompat
+           android:key="prefs_use_remote"
+           android:title="Use remote server instead"
+           android:summary="Send requests to a self-hosted OpenAI-compatible endpoint instead of running on-device"
+           android:defaultValue="false" />
+
+        <EditTextPreference
+           android:key="prefs_remote_url"
+           android:title="Endpoint URL"
+           android:summary="e.g. https://your-vps.example.com/v1/chat/completions"
+           android:dependency="prefs_use_remote" />
+
+        <EditTextPreference
+           android:key="prefs_remote_api_key"
+           android:title="API key"
+           android:summary="Stored locally, sent only to your configured endpoint"
+           android:dependency="prefs_use_remote" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

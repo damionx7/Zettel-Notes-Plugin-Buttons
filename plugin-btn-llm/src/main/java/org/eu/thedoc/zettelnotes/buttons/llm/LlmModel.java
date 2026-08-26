@@ -1,0 +1,26 @@
+package org.eu.thedoc.zettelnotes.buttons.llm;
+
+public enum LlmModel {
+
+  QWEN_0_5B("Qwen2.5-0.5B-Instruct_multi-prefill-seq_q8_ekv1280.task",
+      "https://huggingface.co/litert-community/Qwen2.5-0.5B-Instruct/resolve/main/Qwen2.5-0.5B-Instruct_multi-prefill-seq_q8_ekv1280.task",
+      547L * 1024 * 1024),
+
+  QWEN_1_5B("Qwen2.5-1.5B-Instruct_seq128_q8_ekv1280.task",
+      "https://huggingface.co/litert-community/Qwen2.5-1.5B-Instruct/resolve/main/Qwen2.5-1.5B-Instruct_seq128_q8_ekv1280.task",
+      1570L * 1024 * 1024),
+
+  QWEN_1_5B_4K("Qwen2.5-1.5B-Instruct_seq128_q8_ekv4096.task",
+      "https://huggingface.co/litert-community/Qwen2.5-1.5B-Instruct/resolve/main/Qwen2.5-1.5B-Instruct_seq128_q8_ekv4096.task",
+      1600L * 1024 * 1024);
+
+  public final String fileName;
+  public final String downloadUrl;
+  public final long approxBytes;
+
+  LlmModel(String fileName, String downloadUrl, long approxBytes) {
+    this.fileName = fileName;
+    this.downloadUrl = downloadUrl;
+    this.approxBytes = approxBytes;
+  }
+}
