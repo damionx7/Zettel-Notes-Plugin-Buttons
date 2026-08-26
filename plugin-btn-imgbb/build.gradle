@@ -5,6 +5,6 @@ plugins {
 packageName = "org.eu.thedoc.zettelnotes.buttons.imgbb"
 
 dependencies {
-    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
-    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
+    implementation libs.retrofit
+    implementation libs.retrofit.converter.gson
 }
