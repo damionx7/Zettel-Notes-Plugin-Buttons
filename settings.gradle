@@ -25,18 +25,20 @@ dependencyResolutionManagement {
 
 rootProject.name = "Zettel Notes Plugins"
 include ':basemodule'
+
 include ':plugin-alarm'
 include ':plugin-btn-anki'
 include ':plugin-btn-chat-ai'
+include ':plugin-btn-donation'
+include ':plugin-btn-imgbb'
 include ':plugin-btn-latex'
 include ':plugin-btn-location'
 include ':plugin-btn-ocr'
+include ':plugin-btn-barcode'
 include ':plugin-btn-scanner'
-include ':plugin-btn-donation'
 include ':plugin-btn-speech2text'
 include ':plugin-btn-speedread'
+include ':plugin-btn-telegraph'
 include ':plugin-btn-textutils'
 include ':plugin-btn-todotxt'
 include ':plugin-btn-translate'
-include ':plugin-btn-telegraph'
-include ':plugin-btn-imgbb'

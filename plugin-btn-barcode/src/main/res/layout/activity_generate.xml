@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
+   android:orientation="vertical"
+   android:gravity="center"
+   android:padding="24dp">
+
+    <ImageView
+       android:id="@+id/barcodeImage"
+       android:layout_width="280dp"
+       android:layout_height="280dp"
+       android:contentDescription="Generated barcode"
+       android:scaleType="fitCenter" />
+
+    <ProgressBar
+       android:id="@+id/progressBar"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:visibility="gone" />
+
+    <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="24dp"
+       android:orientation="horizontal"
+       android:gravity="center">
+
+        <Button
+           android:id="@+id/cancelButton"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:layout_marginEnd="8dp"
+           android:text="Cancel" />
+
+        <Button
+           android:id="@+id/copyToZettelButton"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:layout_marginStart="8dp"
+           android:text="Copy to Zettel" />
+
+    </LinearLayout>
+
+</LinearLayout>
