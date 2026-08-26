@@ -5,7 +5,7 @@
 Steps to create new plugin
 
 1. Add `maven { url "https://jitpack.io"}` in build.gradle repositories (read more at https://jitpack.io/)
-2. Add `implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:1.0.21'` in build.gradle
+2. Add `implementation 'com.github.damionx7:Zettel-Notes-Plugin-Api:28'` in build.gradle
 3. Add intent-filter in AndroidManifest.xml
 
 ```xml
