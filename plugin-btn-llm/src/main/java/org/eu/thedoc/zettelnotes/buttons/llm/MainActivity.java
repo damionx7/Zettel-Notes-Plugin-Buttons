@@ -1,11 +1,15 @@
 package org.eu.thedoc.zettelnotes.buttons.llm;
 
 import android.os.Bundle;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import java.io.File;
 import org.eu.thedoc.zettelnotes.plugins.base.BaseActivity;
 
 public class MainActivity
@@ -37,10 +41,17 @@ public class MainActivity
 
       ListPreference modelPref = findPreference("prefs_model");
       if (modelPref != null) {
-        modelPref.setEntries(new String[]{"Small (270M, ~250MB)", "Balanced (1B, ~800MB)", "Best (2B, ~1.4GB)"});
-        modelPref.setEntryValues(new String[]{LlmModel.QWEN_0_5B.name(), LlmModel.QWEN_1_5B.name(), LlmModel.QWEN_1_5B_4K.name()});
+        modelPref.setEntries(new String[]{"Small (270M)", "Balanced (1B)", "Best (1.5B)"});
+        modelPref.setEntryValues(new String[]{LlmModel.SMALL.name(), LlmModel.BALANCED.name(), LlmModel.LARGE.name()});
+        modelPref.setOnPreferenceChangeListener((preference, newValue) -> {
+          LlmModel selected = LlmModel.valueOf((String) newValue);
+          if (ModelManager.isDownloaded(requireContext(), selected)) {
+            return true;
+          }
+          downloadModelWithProgress(selected, (ListPreference) preference);
+          return false;
+        });
       }
-
       Preference storagePref = findPreference("prefs_model_storage");
       if (storagePref != null) {
         storagePref.setSummary(buildStorageSummary());
@@ -49,6 +60,75 @@ public class MainActivity
           return true;
         });
       }
+    }
+
+    private void downloadModelWithProgress(LlmModel model, ListPreference modelPref) {
+      int padding = (int) (16 * getResources().getDisplayMetrics().density);
+
+      TextView statusText = new TextView(requireContext());
+      statusText.setText("Starting download\u2026");
+      statusText.setPadding(padding, padding, padding, padding / 2);
+
+      ProgressBar progressBar = new ProgressBar(requireContext(), null, android.R.attr.progressBarStyleHorizontal);
+      progressBar.setIndeterminate(false);
+      progressBar.setMax(100);
+      progressBar.setProgress(0);
+      progressBar.setPadding(padding, 0, padding, padding);
+
+      LinearLayout layout = new LinearLayout(requireContext());
+      layout.setOrientation(LinearLayout.VERTICAL);
+      layout.addView(statusText);
+      layout.addView(progressBar);
+
+      AlertDialog dialog = new AlertDialog.Builder(requireContext())
+          .setTitle("Downloading " + model.name())
+          .setView(layout)
+          .setCancelable(false)
+          .create();
+      dialog.show();
+
+      ModelManager.download(requireContext(), model, new ModelManager.ProgressListener() {
+        @Override
+        public void onProgress(int percent) {
+          if (!isAdded()) {
+            return;
+          }
+          requireActivity().runOnUiThread(() -> {
+            progressBar.setProgress(percent);
+            statusText.setText("Downloading\u2026 " + percent + "%");
+          });
+        }
+
+        @Override
+        public void onComplete(File modelFile) {
+          if (!isAdded()) {
+            return;
+          }
+          requireActivity().runOnUiThread(() -> {
+            dialog.dismiss();
+            modelPref.setValue(model.name());
+            Preference storagePref = findPreference("prefs_model_storage");
+            if (storagePref != null) {
+              storagePref.setSummary(buildStorageSummary());
+            }
+          });
+        }
+
+        @Override
+        public void onError(Exception e) {
+          if (!isAdded()) {
+            return;
+          }
+          requireActivity().runOnUiThread(() -> {
+            dialog.dismiss();
+            new AlertDialog.Builder(requireContext())
+                .setTitle("Download failed")
+                .setMessage(e.getMessage() != null ? e.getMessage() : "Unknown error")
+                .setPositiveButton("OK", null)
+                .show();
+          });
+        }
+      });
     }
 
     private String buildStorageSummary() {

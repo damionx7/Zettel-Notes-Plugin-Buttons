@@ -98,11 +98,11 @@ class LlmProcessActivity : BaseActivity() {
     }
 
     private fun getSelectedModel(): LlmModel {
-        val name = prefs.getString("prefs_model", LlmModel.QWEN_1_5B.name)
+        val name = prefs.getString("prefs_model", LlmModel.BALANCED.name)
         return try {
-            LlmModel.valueOf(name ?: LlmModel.QWEN_1_5B.name)
+            LlmModel.valueOf(name ?: LlmModel.BALANCED.name)
         } catch (e: Exception) {
-            LlmModel.QWEN_1_5B
+            LlmModel.BALANCED
         }
     }
 
@@ -242,6 +242,9 @@ class LlmProcessActivity : BaseActivity() {
         if (::progressDialog.isInitialized && progressDialog.isShowing) {
             progressDialog.dismiss()
         }
+
+        println(message = message)
+
         ToastsHelper.showToast(this, "Error: $message")
         if (launchedForResult) {
             setResult(RESULT_CANCELED, Intent().putExtra(ERROR_STRING, message))

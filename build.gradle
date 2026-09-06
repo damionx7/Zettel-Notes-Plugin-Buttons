@@ -17,6 +17,6 @@ project.ext {
     keystore = rootProject.file(properties.getProperty("keystore"))
 }
 
-apply from: "gradle/release-artifacts.gradle"
+apply from: "release-artifacts.gradle"
 
-apply from: "gradle/module-defaults.gradle"
+apply from: "module-defaults.gradle"
