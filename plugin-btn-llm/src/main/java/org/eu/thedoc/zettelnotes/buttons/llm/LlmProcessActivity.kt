@@ -107,7 +107,7 @@ class LlmProcessActivity : BaseActivity() {
     }
 
     private fun getMaxTokens(): Int = prefs.getInt("prefs_max_tokens", 512)
-    private fun getUseGpu(): Boolean = prefs.getBoolean("prefs_use_gpu", true)
+    private fun getUseGpu(): Boolean = prefs.getBoolean("prefs_use_gpu", false)
 
     private fun getTemperature(): Float = try {
         prefs.getString("prefs_temperature", "0.7")?.toFloat() ?: 0.7f
