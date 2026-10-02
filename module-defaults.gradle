@@ -7,7 +7,7 @@ subprojects { subproject ->
     subproject.plugins.withId("com.android.application") {
         subproject.plugins.apply("com.github.triplet.play")
         subproject.play {
-            track.set("internal")
+            track.set("production")
             defaultToAppBundles.set(true)
         }
     }

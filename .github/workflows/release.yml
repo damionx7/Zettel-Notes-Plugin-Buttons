@@ -1,6 +1,7 @@
 name: Release
 
-# Release by pushing a tag
+# Release by pushing a tag. The suffix after "-v" is only for uniqueness
+# (git can't reuse a tag), so any counter or date works:
 #
 #   All plugins:  v<anything>
 #     git tag v1 && git push origin v1
@@ -47,18 +48,31 @@ jobs:
 
       - name: Publish to Play
         env:
-          KEYSTORE_PATH: ${{ runner.temp }}/upload.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           ANDROID_PUBLISHER_CREDENTIALS: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           RUN_NUMBER: ${{ github.run_number }}
           INPUT_MODULE: ${{ inputs.module }}
+          # Space-separated modules with no Play Console app yet
+          EXCLUDE_MODULES: "plugin-btn-barcode plugin-btn-imgbb"
         run: |
           export RELEASE_SEQ=$((RUN_NUMBER % 100))
           REF="${INPUT_MODULE:-$GITHUB_REF_NAME}"
           chmod +x gradlew
+
+          write_notes() {
+            DIR="$1/src/main/play/release-notes/en-US"
+            mkdir -p "$DIR"
+            printf 'Bug fixes and improvements.\n' > "$DIR/default.txt"
+          }
+
           if [[ "$REF" == plugin-* ]]; then
-            ./gradlew ":${REF%-v[0-9]*}:publishReleaseBundle"
+            MODULE="${REF%-v[0-9]*}"
+            write_notes "$MODULE"
+            ./gradlew ":${MODULE}:publishReleaseBundle"
           else
-            ./gradlew publishReleaseBundle --continue
+            SKIP=""
+            for m in $EXCLUDE_MODULES; do SKIP="$SKIP -x :$m:publishReleaseBundle"; done
+            for d in plugin-*/; do write_notes "${d%/}"; done
+            ./gradlew publishReleaseBundle $SKIP --continue
           fi
