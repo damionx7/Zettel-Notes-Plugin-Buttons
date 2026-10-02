@@ -4,6 +4,14 @@
 import java.time.LocalDate
 
 subprojects { subproject ->
+    subproject.plugins.withId("com.android.application") {
+        subproject.plugins.apply("com.github.triplet.play")
+        subproject.play {
+            track.set("internal")
+            defaultToAppBundles.set(true)
+        }
+    }
+
     ext {
         packageName = ''
         versionMajor = LocalDate.now().year
@@ -33,7 +41,7 @@ subprojects { subproject ->
                     targetSdk project.targetSdk
 
                     applicationId "${subproject.packageName}"
-                    versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+                    versionCode((versionMajor * 10000 + versionMinor * 100 + versionPatch) * 100 + (System.getenv("RELEASE_SEQ") ?: "0").toInteger())
                     versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
                     signingConfig signingConfigs.config

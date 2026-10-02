@@ -1,19 +1,20 @@
 [versions]
-agp = '9.3.2'
+agp = '9.4.1'
 flexmark = "0.64.8"
 markwon = '4.6.2'
 okhttp = "5.5.0"
 retrofit = "3.0.0"
-room = "2.8.4"
+room = "2.8.5"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-junit5 = { id = "de.mannodermaus.android-junit5", version = "2.0.1" }
+github-triplet-play = { id = "com.github.triplet.play", version = "4.1.1" }
 
 [libraries]
 anki-android = { module = "com.github.ankidroid:Anki-Android", version = "api-v1.1.0" }
-button-api = { module = "com.github.damionx7:Zettel-Notes-Plugin-Api", version = "28" }
+button-api = { module = "com.github.damionx7:Zettel-Notes-Plugin-Api", version = "30" }
 cardviewx = { module = "androidx.cardview:cardview", version = "1.0.0" }
 chat-gpt-api = { module = "com.cjcrafter:openai", version = "2.1.1" }
 commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.15.0" }
@@ -24,7 +25,7 @@ flexmark-ext-gfm-strikethrough = { module = "com.vladsch.flexmark:flexmark-ext-g
 flexmark-ext-gfm-tasklist = { module = "com.vladsch.flexmark:flexmark-ext-gfm-tasklist", version.ref = "flexmark" }
 flexmark-ext-tables = { module = "com.vladsch.flexmark:flexmark-ext-tables", version.ref = "flexmark" }
 gms-location = { group = "com.google.android.gms", name = "play-services-location", version = "21.4.0" }
-google-ai-litertlm = { module = "com.google.ai.edge.litertlm:litertlm-android", version = "0.16.1" }
+google-ai-litertlm = { module = "com.google.ai.edge.litertlm:litertlm-android", version = "0.17.1" }
 gson = { module = "com.google.code.gson:gson", version = "2.14.0" }
 jetbrains-kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version = "1.11.0" }
 jetbrains-kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.11.0" }
@@ -54,14 +55,14 @@ preferencex = { module = "androidx.preference:preference", version = "1.2.1" }
 recyclerviewx = { module = "androidx.recyclerview:recyclerview", version = "1.4.0" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
-robolectric = { module = "org.robolectric:robolectric", version = "4.16.1" }
+robolectric = { module = "org.robolectric:robolectric", version = "4.17" }
 room-annotation-processor = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 tesseract = { module = "cz.adaptech.tesseract4android:tesseract4android", version = "4.9.0" }
 vosk = { module = "com.alphacephei:vosk-android", version = "0.3.75" }
-workx = { module = "androidx.work:work-runtime", version = "2.11.2" }
+workx = { module = "androidx.work:work-runtime", version = "2.12.0" }
 zxing = { module = "com.google.zxing:core", version = "3.5.4" }
 zxing-scanner = { module = 'com.journeyapps:zxing-android-embedded', version = '4.3.0' }
 

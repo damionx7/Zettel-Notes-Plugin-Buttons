@@ -1,0 +1,58 @@
+name: Release
+
+# Release by pushing a tag
+#
+#   All plugins:  v<anything>
+#     git tag v1 && git push origin v1
+#
+#   One plugin:   <module-name>-v<digit...>
+#     git tag plugin-btn-ocr-v1 && git push origin plugin-btn-ocr-v1
+#
+# The digit right after "-v" is required for single-plugin tags.
+# Version name/code come from the build date and run number, not the tag.
+#
+# Manual: Actions > Release > Run workflow > "all" or a module name.
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "plugin-*-v*"
+  workflow_dispatch:
+    inputs:
+      module:
+        description: "Module name (plugin-btn-ocr) or 'all'"
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.jks"
+
+      - name: Publish to Play
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/upload.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          ANDROID_PUBLISHER_CREDENTIALS: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          RELEASE_SEQ: ${{ github.run_number % 100 }}
+          INPUT_MODULE: ${{ inputs.module }}
+        run: |
+          REF="${INPUT_MODULE:-$GITHUB_REF_NAME}"
+          chmod +x gradlew
+          if [[ "$REF" == plugin-* ]]; then
+            ./gradlew ":${REF%-v[0-9]*}:publishReleaseBundle"
+          else
+            ./gradlew publishReleaseBundle --continue
+          fi

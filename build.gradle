@@ -2,19 +2,32 @@ plugins {
     alias libs.plugins.android.application apply false
     alias libs.plugins.android.library apply false
     alias libs.plugins.android.junit5 apply false
+    alias libs.plugins.github.triplet.play apply false
 }
 
 Properties properties = new Properties()
-properties.load(project.rootProject.file("local.properties").newDataInputStream())
+def localProps = project.rootProject.file("local.properties")
+if (localProps.exists()) properties.load(localProps.newDataInputStream())
 
-//apply signing config
-apply from: rootProject.file(properties.getProperty("keystore.signing"))
+if (System.getenv("KEYSTORE_PATH")) {
+    // CI
+    project.ext {
+        PROP_KEY_ALIAS = System.getenv("KEY_ALIAS")
+        PROP_STORE_PASSWORD = System.getenv("KEYSTORE_PASSWORD")
+        keystore = new File(System.getenv("KEYSTORE_PATH"))
+    }
+} else {
+    // local
+    apply from: rootProject.file(properties.getProperty("keystore.signing"))
+    project.ext {
+        keystore = rootProject.file(properties.getProperty("keystore"))
+    }
+}
 
 project.ext {
     minSdk = 24
     targetSdk = 36
     compileSdk = 37
-    keystore = rootProject.file(properties.getProperty("keystore"))
 }
 
 apply from: "release-artifacts.gradle"
