@@ -1,5 +1,6 @@
 [versions]
 agp = '9.4.1'
+kotlin = "2.4.20"
 flexmark = "0.64.8"
 markwon = '4.6.2'
 okhttp = "5.5.0"
@@ -11,6 +12,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-junit5 = { id = "de.mannodermaus.android-junit5", version = "2.0.1" }
 github-triplet-play = { id = "com.github.triplet.play", version = "4.1.1" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [libraries]
 anki-android = { module = "com.github.ankidroid:Anki-Android", version = "api-v1.1.0" }
