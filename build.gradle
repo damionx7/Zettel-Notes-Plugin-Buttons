@@ -7,28 +7,15 @@ plugins {
 }
 
 Properties properties = new Properties()
-def localProps = project.rootProject.file("local.properties")
-if (localProps.exists()) properties.load(localProps.newDataInputStream())
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
-if (System.getenv("KEYSTORE_PATH")) {
-    // CI
-    project.ext {
-        PROP_KEY_ALIAS = System.getenv("KEY_ALIAS")
-        PROP_STORE_PASSWORD = System.getenv("KEYSTORE_PASSWORD")
-        keystore = new File(System.getenv("KEYSTORE_PATH"))
-    }
-} else {
-    // local
-    apply from: rootProject.file(properties.getProperty("keystore.signing"))
-    project.ext {
-        keystore = rootProject.file(properties.getProperty("keystore"))
-    }
-}
+apply from: rootProject.file(properties.getProperty("keystore.signing"))
 
 project.ext {
     minSdk = 24
     targetSdk = 36
     compileSdk = 37
+    keystore = rootProject.file(properties.getProperty("keystore"))
 }
 
 apply from: "release-artifacts.gradle"

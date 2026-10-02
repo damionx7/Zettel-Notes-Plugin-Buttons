@@ -207,11 +207,6 @@ public class ChatActivity
           .addInterceptor(new HttpLoggingInterceptor().setLevel(Level.BODY))
           .build();
     }
-    if (mApiKey.isEmpty()) {
-      mApiKey = BuildConfig.OPENAI_API_KEY;
-      ToastsHelper.showToast(this, "Using demo api key. This can stop working anytime. Please set your Open AI Api key in settings.");
-      Log.w("ChatActivity", "Using demo api key");
-    }
 
     OpenAI.Builder builder = OpenAI.builder();
     if (!mApiUrl.isBlank()) {

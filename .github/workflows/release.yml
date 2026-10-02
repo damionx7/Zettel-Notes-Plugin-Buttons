@@ -28,9 +28,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
@@ -39,6 +39,11 @@ jobs:
 
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.jks"
+
+      - name: Create local.properties
+        run: |
+          printf 'ext.PROP_KEY_ALIAS = System.getenv("KEY_ALIAS")\next.PROP_STORE_PASSWORD = System.getenv("KEYSTORE_PASSWORD")\n' > "$RUNNER_TEMP/signing.gradle"
+          printf 'keystore=%s\nkeystore.signing=%s\n' "$RUNNER_TEMP/upload.jks" "$RUNNER_TEMP/signing.gradle" > local.properties
 
       - name: Publish to Play
         env:
