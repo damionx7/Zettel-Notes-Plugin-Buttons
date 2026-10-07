@@ -54,7 +54,7 @@ jobs:
           RUN_NUMBER: ${{ github.run_number }}
           INPUT_MODULE: ${{ inputs.module }}
           # Space-separated modules with no Play Console app yet
-          EXCLUDE_MODULES: "plugin-btn-barcode plugin-btn-imgbb"
+          EXCLUDE_MODULES: "plugin-btn-barcode plugin-btn-imgbb plugin-btn-mermaid"
         run: |
           export RELEASE_SEQ=$((RUN_NUMBER % 100))
           REF="${INPUT_MODULE:-$GITHUB_REF_NAME}"

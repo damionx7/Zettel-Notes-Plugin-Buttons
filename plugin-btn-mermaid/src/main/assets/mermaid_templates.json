@@ -1,0 +1,14 @@
+{
+  "Flowchart": "flowchart TD\n    A[Start] --> B{Decision}\n    B -->|Yes| C[Action]\n    B -->|No| D[Other action]\n    C --> E[End]\n    D --> E",
+  "Sequence": "sequenceDiagram\n    participant A as Alice\n    participant B as Bob\n    A->>B: Request\n    B-->>A: Response\n    Note over A,B: Optional note",
+  "Class": "classDiagram\n    class Animal {\n        +String name\n        +eat()\n    }\n    class Dog {\n        +bark()\n    }\n    Animal <|-- Dog",
+  "State": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> Active : start\n    Active --> Idle : stop\n    Active --> [*]",
+  "Entity Relationship": "erDiagram\n    PATIENT ||--o{ VISIT : has\n    VISIT ||--|{ LAB_RESULT : includes\n    PATIENT {\n        int id\n        string name\n    }",
+  "Gantt": "gantt\n    title Project Timeline\n    dateFormat YYYY-MM-DD\n    section Phase 1\n    Task one :a1, 2026-01-01, 14d\n    Task two :after a1, 10d\n    section Phase 2\n    Task three :2026-02-01, 7d",
+  "Pie": "pie title Distribution\n    \"Category A\" : 40\n    \"Category B\" : 35\n    \"Category C\" : 25",
+  "Mindmap": "mindmap\n  root((Topic))\n    Branch A\n      Leaf 1\n      Leaf 2\n    Branch B\n      Leaf 3",
+  "Timeline": "timeline\n    title History\n    2024 : Event one\n    2025 : Event two\n         : Event three\n    2026 : Event four",
+  "User Journey": "journey\n    title User journey\n    section Step 1\n      Task one: 5: Me\n      Task two: 3: Me, Team\n    section Step 2\n      Task three: 4: Me",
+  "Git Graph": "gitGraph\n    commit\n    branch feature\n    checkout feature\n    commit\n    checkout main\n    merge feature",
+  "Quadrant Chart": "quadrantChart\n    title Priority matrix\n    x-axis Low effort --> High effort\n    y-axis Low impact --> High impact\n    quadrant-1 Plan\n    quadrant-2 Do first\n    quadrant-3 Delegate\n    quadrant-4 Drop\n    Item A: [0.3, 0.7]\n    Item B: [0.7, 0.4]"
+}

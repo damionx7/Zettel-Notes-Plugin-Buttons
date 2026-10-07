@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <script src="mermaid.min.js"></script>
+  <script>
+    // Rendered fully offline: mermaid -> SVG (plain SVG text, no foreignObject) -> canvas -> PNG base64.
+    // Every call carries a sequence number so the app can drop results of renders that were superseded by newer typing.
+    var MAX_SIDE = 4096;
+    var SCALE = 2;
+    var initialized = false;
+    var counter = 0;
+
+    function report(ok, seq, payload) {
+      if (window.Android) {
+        if (ok) { window.Android.onResult(seq, payload); } else { window.Android.onError(seq, String(payload)); }
+      } else {
+        (window.__results = window.__results || []).push({ ok: ok, seq: seq, payload: payload });
+      }
+    }
+
+    function svgSize(svgEl) {
+      var vb = svgEl.getAttribute('viewBox');
+      if (vb) {
+        var p = vb.split(/[\s,]+/).map(Number);
+        if (p.length === 4 && p[2] > 0 && p[3] > 0) { return { w: p[2], h: p[3] }; }
+      }
+      var w = parseFloat(svgEl.getAttribute('width'));
+      var h = parseFloat(svgEl.getAttribute('height'));
+      return { w: w > 0 ? w : 800, h: h > 0 ? h : 600 };
+    }
+
+    async function renderMermaid(code, seq) {
+      try {
+        if (!initialized) {
+          mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: 'strict',
+            theme: 'default',
+            htmlLabels: false,
+            flowchart: { htmlLabels: false },
+            suppressErrorRendering: true
+          });
+          initialized = true;
+        }
+        var out = await mermaid.render('zn-mermaid-' + (++counter), code);
+        var doc = new DOMParser().parseFromString(out.svg, 'image/svg+xml');
+        var svgEl = doc.documentElement;
+        if (svgEl.nodeName.toLowerCase() !== 'svg' || doc.getElementsByTagName('parsererror').length) {
+          throw new Error('Could not parse rendered SVG');
+        }
+        var size = svgSize(svgEl);
+        var scale = Math.min(SCALE, MAX_SIDE / size.w, MAX_SIDE / size.h);
+        var cw = Math.max(1, Math.round(size.w * scale));
+        var ch = Math.max(1, Math.round(size.h * scale));
+        svgEl.setAttribute('width', cw);
+        svgEl.setAttribute('height', ch);
+        svgEl.removeAttribute('style');
+        var xml = new XMLSerializer().serializeToString(svgEl);
+        var img = new Image();
+        img.onload = function () {
+          try {
+            var canvas = document.createElement('canvas');
+            canvas.width = cw;
+            canvas.height = ch;
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, cw, ch);
+            ctx.drawImage(img, 0, 0, cw, ch);
+            report(true, seq, canvas.toDataURL('image/png').split(',')[1]);
+          } catch (e) { report(false, seq, 'Canvas export failed: ' + e); }
+        };
+        img.onerror = function () { report(false, seq, 'Could not load rendered SVG as image'); };
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+      } catch (e) {
+        report(false, seq, (e && e.message) ? e.message : e);
+      }
+    }
+  </script>
+</head>
+<body></body>
+</html>

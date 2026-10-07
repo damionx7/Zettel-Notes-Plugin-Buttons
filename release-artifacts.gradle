@@ -1,5 +1,5 @@
-// Collects APK/AAB/metadata.json outputs from every com.android.application
-// module into build/release/<moduleName>/, wiping stale output first.
+// Collects release APKs from every com.android.application module
+// into build/release/ as <module-name>-release.apk, wiping stale output first.
 
 def releaseArtifactsDir = layout.buildDirectory.dir("release")
 
@@ -13,33 +13,30 @@ def collectArtifactTasks = []
 
 subprojects { subproject ->
     subproject.plugins.withId("com.android.application") {
-        def moduleId = subproject.name.replaceAll('[^A-Za-z0-9]', '').capitalize()
+        def moduleName = subproject.name
+        def moduleId = moduleName.replaceAll('[^A-Za-z0-9]', '').capitalize()
         def collectTaskName = "collectReleaseArtifacts${moduleId}"
+        def moduleOutputsDir = subproject.layout.buildDirectory.dir("outputs/apk")
+        def assembleReleaseTasks = subproject.tasks.matching { it.name == "assembleRelease" }
 
-        def collectTask = tasks.register(collectTaskName, Sync) {
+        def collectTask = tasks.register(collectTaskName, Copy) {
             group = "release"
-            description = "Collects release artifacts for ${subproject.name}"
+            description = "Collects release APK for ${moduleName}"
 
             dependsOn(cleanReleaseArtifacts)
-            dependsOn(
-                    subproject.tasks.matching {
-                        it.name == "assembleRelease" || it.name == "bundleRelease"
-                    }
-            )
+            dependsOn(assembleReleaseTasks)
 
-            from(subproject.layout.buildDirectory.dir("outputs")) {
-                include("**/*.apk")
-                include("**/*.aab")
-                include("**/*metadata.json")
+            from(moduleOutputsDir) {
+                include("**/release/*.apk")
 
                 eachFile { f ->
-                    f.path = "${f.file.parentFile.name}/${f.name}"
+                    f.path = "${moduleName}-release.apk"
                 }
 
                 includeEmptyDirs = false
             }
 
-            into(releaseArtifactsDir.map { it.dir(subproject.name) })
+            into(releaseArtifactsDir)
         }
 
         collectArtifactTasks.add(collectTask)
@@ -48,6 +45,6 @@ subprojects { subproject ->
 
 tasks.register("collectAllReleaseArtifacts") {
     group = "release"
-    description = "Collects release artifacts from all Android app modules"
+    description = "Collects release APKs from all Android app modules"
     dependsOn(collectArtifactTasks)
 }
