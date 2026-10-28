@@ -14,7 +14,7 @@ import kotlinx.coroutines.runBlocking
 class LlmEngineWrapper(
     modelPath: String,
     useGpu: Boolean,
-    maxTokens: Int
+    maxTokens: Int?
 ) : AutoCloseable {
 
     private val engine: Engine = try {
@@ -30,7 +30,7 @@ class LlmEngineWrapper(
 
         Log.w("LlmEngine", "GPU failed, using CPU", e)
 
-        Engine(EngineConfig(modelPath, Backend.CPU()))
+        Engine(EngineConfig(modelPath, Backend.CPU(), maxNumTokens = maxTokens))
             .also { runBlocking { it.initialize() } }
     }
 

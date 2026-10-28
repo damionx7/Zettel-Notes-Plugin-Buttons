@@ -125,6 +125,14 @@ class LlmProcessActivity : BaseActivity() {
     private fun ensureModelThenRun() {
         val model = getSelectedModel()
 
+        if (model.contextTokens > 0) {
+            val estPromptTokens = action.buildPrompt(sourceText ?: "").length / 3
+            if (estPromptTokens + getMaxTokens() > model.contextTokens) {
+                finishWithError("Selection too long for ${model.name} (~$estPromptTokens tokens, limit ${model.contextTokens}). Select less text or choose a larger model.")
+                return
+            }
+        }
+
         if (ModelManager.isDownloaded(this, model)) {
             progressDialog.setMessage("Loading model...")
             initializeAndRun(model)
@@ -165,7 +173,7 @@ class LlmProcessActivity : BaseActivity() {
             try {
                 val modelFile = ModelManager.getModelFile(this@LlmProcessActivity, model)
                 val wrapper = withContext(Dispatchers.IO) {
-                    LlmEngineWrapper(modelFile.absolutePath, getUseGpu(), getMaxTokens())
+                    LlmEngineWrapper(modelFile.absolutePath, getUseGpu(), model.contextTokens.takeIf { it > 0 })
                         .also { it.startConversation() }
                 }
                 engineWrapper = wrapper

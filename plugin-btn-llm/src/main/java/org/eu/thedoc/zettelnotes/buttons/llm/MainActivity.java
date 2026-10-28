@@ -41,7 +41,7 @@ public class MainActivity
 
       ListPreference modelPref = findPreference("prefs_model");
       if (modelPref != null) {
-        modelPref.setEntries(new String[]{"Small (270M)", "Balanced (1B)", "Best (1.5B)"});
+        modelPref.setEntries(new String[]{"Small (270M)", "Balanced (1.5B)", "Best (1.5B, 4K context)"});
         modelPref.setEntryValues(new String[]{LlmModel.SMALL.name(), LlmModel.BALANCED.name(), LlmModel.LARGE.name()});
         modelPref.setOnPreferenceChangeListener((preference, newValue) -> {
           LlmModel selected = LlmModel.valueOf((String) newValue);
